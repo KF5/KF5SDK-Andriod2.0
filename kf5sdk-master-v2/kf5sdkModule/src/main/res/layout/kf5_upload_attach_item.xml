@@ -1,0 +1,54 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/kf5_type_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:contentDescription="@null"
+            android:maxHeight="@dimen/kf5_dimen_16dp"
+            android:maxWidth="@dimen/kf5_dimen_16dp"
+            android:src="@drawable/kf5_image_type" />
+
+        <TextView
+            android:id="@+id/kf5_value"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/kf5_type_icon"
+            android:layout_toLeftOf="@+id/kf5_scan"
+            android:layout_toRightOf="@+id/kf5_type_icon"
+            android:layout_toStartOf="@+id/kf5_scan"
+            android:singleLine="true"
+            android:textColor="@color/kf5_normal_color"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/kf5_scan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="4dp"
+            android:singleLine="true"
+            android:text="@string/kf5_remove"
+            android:textColor="#FF0000"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white">
+
+    <include layout="@layout/kf5_spit_view_horizontal"/>
+
+    <com.kf5.sdk.im.keyboard.widgets.EmoticonsFuncView
+        android:id="@+id/kf5_view_efv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/kf5_view_eiv"
+    />
+
+    <com.kf5.sdk.im.keyboard.widgets.EmoticonsIndicatorView
+        android:id="@+id/kf5_view_eiv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/kf5_view_spit"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/kf5_dimen_10dp"/>
+
+    <include
+        android:id="@+id/kf5_view_spit"
+        layout="@layout/kf5_spit_view_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/kf5_line_1dp"
+        android:layout_above="@+id/kf5_view_etv"/>
+
+    <com.kf5.sdk.im.keyboard.widgets.EmoticonsToolBarView
+        android:id="@+id/kf5_view_etv"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/kf5_dimen_32dp"
+        android:layout_alignParentBottom="true"
+    />
+</RelativeLayout>

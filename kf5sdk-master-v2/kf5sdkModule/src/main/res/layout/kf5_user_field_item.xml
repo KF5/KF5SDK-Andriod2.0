@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/kf5_dimen_12dp">
+
+        <TextView
+            android:id="@+id/kf5_user_field_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/kf5_dimen_4dp"
+            android:layout_marginStart="@dimen/kf5_dimen_4dp"
+            android:layout_weight="1"
+            android:ellipsize="middle"
+            android:gravity="start"
+            android:singleLine="true"
+            android:textColor="@color/kf5_user_field_label_color"
+            android:textSize="@dimen/kf5_text_h_size"/>
+
+        <TextView
+            android:id="@+id/kf5_user_field_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/kf5_dimen_4dp"
+            android:layout_marginRight="@dimen/kf5_dimen_4dp"
+            android:layout_weight="1"
+            android:ellipsize="middle"
+            android:gravity="end"
+            android:singleLine="true"
+            android:textColor="@color/kf5_message_value_color"
+            android:textSize="@dimen/kf5_text_l_size"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/kf5_dimen_20dp"
+        android:layout_marginStart="@dimen/kf5_dimen_20dp"
+        android:background="@color/kf5_table_deliver"/>
+
+</LinearLayout>

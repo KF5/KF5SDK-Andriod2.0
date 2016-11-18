@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/kf5_textview_choice_from_image"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:drawablePadding="@dimen/kf5_dimen_4dp"
+        android:drawableTop="@drawable/kf5_img_from_file"
+        android:gravity="center"
+        android:text="照片"
+        android:textSize="@dimen/kf5_text_size_20" />
+
+    <TextView
+        android:id="@+id/kf5_textview_choice_from_camera"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:drawablePadding="@dimen/kf5_dimen_4dp"
+        android:drawableTop="@drawable/kf5_img_from_camera"
+        android:gravity="center"
+        android:text="相机"
+        android:textSize="@dimen/kf5_text_size_20" />
+
+</LinearLayout>

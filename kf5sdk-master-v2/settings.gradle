@@ -1,0 +1,1 @@
+include ':app', ':kf5sdkModule', ':kf5SdkFramework'

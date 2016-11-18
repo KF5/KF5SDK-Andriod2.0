@@ -1,0 +1,139 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="${relativePackage}.${activityClass}">
+
+    <RelativeLayout
+        android:id="@+id/topLayout"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/kf5_title_bar_bg">
+
+        <ImageView
+            android:id="@+id/back_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@null"
+            android:src="@drawable/kf5_back_img_bg" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/login"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/kf5_text_xh_size" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/topLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:padding="6dp">
+
+            <EditText
+                android:id="@+id/et_name"
+                style="@style/login_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:hint="请输入昵称"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="12dp"
+                android:singleLine="true"
+                android:textColor="@color/login_info_text_color"
+                android:textColorHint="@color/text_color_hint" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/table_devider"
+                android:background="@color/kf5_table_deliver" />
+
+            <EditText
+                android:id="@+id/et_email"
+                style="@style/login_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:hint="请输入邮箱"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="12dp"
+                android:singleLine="true"
+                android:textColor="@color/login_info_text_color"
+                android:textColorHint="@color/text_color_hint" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/table_devider"
+                android:background="@color/kf5_table_deliver" />
+
+            <EditText
+                android:id="@+id/et_helpaddress"
+                style="@style/login_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:hint="请输入平台地址"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="12dp"
+                android:singleLine="true"
+                android:textColor="@color/login_info_text_color"
+                android:textColorHint="@color/text_color_hint" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/table_devider"
+                android:background="@color/kf5_table_deliver" />
+
+            <EditText
+                android:id="@+id/et_appid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:gravity="top|start"
+                android:hint="请输入APPID"
+                android:minLines="2"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="12dp"
+                android:textColor="@color/login_info_text_color"
+                android:textColorHint="@color/text_color_hint"
+                android:textSize="@dimen/high_size" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/table_devider"
+                android:background="@color/kf5_table_deliver" />
+
+            <Button
+                android:id="@+id/login"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/login_btn"
+                android:padding="9dip"
+                android:text="@string/login"
+                android:textColor="@drawable/login_text_bg"
+                android:textSize="@dimen/big_size"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

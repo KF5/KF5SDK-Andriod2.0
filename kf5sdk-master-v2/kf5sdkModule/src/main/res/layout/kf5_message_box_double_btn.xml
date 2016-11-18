@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/btnLayoutDouble"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/kf5_dialogLeftBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/kf5_messagebox_single_btn"
+            android:gravity="center"
+            android:padding="@dimen/kf5_dimen_6dp"
+            android:singleLine="true"
+            android:text="OK"
+            android:textColor="#ff0079ff"
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/kf5_dialogRightBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/kf5_dimen_24dp"
+            android:layout_marginStart="@dimen/kf5_dimen_24dp"
+            android:background="@drawable/kf5_messagebox_single_btn"
+            android:gravity="center"
+            android:padding="@dimen/kf5_dimen_6dp"
+            android:singleLine="true"
+            android:text="Cancel"
+            android:textColor="#ff0079ff"
+            android:textSize="16.0sp" />
+    </LinearLayout>
+
+</LinearLayout>

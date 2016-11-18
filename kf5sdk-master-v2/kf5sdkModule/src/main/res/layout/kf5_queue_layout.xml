@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"
+              android:focusable="true"
+              android:focusableInTouchMode="true"
+              android:orientation="horizontal"
+              android:padding="@dimen/kf5_dimen_4dp">
+
+    <com.kf5.sdk.im.keyboard.widgets.EmoticonsEditText
+        android:id="@+id/kf5_queue_edit_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/kf5_dimen_4dp"
+        android:layout_marginStart="@dimen/kf5_dimen_4dp"
+        android:layout_weight="1"
+        android:background="@drawable/kf5_input_bar_bg_active"
+        android:gravity="start|center"
+        android:hint="@string/kf5_input_some_text"
+        android:lineSpacingExtra="@dimen/kf5_dimen_4dp"
+        android:maxLines="5"
+        android:minHeight="40dp"
+        android:textSize="@dimen/kf5_text_size_16"/>
+
+    <TextView
+        android:id="@+id/kf5_queue_send_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/kf5_dimen_4dp"
+        android:layout_marginStart="@dimen/kf5_dimen_4dp"
+        android:background="@drawable/kf5_btn_send_bg"
+        android:gravity="center"
+        android:text="@string/kf5_send"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/kf5_text_size_16"/>
+</LinearLayout>

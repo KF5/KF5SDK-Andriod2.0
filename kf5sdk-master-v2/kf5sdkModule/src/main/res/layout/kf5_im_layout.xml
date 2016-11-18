@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/kf5_im_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/kf5_dimen_6dp"
+                android:paddingTop="@dimen/kf5_dimen_6dp">
+
+    <!-- 语音/文字切换-->
+    <ImageView
+        android:id="@+id/kf5_btn_voice_or_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/kf5_dimen_6dp"
+        android:src="@drawable/kf5_chat_by_voice"/>
+
+    <!--语音输入-->
+    <com.kf5.sdk.im.widget.AudioRecordButton
+        android:id="@+id/kf5_btn_voice"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/kf5_dimen_32dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/kf5_dimen_8dp"
+        android:layout_marginRight="@dimen/kf5_dimen_8dp"
+        android:layout_toLeftOf="@+id/kf5_rl_multi_and_send"
+        android:layout_toRightOf="@+id/kf5_btn_voice_or_text"
+        android:background="@drawable/kf5_button_record_normal"
+        android:text="@string/kf5_hold_on_and_say_something"
+        android:textColor="#727272"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:id="@+id/kf5_rl_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:layout_toLeftOf="@+id/kf5_rl_multi_and_send"
+        android:layout_toRightOf="@+id/kf5_btn_voice_or_text"
+        android:background="@drawable/kf5_input_bg_gray"
+        android:orientation="horizontal"
+        android:paddingTop="5dp">
+
+        <!--输入框-->
+        <com.kf5.sdk.im.keyboard.widgets.EmoticonsEditText
+            android:id="@+id/kf5_et_chat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/kf5_btn_emoji"
+            android:background="@null"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:lineSpacingExtra="4dp"
+            android:maxLines="4"
+            android:paddingLeft="@dimen/kf5_dimen_2dp"
+            android:paddingRight="@dimen/kf5_dimen_2dp"
+            android:textSize="16sp"/>
+
+        <!--表情-->
+        <ImageView
+            android:id="@+id/kf5_btn_emoji"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/kf5_dimen_6dp"
+            android:src="@drawable/kf5_chat_by_emoji"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/kf5_rl_multi_and_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/kf5_dimen_6dp"
+        android:paddingRight="@dimen/kf5_dimen_6dp">
+
+        <!--apps 功能-->
+
+        <!--发送-->
+        <TextView
+            android:id="@+id/kf5_btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/kf5_btn_send_bg"
+            android:gravity="center"
+            android:text="发送"
+            android:textColor="@color/kf5_white"
+            android:textSize="@dimen/kf5_text_size_14"
+            android:visibility="gone"
+        />
+        <ImageView
+            android:id="@+id/kf5_btn_chat_by_others"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/kf5_btn_send"
+            android:layout_centerInParent="true"
+            android:src="@drawable/kf5_chat_by_others"/>
+    </RelativeLayout>
+</RelativeLayout>

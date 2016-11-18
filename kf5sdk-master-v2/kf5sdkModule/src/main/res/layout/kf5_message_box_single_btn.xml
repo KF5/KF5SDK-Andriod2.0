@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/btnLayoutSingle"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/kf5_dialogBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@drawable/kf5_messagebox_single_btn"
+        android:gravity="center"
+        android:padding="@dimen/kf5_dimen_6dp"
+        android:singleLine="true"
+        android:text="button"
+        android:textColor="#ff0079ff"
+        android:textSize="16.0sp" />
+
+</LinearLayout>

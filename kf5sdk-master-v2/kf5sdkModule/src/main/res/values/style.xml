@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="KF5BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowShowWallpaper">false</item>
+    </style>
+
+    <style name="KF5AppTheme" parent="KF5BaseAppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="ActivityAnim">
+        <item name="android:activityOpenEnterAnimation">@anim/kf5_activity_anim_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/kf5_anim_stay</item>
+        <item name="android:activityCloseEnterAnimation">@anim/kf5_anim_stay</item>
+        <item name="android:activityCloseExitAnimation">@anim/kf5_activity_anim_in</item>
+    </style>
+
+    <style name="KF5ActionSheetDialogStyle" parent="@android:style/Theme.Dialog">
+        <!-- 背景透明 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <!-- 浮于Activity之上 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- Dialog以外的区域模糊效果 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 无标题 -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- 半透明 -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- Dialog进入及退出动画 -->
+        <item name="android:windowAnimationStyle">@style/ActionSheetDialogAnimation</item>
+    </style>
+
+    <!-- ActionSheet进出动画 -->
+    <style name="ActionSheetDialogAnimation" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/kf5_actionsheet_dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/kf5_actionsheet_dialog_out</item>
+    </style>
+
+    <!-- 设置弹出窗口的属性，frame叠加，isfloat是否浮动，tarnslucent是否半透明，dim是背景是否变暗 -->
+    <style name="KF5Theme_audioDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="kf5messagebox_style" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 模糊 -->
+    </style>
+
+    <style name="KF5FileListPopAnim">
+        <item name="android:windowEnterAnimation">@anim/kf5_file_list_slide_in</item>
+        <item name="android:windowExitAnimation">@anim/kf5_file_list_slide_out</item>
+    </style>
+
+    <style name="kf5popwindow_anim_style">
+        <item name="android:windowEnterAnimation">@anim/kf5_popshow_anim</item>
+        <!-- 指定显示的动画xml -->
+        <item name="android:windowExitAnimation">@anim/kf5_pophidden_anim</item>
+        <!-- 指定消失的动画xml -->
+
+    </style>
+
+    <style name="KF5KeyBoardPopupAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/kf5_pop_up_in</item>
+        <item name="android:windowExitAnimation">@anim/kf5_pop_down_out</item>
+    </style>
+
+
+</resources>

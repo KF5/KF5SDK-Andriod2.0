@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="id_auto_layout" type="id"/>
+    <item name="id_toolbar_left" type="id"/>
+    <item name="id_toolbar_right" type="id"/>
+    <item name="id_tag_page_set" type="id"/>
+</resources>

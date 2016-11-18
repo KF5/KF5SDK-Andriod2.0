@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/kf5_dimen_10dp"
+    android:paddingTop="@dimen/kf5_dimen_10dp">
+
+    <ImageView
+        android:id="@+id/kf5_image_cover"
+        android:layout_width="@dimen/kf5_folder_cover_size"
+        android:layout_height="@dimen/kf5_folder_cover_size"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/kf5_dimen_12dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/kf5_default_error" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/kf5_dimen_16dp"
+        android:layout_toLeftOf="@+id/kf5_file_indicator"
+        android:layout_toRightOf="@+id/kf5_image_cover"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/kf5_file_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/kf5_text_size_16"
+            tools:text="img" />
+
+        <TextView
+            android:id="@+id/kf5_file_path"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:textColor="@color/kf5_folder_item_text_color"
+            android:textSize="@dimen/kf5_text_size_12"
+            tools:text="/sdcard/a/" />
+
+        <TextView
+            android:id="@+id/kf5_file_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/kf5_folder_item_text_color"
+            android:textSize="@dimen/kf5_text_size_12"
+            tools:text="1张" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/kf5_file_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/kf5_dimen_10dp"
+        android:layout_marginRight="@dimen/kf5_dimen_20dp"
+        android:src="@drawable/kf5_default_check" />
+
+</RelativeLayout>

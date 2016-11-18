@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">kf5sdk-master-v2</string>
+    <string name="kf5_sdk_name">逸创云客服</string>
+    <string name="login">登录</string>
+    <string name="help_center">帮助中心</string>
+    <string name="about_us">关于我们</string>
+    <string name="feed_back">提交反馈</string>
+    <string name="look_feed_back">查看反馈</string>
+    <string name="chat">即时交谈</string>
+</resources>

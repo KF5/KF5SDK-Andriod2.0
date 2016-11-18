@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@android:color/white"
+              android:orientation="vertical">
+    <include layout="@layout/kf5_spit_view_horizontal"/>
+
+    <com.kf5.sdk.im.keyboard.widgets.IMView
+        android:id="@+id/kf5_im_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+    <com.kf5.sdk.im.keyboard.widgets.QueueView
+        android:id="@+id/kf5_queue_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+    <com.kf5.sdk.im.keyboard.widgets.AIView
+        android:id="@+id/kf5_ai_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+    <com.kf5.sdk.im.keyboard.widgets.FuncLayout
+        android:id="@+id/kf5_ly_kvml"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:visibility="gone"/>
+
+</LinearLayout>

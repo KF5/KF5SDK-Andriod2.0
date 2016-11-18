@@ -1,0 +1,82 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="${relativePackage}.${activityClass}">
+
+    <RelativeLayout
+        android:id="@+id/kf5_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/kf5_title_bar_bg">
+
+        <ImageView
+            android:id="@+id/kf5_return_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@null"
+            android:src="@drawable/kf5_back_img_bg" />
+
+        <TextView
+            android:id="@+id/kf5_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/kf5_return_img"
+            android:layout_toLeftOf="@+id/kf5_right_text_view"
+            android:layout_toRightOf="@+id/kf5_return_img"
+            android:layout_toStartOf="@+id/kf5_right_text_view"
+            android:gravity="start"
+            android:singleLine="true"
+            android:text="@string/kf5_ticket"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/kf5_text_xxh_size" />
+
+        <TextView
+            android:id="@+id/kf5_right_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/kf5_dimen_8dp"
+            android:layout_marginRight="@dimen/kf5_dimen_8dp"
+            android:gravity="center"
+            android:padding="@dimen/kf5_dimen_8dp"
+            android:text="@string/kf5_message_detail"
+            android:textColor="@drawable/kf5_text_bg"
+            android:textSize="@dimen/kf5_text_xh_size" />
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/kf5_deliver"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/kf5_top_layout"
+        android:background="@color/kf5_line_deliver_color" />
+
+    <ListView
+        android:id="@+id/kf5_activity_feed_back_details_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/kf5_bottom_layout"
+        android:layout_below="@+id/kf5_deliver"
+        android:background="@android:color/white"
+        android:divider="@android:color/white"
+        android:listSelector="@android:color/white"
+        android:overScrollMode="never"
+        android:transcriptMode="normal" />
+
+    <RelativeLayout
+        android:id="@+id/kf5_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+</RelativeLayout>

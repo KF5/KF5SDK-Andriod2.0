@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/kf5_dialog_box_bg"
+              android:orientation="vertical"
+              android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="25.0dip"
+        android:layout_marginBottom="16dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="@string/kf5_reminder"
+        android:textColor="#ff000000"
+        android:textSize="18.0sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/kf5_dialogText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:maxLines="3"
+        android:minLines="1"
+        android:minWidth="240dp"
+        android:text="@string/kf5_rating_content"
+        android:textColor="#ff000000"
+        android:textSize="18.0sp"/>
+
+    <TextView
+        android:id="@+id/kf5_rating_satisfied"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/kf5_messagebox_single_btn"
+        android:gravity="center"
+        android:padding="@dimen/kf5_dimen_12dp"
+        android:text="@string/kf5_satisfied"
+        android:textColor="#ff0079ff"
+        android:textSize="16.0sp"/>
+
+    <TextView
+        android:id="@+id/kf5_rating_unsatisfied"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/kf5_messagebox_single_btn"
+        android:gravity="center"
+        android:padding="@dimen/kf5_dimen_12dp"
+        android:singleLine="true"
+        android:text="@string/kf5_unsatisfied"
+        android:textColor="#ff0079ff"
+        android:textSize="16.0sp"/>
+
+    <TextView
+        android:id="@+id/kf5_rating_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/kf5_messagebox_single_btn"
+        android:gravity="center"
+        android:padding="@dimen/kf5_dimen_12dp"
+        android:singleLine="true"
+        android:text="@string/kf5_cancel"
+        android:textColor="#ff0079ff"
+        android:textSize="16.0sp"/>
+
+</LinearLayout>
