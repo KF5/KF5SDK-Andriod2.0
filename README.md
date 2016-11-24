@@ -8,5 +8,5 @@ v2.0版本的SDK较v1.0版本的sdk主要区别在于：基于Framework代码库
 #####3、即时交谈
 用户可以通过SDK中的即时交谈功能与客服人员实时交流，目前支持发送语音、文字、图片，接收语音、文字、图片、附件以及满意度评价。
 ##二、集成步骤
-1、下载[KF5SDK-Android2.0]()的官方demo；注：v2.0版本的SDK基于AndroidStudio开发，集成步骤均指的是AndroidStudio的IDE，若您的IDE是Eclipse，请[联系我们]()。
+1、下载[KF5SDK-Android2.0]()的官方demo；注：v2.0版本的SDK基于AndroidStudio开发，集成步骤均指的是AndroidStudio的IDE，若您的IDE是Eclipse，请[联系我们](http://www.kf5.com/)。
 2、将demo里的kf5sdkModule导入到您的工程中，然后添加依赖，具体导入步骤请自行查阅相关资料。
