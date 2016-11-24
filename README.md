@@ -33,7 +33,7 @@ v2.0版本的SDK较v1.0版本的sdk主要区别在于：基于Framework代码库
 
 3.SDK中Activity组件说明：HelpCenterActivity（文档分区）、HelpCenterTypeActivity（文档分类）、HelpCenterTypeChildActivity（文档列表）、HelpCenterTypeDetailsActivity（文档详情）、KF5ChatActivity（即时交谈）、FeedBackActivity（创建工单）、LookFeedBackActivity（工单列表）、FeedBackDetailsActivity（工单详情）、OrderAttributeActivity（工单属性）
 
-4.SDK现在支持滑动后退，并且默认开启，关闭则在BaseSwipeBackActivity自由设置；开发者若需自定义Activity切换动画，在BaseActivity中设置即可。
+_4.SDK现在支持滑动后退，并且默认开启，关闭则在BaseSwipeBackActivity自由设置；开发者若需自定义Activity切换动画，在BaseActivity中设置即可。_
 
 5.日志查看，OkHttpManager中设置HttpLoggingInterceptor日志类型。
 
