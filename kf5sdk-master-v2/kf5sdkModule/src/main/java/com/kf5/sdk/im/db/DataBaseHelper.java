@@ -52,8 +52,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 + DB_TABLE
                 + " ("
                 + DataBaseColumn.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + DataBaseColumn.CHAT_ID + " TEXT, "
-                + DataBaseColumn.MESSAGE_ID + " TEXT, "
+                + DataBaseColumn.CHAT_ID + " INTEGER, "
+                + DataBaseColumn.MESSAGE_ID + " INTEGER, "
                 + DataBaseColumn.IS_COM + " INTEGER DEFAULT 0, "
                 + DataBaseColumn.MESSAGE + " TEXT, "
                 + DataBaseColumn.CREATED_DATE + " INTEGER, "

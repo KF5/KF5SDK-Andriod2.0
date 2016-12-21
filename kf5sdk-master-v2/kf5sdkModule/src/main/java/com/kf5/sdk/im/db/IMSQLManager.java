@@ -470,7 +470,6 @@ public class IMSQLManager extends SQLManager {
             id = cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseColumn.MESSAGE_ID));
             cursor.close();
         } catch (Exception e) {
-            // TODO: handle exception
         }
         return id;
     }

@@ -54,6 +54,10 @@ public class SocketParams {
 
     private static final String CANCEL_QUEUE = "cancel_queue";
 
+    private static final String METADATA_PUT = "metadata_put";
+
+    private static final String METADATA = "metadata";
+
 
     public static String getSettingParams() {
 
@@ -245,6 +249,25 @@ public class SocketParams {
             JSONObject paramsObj = new JSONObject();
             jsonObject.put(PARAMS, paramsObj);
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
+    }
+
+    /**
+     * 设置用户自定义属性
+     *
+     * @param jsonArray
+     * @return
+     */
+    public static String getMetadataParams(JSONArray jsonArray) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(ACTION, METADATA_PUT);
+            JSONObject paramsObj = new JSONObject();
+            paramsObj.put(METADATA, jsonArray);
+            jsonObject.put(PARAMS, paramsObj);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return jsonObject.toString();

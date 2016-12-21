@@ -68,6 +68,8 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
 
     private static final int SEND_TEXT_MESSAGE = 0x03;
 
+    public static final int SET_METADATA = 0x04;
+
     public static final int RESULT_OK = 0;
 
     private MessageManager mMessageManager;
@@ -216,6 +218,9 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                                     e.printStackTrace();
                                 }
                                 break;
+                            case SET_METADATA:
+
+                                break;
                         }
 
                     } else {
@@ -241,6 +246,16 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      */
     public void synchronizationMessages() {
         sendSCAction(ON_MESSAGE, SocketParams.getHistoryMessagesParams(IMSQLManager.getLastMessageId(getMvpView().getContext()), 0).toString());
+    }
+
+
+    /**
+     * 设置用户自定义属性
+     *
+     * @param jsonArray
+     */
+    public void setMetadata(JSONArray jsonArray) {
+        sendSCAction(SET_METADATA, SocketParams.getMetadataParams(jsonArray));
     }
 
     /**

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.kf5.sdk.R;
 import com.kf5.sdk.im.adapter.MessageAdapter;
+import com.kf5.sdk.im.db.IMSQLManager;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.entity.IMMessageManager;
 import com.kf5.sdk.im.expression.utils.ExpressionCommonUtils;
@@ -155,6 +156,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
             if (presenter.isConnected())
                 presenter.disconnect();
             presenter.disconnectIPC();
+            IMSQLManager.reset(mActivity);
         } catch (Exception e) {
             e.printStackTrace();
         }
