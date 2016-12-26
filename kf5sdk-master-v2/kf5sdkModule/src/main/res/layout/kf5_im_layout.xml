@@ -27,7 +27,7 @@
         android:layout_toLeftOf="@+id/kf5_rl_multi_and_send"
         android:layout_toRightOf="@+id/kf5_btn_voice_or_text"
         android:background="@drawable/kf5_button_record_normal"
-        android:text="@string/kf5_hold_on_and_say_something"
+        android:text="@string/kf5_hold_to_speak"
         android:textColor="#727272"
         android:visibility="gone"/>
 
@@ -91,7 +91,7 @@
             android:layout_centerInParent="true"
             android:background="@drawable/kf5_btn_send_bg"
             android:gravity="center"
-            android:text="发送"
+            android:text="@string/kf5_send"
             android:textColor="@color/kf5_white"
             android:textSize="@dimen/kf5_text_size_14"
             android:visibility="gone"

@@ -40,11 +40,11 @@ public class MessageFileLongClickListener extends BaseLongClickListener {
             if (!TextUtils.isEmpty(url)) {
                 final File file = new File(FilePath.FILE + MD5Utils.GetMD5Code(url) + "." + upload.getType());
                 if (file.exists()) {
-                    Toast.makeText(context, context.getString(R.string.kf5_file_is_downloaded), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.kf5_file_downloaded), Toast.LENGTH_SHORT).show();
                 } else {
                     if (chatDialog == null) {
                         chatDialog = new DialogBox(context);
-                        chatDialog.setMessage(context.getString(R.string.kf5_download_file))
+                        chatDialog.setMessage(context.getString(R.string.kf5_download_file_hint))
                                 .setLeftButton(context.getString(R.string.kf5_cancel), null)
                                 .setRightButton(context.getString(R.string.kf5_download), new DialogBox.onClickListener() {
 

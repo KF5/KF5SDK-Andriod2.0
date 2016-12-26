@@ -33,7 +33,7 @@
             android:layout_marginRight="@dimen/kf5_dimen_12dp"
             android:gravity="center"
             android:padding="@dimen/kf5_dimen_4dp"
-            android:text="@string/kf5_btn_submit"
+            android:text="@string/kf5_submit"
             android:textColor="@drawable/kf5_text_bg"
             android:textSize="@dimen/kf5_text_xh_size" />
 
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/kf5_home_feedback_button"
+            android:text="@string/kf5_feedback"
             android:textColor="@android:color/white"
             android:textSize="@dimen/kf5_text_xxh_size" />
     </RelativeLayout>
@@ -64,7 +64,7 @@
         android:background="@android:color/white"
         android:focusable="false"
         android:gravity="top|start"
-        android:hint="@string/kf5_edit_text_hint"
+        android:hint="@string/kf5_edittext_hint"
         android:padding="@dimen/kf5_dimen_16dp"
         android:textColor="@color/kf5_et_content_text_color"
         android:textColorHint="@color/kf5_et_hint_text_color"

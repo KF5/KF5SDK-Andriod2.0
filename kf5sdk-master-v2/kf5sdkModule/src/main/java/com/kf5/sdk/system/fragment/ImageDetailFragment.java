@@ -84,7 +84,7 @@ public class ImageDetailFragment extends Fragment {
                     if (mProgressBar != null)
                         mProgressBar.setVisibility(View.GONE);
                     if (isAdded()) {
-                        Toast.makeText(getActivity(), getString(R.string.kf5_display_image_error), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getString(R.string.kf5_display_error_hint), Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e1) {
                     e1.printStackTrace();

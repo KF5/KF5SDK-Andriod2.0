@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/kf5_document_content"
+            android:text="@string/kf5_article_content"
             android:textColor="@android:color/white"
             android:textSize="@dimen/kf5_text_xxh_size"/>
     </RelativeLayout>

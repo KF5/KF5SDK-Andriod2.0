@@ -204,7 +204,7 @@ public abstract class BaseActivity<P extends Presenter<V>, V extends MvpView> ex
             ApplicationInfo applicationInfo = packageManager.getApplicationInfo(getPackageName(), 0);
             String applicationName = (String) packageManager.getApplicationLabel(applicationInfo);
             @SuppressLint("StringFormatMatches") AlertDialog dialog = new AlertDialog.Builder(mActivity)
-                    .setMessage(getString(R.string.kf5_get_auth_from_setting, applicationName))
+                    .setMessage(getString(R.string.kf5_get_auth_hint, applicationName))
                     .setPositiveButton(getString(R.string.kf5_confirm), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

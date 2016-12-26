@@ -677,9 +677,9 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                     Log.i(Utils.KF5_TAG, result);
                     String content;
                     if (code == RESULT_OK)
-                        content = getMvpView().getContext().getString(R.string.kf5_make_comment_success);
+                        content = getMvpView().getContext().getString(R.string.kf5_rating_successfully);
                     else
-                        content = getMvpView().getContext().getString(R.string.kf5_failure_to_comment);
+                        content = getMvpView().getContext().getString(R.string.kf5_rating_failed);
                     getMvpView().onReceiveMessageList(IMMessageManager.addIMMessageToList(IMMessageManager.buildSystemMessage(content)));
                 }
             });

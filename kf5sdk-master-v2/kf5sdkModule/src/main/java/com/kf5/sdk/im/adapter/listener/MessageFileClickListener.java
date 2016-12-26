@@ -40,7 +40,7 @@ public class MessageFileClickListener extends BaseClickListener {
 
         if (chatDialog == null) {
             chatDialog = new DialogBox(context);
-            chatDialog.setMessage(context.getString(R.string.kf5_open_the_file))
+            chatDialog.setMessage(context.getString(R.string.kf5_open_file_hint))
                     .setLeftButton(context.getString(R.string.kf5_cancel), null)
                     .setRightButton(context.getString(R.string.kf5_open), new DialogBox.onClickListener() {
 
@@ -62,10 +62,10 @@ public class MessageFileClickListener extends BaseClickListener {
                                     if (Utils.isIntentAvailable(context, intent)) {
                                         context.startActivity(intent);
                                     } else {
-                                        showToast(context.getString(R.string.kf5_no_app_filter));
+                                        showToast(context.getString(R.string.kf5_no_file_found_hint));
                                     }
                                 } else {
-                                    showToast(context.getString(R.string.kf5_download_file_first));
+                                    showToast(context.getString(R.string.kf5_download_file));
                                 }
                             }
 

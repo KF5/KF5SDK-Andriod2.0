@@ -30,7 +30,7 @@ public class CopyTextLongClickListener extends BaseLongClickListener {
 
         if (chatDialog == null) {
             chatDialog = new DialogBox(context);
-            chatDialog.setMessage(context.getString(R.string.kf5_bool_copy_text))
+            chatDialog.setMessage(context.getString(R.string.kf5_copy_text_hint))
                     .setLeftButton(context.getString(R.string.kf5_cancel), null)
                     .setRightButton(context.getString(R.string.kf5_copy), new DialogBox.onClickListener() {
                         @Override

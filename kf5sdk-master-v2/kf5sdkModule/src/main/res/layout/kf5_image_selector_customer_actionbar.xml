@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="@string/kf5_image_selector_activity_title"
+        android:text="@string/kf5_action_select_photo"
         android:textColor="@android:color/white"
         android:textSize="@dimen/kf5_text_xxh_size" />
 

@@ -186,7 +186,7 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
      */
     public void setFooterViewNoData() {
         footerBar.setVisibility(View.GONE);
-        footerDesc.setText(getContext().getString(R.string.kf5_no_datas));
+        footerDesc.setText(getContext().getString(R.string.kf5_no_data));
         footerLayout.setVisibility(View.VISIBLE);
     }
 
@@ -333,7 +333,7 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
 
                 arrowImageView.clearAnimation();
                 arrowImageView.startAnimation(animation);
-                tipsTextview.setText(getContext().getString(R.string.kf5_reless_update));
+                tipsTextview.setText(getContext().getString(R.string.kf5_release_to_update));
 
                 break;
             case PULL_To_REFRESH:
@@ -346,9 +346,9 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
                     isBack = false;
                     arrowImageView.clearAnimation();
                     arrowImageView.startAnimation(reverseAnimation);
-                    tipsTextview.setText(getContext().getString(R.string.kf5_pull_update));
+                    tipsTextview.setText(getContext().getString(R.string.kf5_pull_to_update));
                 } else {
-                    tipsTextview.setText(getContext().getString(R.string.kf5_pull_update));
+                    tipsTextview.setText(getContext().getString(R.string.kf5_pull_to_update));
                 }
                 break;
 
@@ -357,7 +357,7 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
                 progressBar.setVisibility(View.VISIBLE);
                 arrowImageView.clearAnimation();
                 arrowImageView.setVisibility(View.GONE);
-                tipsTextview.setText(getContext().getString(R.string.kf5_update_ing));
+                tipsTextview.setText(getContext().getString(R.string.kf5_updating));
                 lastUpdatedTextView.setVisibility(View.VISIBLE);
 
                 break;
@@ -380,7 +380,7 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
                 progressBar.setVisibility(View.GONE);
                 arrowImageView.clearAnimation();
                 arrowImageView.setImageResource(R.drawable.kf5_ic_pulltorefresh_arrow);
-                tipsTextview.setText(getContext().getString(R.string.kf5_reless_update));
+                tipsTextview.setText(getContext().getString(R.string.kf5_release_to_update));
                 lastUpdatedTextView.setVisibility(View.VISIBLE);
                 break;
         }
@@ -401,7 +401,7 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
         progressBar.setVisibility(View.VISIBLE);
         arrowImageView.clearAnimation();
         arrowImageView.setVisibility(View.GONE);
-        tipsTextview.setText(getContext().getString(R.string.kf5_update_ing));
+        tipsTextview.setText(getContext().getString(R.string.kf5_updating));
         lastUpdatedTextView.setVisibility(View.VISIBLE);
 
     }

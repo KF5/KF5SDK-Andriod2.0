@@ -266,11 +266,11 @@ public final class AudioRecordButton extends Button implements AudioManager.Audi
             switch (mCurrentState) {
                 case STATE_NORMAL:
                     setBackgroundResource(R.drawable.kf5_button_record_normal);
-                    setText(R.string.kf5_voice_normal);
+                    setText(R.string.kf5_hold_to_speak);
                     break;
                 case STATE_RECORDING:
                     setBackgroundResource(R.drawable.kf5_button_recording);
-                    setText(R.string.kf5_voice_recording);
+                    setText(R.string.kf5_release_to_cancel);
                     if (isRecording) {
                         mDialogManager.recording("");
                         // 复写dialog.recording();
@@ -279,7 +279,7 @@ public final class AudioRecordButton extends Button implements AudioManager.Audi
 
                 case STATE_WANT_TO_CANCEL:
                     setBackgroundResource(R.drawable.kf5_button_recording);
-                    setText(R.string.kf5_want_to_cancel);
+                    setText(R.string.kf5_leave_to_cancel);
                     // dialog want to cancel
                     mDialogManager.wantToCancel();
                     break;

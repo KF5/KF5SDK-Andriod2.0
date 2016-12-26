@@ -58,10 +58,10 @@ public class AIURLSpan extends ClickableSpan {
                 if (Utils.isIntentAvailable(context, intent))
                     context.startActivity(intent);
                 else
-                    Toast.makeText(context, context.getString(R.string.kf5_no_app_filter), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.kf5_no_file_found_hint), Toast.LENGTH_SHORT).show();
                 //电话
             } else if (Patterns.EMAIL_ADDRESS.matcher(url).matches()) {
-                new DialogBox(context).setMessage(context.getString(R.string.kf5_send_email))
+                new DialogBox(context).setMessage(context.getString(R.string.kf5_send_email_hint))
                         .setLeftButton(context.getString(R.string.kf5_cancel), null)
                         .setRightButton(context.getString(R.string.kf5_confirm), new DialogBox.onClickListener() {
 
@@ -75,7 +75,7 @@ public class AIURLSpan extends ClickableSpan {
                                 if (Utils.isIntentAvailable(context, intent))
                                     context.startActivity(intent);
                                 else
-                                    Toast.makeText(context, context.getString(R.string.kf5_no_app_filter), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, context.getString(R.string.kf5_no_file_found_hint), Toast.LENGTH_SHORT).show();
                             }
                         }).show();
             } else {

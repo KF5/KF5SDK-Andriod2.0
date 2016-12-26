@@ -78,7 +78,7 @@ public class FolderAdapter extends BaseAdapter {
         }
         if (holder != null) {
             if (i == 0) {
-                holder.name.setText(R.string.kf5_folder_all);
+                holder.name.setText(R.string.kf5_photo_all);
                 holder.path.setText("/sdcard");
                 holder.size.setText(String.format("%d%s",
                         getTotalImageSize(), mContext.getResources().getString(R.string.kf5_photo_unit)));

@@ -78,7 +78,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onSuccess(final String result) {
                         Log.i("kf5测试", "登录成功" + result);
-
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -113,15 +112,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 }
                             }
                         });
-
                     }
-
                     @Override
                     public void onFailure(String result) {
                         Log.i("kf5测试", "登录失败" + result);
                     }
                 });
-
 
                 break;
         }

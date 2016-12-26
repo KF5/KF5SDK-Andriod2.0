@@ -2,12 +2,12 @@ package com.kf5.sdk.im.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.ImageView;
@@ -26,21 +26,20 @@ public class MaskImage extends ImageView {
     RuntimeException mException;
     Drawable mask;
 
-
     public MaskImage(Context context) {
         this(context, null);
     }
 
     public MaskImage(Context context, AttributeSet attrs) {
         super(context, attrs);
-        String discription = getContentDescription().toString();
-        if (TextUtils.equals("右图", discription)) {
-            mMaskSource = R.drawable.kf5_message_to_text_bg_normal;
-        } else if (TextUtils.equals("左图", discription)) {
+
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaskImage);
+        int source = typedArray.getInt(R.styleable.MaskImage_maskSource, -1);
+        typedArray.recycle();
+        if (source == 0) {
             mMaskSource = R.drawable.kf5_message_from_text_bg_nomal;
-        }
-        if (mMaskSource == 0) {
-            mException = new IllegalArgumentException("The ContentDescription is required and must refer to a valid image");
+        } else if (source == 1) {
+            mMaskSource = R.drawable.kf5_message_to_text_bg_normal;
         }
         mask = getResources().getDrawable(mMaskSource);
         if (mException != null)

@@ -35,7 +35,7 @@
             android:ellipsize="middle"
             android:gravity="center"
             android:singleLine="true"
-            android:text="@string/kf5_area_list"
+            android:text="@string/kf5_category_list"
             android:textColor="@android:color/white"
             android:textSize="@dimen/kf5_text_xxh_size"/>
 
@@ -50,7 +50,7 @@
             android:layout_marginRight="@dimen/kf5_dimen_8dp"
             android:gravity="center"
             android:padding="@dimen/kf5_dimen_8dp"
-            android:text="@string/kf5_connect_us"
+            android:text="@string/kf5_contact_us"
             android:textColor="@drawable/kf5_text_bg"
             android:textSize="@dimen/kf5_text_xh_size"/>
     </RelativeLayout>

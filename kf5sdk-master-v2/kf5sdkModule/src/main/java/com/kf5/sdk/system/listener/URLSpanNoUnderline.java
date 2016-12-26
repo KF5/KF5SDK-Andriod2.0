@@ -58,7 +58,7 @@ public class URLSpanNoUnderline extends ClickableSpan {
             }
             //拨打电话
             if (url.startsWith(TEL)) {
-                new DialogBox(context).setMessage(context.getString(R.string.kf5_make_a_call))
+                new DialogBox(context).setMessage(context.getString(R.string.kf5_make_call_hint))
                         .setLeftButton(context.getString(R.string.kf5_cancel), null)
                         .setRightButton(context.getString(R.string.kf5_confirm), new DialogBox.onClickListener() {
 
@@ -69,7 +69,7 @@ public class URLSpanNoUnderline extends ClickableSpan {
                                 if (Utils.isIntentAvailable(context, intent))
                                     context.startActivity(intent);
                                 else
-                                    Toast.makeText(context, context.getString(R.string.kf5_no_app_filter), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, context.getString(R.string.kf5_no_file_found_hint), Toast.LENGTH_SHORT).show();
                             }
                         }).show();
 
@@ -77,7 +77,7 @@ public class URLSpanNoUnderline extends ClickableSpan {
             } else if (url.startsWith(MAIL_TO)) {
 
                 new DialogBox(context)
-                        .setMessage(context.getString(R.string.kf5_send_email))
+                        .setMessage(context.getString(R.string.kf5_send_email_hint))
                         .setLeftButton(context.getString(R.string.kf5_cancel), null)
                         .setRightButton(context.getString(R.string.kf5_confirm), new DialogBox.onClickListener() {
 
@@ -90,7 +90,7 @@ public class URLSpanNoUnderline extends ClickableSpan {
                                 if (Utils.isIntentAvailable(context, intent))
                                     context.startActivity(intent);
                                 else
-                                    Toast.makeText(context, context.getString(R.string.kf5_no_app_filter), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, context.getString(R.string.kf5_no_file_found_hint), Toast.LENGTH_SHORT).show();
 
                             }
                         }).show();
@@ -110,7 +110,7 @@ public class URLSpanNoUnderline extends ClickableSpan {
                 if (Utils.isIntentAvailable(context, intent))
                     context.startActivity(intent);
                 else
-                    Toast.makeText(context, context.getString(R.string.kf5_no_app_filter), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.kf5_no_file_found_hint), Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             e.printStackTrace();

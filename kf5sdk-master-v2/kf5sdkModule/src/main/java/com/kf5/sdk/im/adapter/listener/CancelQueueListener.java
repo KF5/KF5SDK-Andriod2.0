@@ -26,9 +26,9 @@ public class CancelQueueListener extends BaseClickListener {
         try {
             if (context instanceof BaseChatActivity) {
                 new DialogBox(context)
-                        .setMessage(context.getString(R.string.kf5_cancel_queue_and_feed_back))
+                        .setMessage(context.getString(R.string.kf5_cancel_queue_leave_message_hint))
                         .setLeftButton(context.getString(R.string.kf5_cancel), null)
-                        .setRightButton(context.getString(R.string.kf5_leaving_a_message), new DialogBox.onClickListener() {
+                        .setRightButton(context.getString(R.string.kf5_leave_message), new DialogBox.onClickListener() {
                             @Override
                             public void onClick(DialogBox dialog) {
                                 dialog.dismiss();

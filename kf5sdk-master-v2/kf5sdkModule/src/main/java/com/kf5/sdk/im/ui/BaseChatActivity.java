@@ -348,9 +348,9 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      */
     protected void showNoAgentOnlineReminderDialog() {
         new DialogBox(mActivity)
-                .setMessage(getString(R.string.kf5_no_agent_online_and_leaving_a_message))
+                .setMessage(getString(R.string.kf5_no_agent_online_leaving_message))
                 .setLeftButton(getString(R.string.kf5_cancel), null)
-                .setRightButton(getString(R.string.kf5_leaving_a_message), new DialogBox.onClickListener() {
+                .setRightButton(getString(R.string.kf5_leave_message), new DialogBox.onClickListener() {
                     @Override
                     public void onClick(DialogBox dialog) {
                         dialog.dismiss();

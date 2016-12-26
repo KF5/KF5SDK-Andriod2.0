@@ -152,7 +152,7 @@ public class ImageSelectorFragment extends Fragment {
 
 
         // 初始化，加载所有图片
-        mCategoryText.setText(R.string.kf5_folder_all);
+        mCategoryText.setText(R.string.kf5_photo_all);
         mCategoryText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -176,7 +176,7 @@ public class ImageSelectorFragment extends Fragment {
                                     //									mFolderPopupWindow.dismiss();
                                     if (index == 0) {
                                         getActivity().getSupportLoaderManager().restartLoader(LOADER_ALL, null, mLoaderCallback);
-                                        mCategoryText.setText(R.string.kf5_folder_all);
+                                        mCategoryText.setText(R.string.kf5_photo_all);
                                         if (mIsShowCamera) {
                                             mImageAdapter.setShowCamera(true);
                                         } else {
@@ -318,10 +318,10 @@ public class ImageSelectorFragment extends Fragment {
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mTmpFile));
                 startActivityForResult(cameraIntent, REQUEST_CAMERA);
             } else {
-                Toast.makeText(getActivity(), getString(R.string.kf5_wrong_with_image), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.kf5_image_error), Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(getActivity(), getResources().getString(R.string.kf5_msg_no_camera), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getResources().getString(R.string.kf5_no_camera_hint), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -342,7 +342,7 @@ public class ImageSelectorFragment extends Fragment {
                 } else {
                     // 判断选择数量问题
                     if (mDesireImageCount == resultList.size()) {
-                        Toast.makeText(getActivity(), getResources().getString(R.string.kf5_msg_amount_limit, String.valueOf(resultList.size())), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.kf5_photo_amount_limit_hint, String.valueOf(resultList.size())), Toast.LENGTH_SHORT).show();
                         return;
                     }
                     resultList.add(image.path);

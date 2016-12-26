@@ -56,7 +56,7 @@
                 android:layout_toStartOf="@+id/kf5_activity_feed_back_submit"
                 android:background="@drawable/kf5_edittext_bg"
                 android:focusable="false"
-                android:hint="@string/kf5_input_content"
+                android:hint="@string/kf5_editcontent_hint"
                 android:padding="@dimen/kf5_dimen_8dp"
                 android:singleLine="true"
                 android:textColor="@color/kf5_et_content_text_color"
@@ -121,7 +121,7 @@
         android:gravity="center"
         android:paddingBottom="@dimen/kf5_dimen_8dp"
         android:paddingTop="@dimen/kf5_dimen_8dp"
-        android:text="@string/kf5_order_closed"
+        android:text="@string/kf5_ticket_closed"
         android:textColor="#8b8b8b"
         android:textSize="@dimen/kf5_text_l_size"
         android:visibility="gone" />

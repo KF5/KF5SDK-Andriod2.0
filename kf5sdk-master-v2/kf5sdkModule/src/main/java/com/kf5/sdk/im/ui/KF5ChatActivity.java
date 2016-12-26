@@ -183,7 +183,7 @@ public class KF5ChatActivity extends BaseChatActivity {
         try {
             if (chat != null) {
                 String status = chat.getStatus();
-                setTitleContent(getString(R.string.kf5_get_agent_now));
+                setTitleContent(getString(R.string.kf5_allocating));
                 //如果状态为chatting,则直接开始聊天
                 if (TextUtils.equals(Field.CHATTING, status)) {
                     isAgentOnline = true;
@@ -303,7 +303,7 @@ public class KF5ChatActivity extends BaseChatActivity {
                     //其他操作
                 } else {
                     isAgentOnline = false;
-                    setTitleContent(getString(R.string.kf5_chat_is_ended));
+                    setTitleContent(getString(R.string.kf5_chat_ended));
                 }
                 removeQueueItemView();
             }
@@ -351,7 +351,7 @@ public class KF5ChatActivity extends BaseChatActivity {
             @Override
             public void run() {
                 refreshData();
-                mEditTextQueue.setText(R.string.kf5_agent_deal_with_your_problem_soon);
+                mEditTextQueue.setText(R.string.kf5_agent_handle_later_hint);
                 if (mEditTextQueue.isEnabled())
                     mEditTextQueue.setEnabled(false);
                 if (mXhsEmoticonsKeyBoard.getQueueSendView().isEnabled())
@@ -371,7 +371,7 @@ public class KF5ChatActivity extends BaseChatActivity {
             @Override
             public void run() {
                 if (resultCode == IMPresenter.RESULT_OK) {
-                    setTitleContent(getString(R.string.kf5_cancel_queue_successful));
+                    setTitleContent(getString(R.string.kf5_cancel_queue_successfully));
                     removeQueueItemView();
                     mEditTextQueue.setText("");
                     if (mEditTextQueue.isEnabled())
@@ -379,7 +379,7 @@ public class KF5ChatActivity extends BaseChatActivity {
                     if (mXhsEmoticonsKeyBoard.getQueueSendView().isEnabled())
                         mXhsEmoticonsKeyBoard.getQueueSendView().setEnabled(false);
                 } else {
-                    setTitleContent(getString(R.string.kf5_cancel_queue_failure));
+                    setTitleContent(getString(R.string.kf5_cancel_queue_failed));
                 }
             }
         });

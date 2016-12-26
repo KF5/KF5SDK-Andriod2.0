@@ -104,7 +104,7 @@ public class FeedBackActivity extends BaseActivity<TicketFeedBackPresenter, ITic
                 Intent intent = new Intent();
                 intent.setAction(TicketReceiver.TICKET_FILTER);
                 sendBroadcast(intent);
-                showToast(getString(R.string.kf5_create_ticket_success));
+                showToast(getString(R.string.kf5_create_ticket_successfully));
                 finish();
             }
         });
@@ -275,7 +275,7 @@ public class FeedBackActivity extends BaseActivity<TicketFeedBackPresenter, ITic
                                 }
                             }).show();
         } else {
-            showToast(getString(R.string.kf5_file_size_limit_6));
+            showToast(getString(R.string.kf5_file_limit_hint));
         }
     }
 

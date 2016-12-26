@@ -7,7 +7,7 @@
         android:drawableTop="@drawable/kf5_asy"
         android:drawablePadding="10dp"
         android:layout_gravity="center"
-        android:text="@string/kf5_tip_take_photo"
+        android:text="@string/kf5_action_take_photo"
         android:textSize="14sp"
         android:textColor="#CDCECE"
         android:gravity="center_horizontal"

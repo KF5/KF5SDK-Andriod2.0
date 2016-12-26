@@ -61,7 +61,7 @@ public class DialogManager {
 
             mIcon.setImageResource(R.drawable.kf5_recorder);
             if (TextUtils.isEmpty(restTime)) {
-                mLable.setText(R.string.kf5_up_to_cancel);
+                mLable.setText(R.string.kf5_slide_to_cancel);
             }else {
                 mLable.setText(restTime);
             }
@@ -80,7 +80,7 @@ public class DialogManager {
             mLable.setVisibility(View.VISIBLE);
 
             mIcon.setImageResource(R.drawable.kf5_voice_cancel);
-            mLable.setText(R.string.kf5_want_to_cancel);
+            mLable.setText(R.string.kf5_leave_to_cancel);
         }
 
     }
@@ -94,7 +94,7 @@ public class DialogManager {
             mLable.setVisibility(View.VISIBLE);
 
             mIcon.setImageResource(R.drawable.kf5_voice_to_short);
-            mLable.setText(R.string.kf5_voice_time_hort);
+            mLable.setText(R.string.kf5_voice_duration_short);
         }
 
     }

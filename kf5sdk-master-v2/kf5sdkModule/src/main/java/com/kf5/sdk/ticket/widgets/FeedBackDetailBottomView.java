@@ -221,7 +221,7 @@ public class FeedBackDetailBottomView extends FrameLayout implements FeedBackDet
                     listener.submitData();
                 }
             } else {
-                ToastUtil.showToast(getContext(), getContext().getString(R.string.kf5_input_content));
+                ToastUtil.showToast(getContext(), getContext().getString(R.string.kf5_editcontent_hint));
             }
         } else if (id == R.id.kf5_activity_feed_back_select_img) {
             dealSelectImage();
@@ -269,7 +269,7 @@ public class FeedBackDetailBottomView extends FrameLayout implements FeedBackDet
                                 }
                             }).show();
         } else {
-            ToastUtil.showToast(getContext(), getContext().getString(R.string.kf5_file_size_limit_6));
+            ToastUtil.showToast(getContext(), getContext().getString(R.string.kf5_file_limit_hint));
         }
     }
 
@@ -302,7 +302,7 @@ public class FeedBackDetailBottomView extends FrameLayout implements FeedBackDet
         public void onClick(View v) {
 
             new DialogBox(mContext)
-                    .setMessage(getContext().getString(R.string.kf5_delete_this_file))
+                    .setMessage(getContext().getString(R.string.kf5_delete_file_hint))
                     .setLeftButton(getContext().getString(R.string.kf5_cancel), null)
                     .setRightButton(getContext().getString(R.string.kf5_delete), new DialogBox.onClickListener() {
                         @Override

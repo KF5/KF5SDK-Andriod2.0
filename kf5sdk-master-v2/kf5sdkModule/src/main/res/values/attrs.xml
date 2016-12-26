@@ -26,4 +26,11 @@
         <item name="shadow_right">@drawable/kf5_shadow_right</item>
         <item name="shadow_bottom">@drawable/kf5_shadow_bottom</item>
     </style>
+
+    <declare-styleable name="MaskImage">
+        <attr name="maskSource" format="enum">
+            <enum name="left" value="0"/>
+            <enum name="right" value="1"/>
+        </attr>
+    </declare-styleable>
 </resources>

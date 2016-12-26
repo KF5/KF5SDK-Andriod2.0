@@ -34,7 +34,7 @@ public class MessageResendListener extends BaseClickListener {
     public void onClick(View v) {
         try {
             new DialogBox(context)
-                    .setMessage(context.getString(R.string.kf5_resend_this_msg))
+                    .setMessage(context.getString(R.string.kf5_resend_message_hint))
                     .setLeftButton(context.getString(R.string.kf5_cancel), null)
                     .setRightButton(context.getString(R.string.kf5_resend), new DialogBox.onClickListener() {
                         @Override

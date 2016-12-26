@@ -31,7 +31,7 @@ public class MessageTextLongListener extends BaseLongClickListener {
     public boolean onLongClick(View v) {
 
         try {
-            new DialogBox(context).setMessage(context.getString(R.string.kf5_bool_copy_text))
+            new DialogBox(context).setMessage(context.getString(R.string.kf5_copy_text_hint))
                     .setLeftButton(context.getString(R.string.kf5_cancel), null)
                     .setRightButton(context.getString(R.string.kf5_copy), new DialogBox.onClickListener() {
                         @Override

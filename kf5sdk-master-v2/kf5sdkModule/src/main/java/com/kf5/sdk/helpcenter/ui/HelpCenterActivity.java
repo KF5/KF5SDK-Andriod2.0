@@ -105,7 +105,7 @@ public class HelpCenterActivity extends BaseActivity<HelpCenterPresenter, IHelpC
         mHelpCenterAdapter = new HelpCenterAdapter(mActivity, listItem);
         mListView.setAdapter(mHelpCenterAdapter);
         mTitleView = (TextView) findViewById(R.id.kf5_title);
-        mTitleView.setText(R.string.kf5_document_partition);
+        mTitleView.setText(R.string.kf5_article_category);
         mRightView = (TextView) findViewById(R.id.kf5_right_text_view);
         mRightView.setOnClickListener(this);
         mTimer = new Timer();
@@ -203,7 +203,7 @@ public class HelpCenterActivity extends BaseActivity<HelpCenterPresenter, IHelpC
                     nextPage = 1;
                     presenter.searchDocument(HelpCenterRequestType.SEARCH);
                 } else {
-                    showToast(getString(R.string.kf5_key_can_not_be_null));
+                    showToast(getString(R.string.kf5_content_not_null));
                 }
             }
         }

@@ -160,7 +160,7 @@ public class HelpCenterTypeDetailsActivity extends BaseActivity<HelpCenterDetail
             if (Utils.isIntentAvailable(mActivity, intent))
                 startActivity(intent);
             else
-                showToast(getString(R.string.kf5_no_app_filter));
+                showToast(getString(R.string.kf5_no_file_found_hint));
             return true;
         }
     }

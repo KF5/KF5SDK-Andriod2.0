@@ -279,7 +279,7 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
         final Comment comment = mFeedBackDetailAdapter.getItem(i);
         if (comment.getMessageStatus() == MessageStatus.FAILED) {
             new DialogBox(mActivity)
-                    .setMessage(getString(R.string.kf5_resend_this_msg))
+                    .setMessage(getString(R.string.kf5_resend_message_hint))
                     .setLeftButton(getString(R.string.kf5_cancel), null)
                     .setRightButton(getString(R.string.kf5_resend), new DialogBox.onClickListener() {
                         @Override
