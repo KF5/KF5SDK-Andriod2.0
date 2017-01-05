@@ -17,6 +17,8 @@ import java.util.Map;
 
 public class HelpCenterHttpAPI extends BaseHttpManager {
 
+    private static final String FULL_SEARCH = "full_search";
+
     private HelpCenterHttpAPI() {
 
     }
@@ -82,8 +84,8 @@ public class HelpCenterHttpAPI extends BaseHttpManager {
      * @param callBack 请求回调
      */
     public void searchPost(Map<String, String> queryMap, HttpRequestCallBack callBack) {
+//        queryMap.put(FULL_SEARCH, "1"); //添加当前参数，将支持全文搜索
         sendGetRequest(KF5API.searchPost(SPUtils.getHelpAddress(), queryMap), queryMap, callBack);
     }
-
 
 }

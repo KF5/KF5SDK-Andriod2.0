@@ -1,15 +1,18 @@
 package com.kf5.sdk.ticket.ui;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,18 +36,20 @@ import com.kf5.sdk.ticket.entity.Requester;
 import com.kf5.sdk.ticket.mvp.presenter.TicketDetailPresenter;
 import com.kf5.sdk.ticket.mvp.usecase.TicketUseCaseManager;
 import com.kf5.sdk.ticket.mvp.view.ITicketDetailView;
+import com.kf5.sdk.ticket.receiver.RatingReceiver;
 import com.kf5.sdk.ticket.receiver.TicketReceiver;
 import com.kf5.sdk.ticket.widgets.FeedBackDetailBottomView;
 import com.kf5.sdk.ticket.widgets.api.FeedBackDetailBottomViewListener;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
 
 
-public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter, ITicketDetailView> implements ITicketDetailView, FeedBackDetailBottomViewListener, AbsListView.OnScrollListener, AdapterView.OnItemLongClickListener, View.OnClickListener {
+public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter, ITicketDetailView> implements ITicketDetailView, FeedBackDetailBottomViewListener, AbsListView.OnScrollListener, AdapterView.OnItemLongClickListener, View.OnClickListener, RatingReceiver.RatingListener {
 
     private int nextPage = 1;
 
@@ -74,6 +79,16 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
 
     private int commentPosition;
 
+    private LinearLayout mHeaderView;
+
+    private TextView mHeaderContent;
+
+    private String mRatingContent;
+
+    private int mRatingStatus;
+
+    private RatingReceiver mRatingReceiver;
+
 
     @Override
     protected void initWidgets() {
@@ -86,10 +101,18 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
         mListView = (ListView) findViewById(R.id.kf5_activity_feed_back_details_listview);
         mListView.setOnScrollListener(this);
         mListView.setOnItemLongClickListener(this);
+        mListView.addHeaderView(inflateHeaderView());
         mBackImg = (ImageView) findViewById(R.id.kf5_return_img);
         mBackImg.setOnClickListener(this);
         mRightView = (TextView) findViewById(R.id.kf5_right_text_view);
         mRightView.setOnClickListener(this);
+    }
+
+    private View inflateHeaderView() {
+        mHeaderView = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.kf5_rating_header, null);
+        mHeaderView.setOnClickListener(this);
+        mHeaderContent = (TextView) mHeaderView.findViewById(R.id.kf5_rating_status);
+        return mHeaderView;
     }
 
 
@@ -99,6 +122,11 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
         mHelper = new KF5SDKtoHelper(mActivity);
         mHelper.openDatabase();
         mListView.setAdapter(mFeedBackDetailAdapter = new FeedBackDetailAdapter(mActivity, mCommentList = new ArrayList<>()));
+        mRatingReceiver = new RatingReceiver();
+        mRatingReceiver.setRatingListener(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(RatingReceiver.RATING_FILTER);
+        registerReceiver(mRatingReceiver, intentFilter);
     }
 
     @Override
@@ -108,6 +136,7 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
             mHelper.close();
             mHelper = null;
         }
+        unregisterReceiver(mRatingReceiver);
     }
 
     public void setLayoutListener(BottomLayoutListener layoutListener) {
@@ -164,8 +193,24 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
             public void run() {
                 try {
                     mCommentList.addAll(commentList);
-                    if (requester != null && requester.getStatus() == 4)
-                        mFeedBackDetailBottomView.setTvReplaceVisible();
+                    if (requester != null) {
+                        if (requester.getStatus() == 4) {
+                            mFeedBackDetailBottomView.setTvReplaceVisible();
+                        }
+                        if (!requester.isRatingFlag()) {
+                            mListView.removeHeaderView(mHeaderView);
+                        } else {
+                            mHeaderView.setVisibility(View.VISIBLE);
+                        }
+                        if (requester.getRating() >= 1 && requester.getRating() <= 5) {
+                            List<String> mRatingList = Arrays.asList(getResources().getStringArray(R.array.kf5_rating_status));
+                            mHeaderContent.setText(mRatingList.get(requester.getRating() - 1));
+                            mHeaderContent.setBackgroundResource(R.drawable.kf5_rating_status_bg);
+                            mRatingStatus = requester.getRating();
+                        }
+                        mRatingContent = requester.getRatingContent();
+                    }
+
                     mFeedBackDetailAdapter.notifyDataSetChanged();
                     nextPage = _nextPage;
                 } catch (Exception e) {
@@ -318,7 +363,24 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
             Intent intent = new Intent(mActivity, OrderAttributeActivity.class);
             intent.putExtra(Field.ID, getTicketId());
             startActivity(intent);
+        } else if (id == R.id.kf5_rating_header) {
+            Intent intent = new Intent(mActivity, RatingActivity.class);
+            intent.putExtra(Field.ID, getTicketId());
+            intent.putExtra(Field.RATING, mRatingStatus);
+            intent.putExtra(Field.RATING_CONTENT, mRatingContent);
+            startActivity(intent);
         }
+    }
+
+    @Override
+    public void ratingSuccess(int rating, String content) {
+        if (rating >= 1 && rating <= 5) {
+            mRatingStatus = rating;
+            List<String> mRatingList = Arrays.asList(getResources().getStringArray(R.array.kf5_rating_status));
+            mHeaderContent.setText(mRatingList.get(mRatingStatus - 1));
+            mHeaderContent.setBackgroundResource(R.drawable.kf5_rating_status_bg);
+        }
+        mRatingContent = content;
     }
 
     public interface BottomLayoutListener {

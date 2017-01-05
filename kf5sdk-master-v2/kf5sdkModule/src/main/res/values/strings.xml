@@ -54,6 +54,16 @@
     <string name="kf5_feedback">反馈问题</string>
     <string name="kf5_remove">移除</string>
     <string name="kf5_create_ticket_successfully">创建成功</string>
+    <string name="kf5_rating_text">请为我们的服务打分：</string>
+    <string name="kf5_rating_placeholder">发表意见（选填）</string>
+    <string name="kf5_rate">满意度评价</string>
+    <string-array name="kf5_rating_status">
+        <item>不满意</item>
+        <item>不太满意</item>
+        <item>一般</item>
+        <item>满意</item>
+        <item>非常满意</item>
+    </string-array>
 
     <!--权限相关-->
     <string name="kf5_media_access_hint">访问您设备上的照片、媒体内容和文件</string>
@@ -116,5 +126,5 @@
     <string name="kf5_satisfied">满意</string>
     <string name="kf5_unsatisfied">不满意</string>
     <string name="kf5_reminder">温馨提示</string>
-
+    <string name="kf5_unknown_error">未知错误</string>
 </resources>

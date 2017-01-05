@@ -49,10 +49,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         etName = (EditText) findViewById(R.id.et_name);
         btnLogin = (Button) findViewById(R.id.login);
         btnLogin.setOnClickListener(this);
-        etEmail.setText("123456@qq.com");
-        etAddress.setText("chosen.kf5.com");
-        etAppid.setText("0015703278adb2883f1e71145ffa131ef6a8073e3ac7ec00");
-        etName.setText("Android 用户");
+
+       etEmail.setText("xxxx@qq.com");
+       etAddress.setText("xxxxx.kf5.com");
+       etAppid.setText("00155xxxxxxxxxx5f7aa7ed0999d7c6b6029");
+       etName.setText("Android 用户");
+
 
     }
 
@@ -113,6 +115,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             }
                         });
                     }
+
                     @Override
                     public void onFailure(String result) {
                         Log.i("kf5测试", "登录失败" + result);

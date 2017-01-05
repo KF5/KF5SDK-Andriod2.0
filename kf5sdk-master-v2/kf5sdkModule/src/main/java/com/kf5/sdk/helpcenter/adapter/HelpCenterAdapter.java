@@ -29,7 +29,7 @@ public class HelpCenterAdapter extends CommonAdapter<HelpCenterItem> {
         ViewHolder holder;
         if (view == null) {
             holder = new ViewHolder();
-            view = inflateLayout(R.layout.kf5_help_list_item);
+            view = inflateLayout(R.layout.kf5_help_list_item, viewGroup);
             holder.mTextView = findViewById(view, R.id.kf5_help_list_item_title);
             view.setTag(holder);
         } else

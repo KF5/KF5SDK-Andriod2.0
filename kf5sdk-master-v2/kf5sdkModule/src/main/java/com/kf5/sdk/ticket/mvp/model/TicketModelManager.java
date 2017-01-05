@@ -19,9 +19,11 @@ public class TicketModelManager {
     public static TicketAttributeModel provideTicketAttributeModel() {
         return new TicketAttributeModel();
     }
-
     public static TicketFeedBackModel provideTicketFeedBackModel() {
         return new TicketFeedBackModel();
+    }
+    public static RatingModel provideRatingModel() {
+        return new RatingModel();
     }
 
 }

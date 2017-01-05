@@ -31,7 +31,7 @@ public class ImageAdapter extends CommonAdapter<Attachment> {
 
         ViewHolder viewHolder;
         if (view == null) {
-            view = inflateLayout(R.layout.kf5_grid_view_item);
+            view = inflateLayout(R.layout.kf5_grid_view_item, viewGroup);
             viewHolder = new ViewHolder();
             viewHolder.imageView = findViewById(view, R.id.kf5_image_view);
             ViewGroup.LayoutParams layoutParams = viewHolder.imageView.getLayoutParams();
@@ -47,6 +47,7 @@ public class ImageAdapter extends CommonAdapter<Attachment> {
 
     private class ViewHolder {
         ImageView imageView;
+
         void bindData(Attachment attachment) {
             String[] strings = attachment.getName().split("\\.");
             if (Utils.isImage(strings[1])) {

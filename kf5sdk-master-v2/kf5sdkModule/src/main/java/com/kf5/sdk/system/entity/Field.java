@@ -45,6 +45,8 @@ public class Field {
 
     public static final String CHAT_UPLOAD = "chat.upload";
 
+    public static final String CHAT_URL = "chat_url";
+
     public static final String CHAT_MSG = "chat.msg";
 
 //    public static final String CHAT_AI = "chat.ai";
@@ -156,6 +158,10 @@ public class Field {
     public static final String UPDATED_AT = "updated_at";
 
     public static final String LAST_COMMENT_ID = "last_comment_id";
+
+    public static final String RATING_CONTENT = "rating_content";
+
+    public static final String RATING_FLAG = "rating_flag";
 
     public static final String CREATED_AT = "created_at";
 

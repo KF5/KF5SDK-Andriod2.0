@@ -1,252 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:divider="@drawable/divider"
+              android:orientation="vertical"
+              android:showDividers="middle">
 
-    <RelativeLayout
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_alignParentTop="true"
-        android:background="@color/kf5_title_bar_bg">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/kf5_title_bar_bg"
+        android:gravity="center"
+        android:text="@string/kf5_sdk_name"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/kf5_text_xh_size"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/kf5_sdk_name"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/kf5_text_xh_size" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/setting_help_center"
+    <TextView
+        android:id="@+id/tvHelpCenter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:background="@drawable/item_bg"
-        android:padding="12dp">
+        android:drawableEnd="@drawable/kf5_jump_icon"
+        android:drawableLeft="@mipmap/look_help_center"
+        android:drawablePadding="@dimen/kf5_dimen_12dp"
+        android:drawableRight="@drawable/kf5_jump_icon"
+        android:drawableStart="@mipmap/look_help_center"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:text="@string/help_center"
+        android:textColor="@color/person_info_title_color"
+        android:textSize="20sp"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@mipmap/look_help_center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="12dp"
-                android:layout_marginStart="12dp"
-                android:text="@string/help_center"
-                android:textColor="@color/person_info_title_color"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@null"
-            android:src="@drawable/kf5_jump_icon" />
-    </RelativeLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/kf5_table_deliver" />
-
-    <RelativeLayout
-        android:id="@+id/setting_feed_back"
+    <TextView
+        android:id="@+id/tvFeedBack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:background="@drawable/item_bg"
-        android:padding="12dp">
+        android:drawableEnd="@drawable/kf5_jump_icon"
+        android:drawableLeft="@mipmap/more_problems_feedback"
+        android:drawablePadding="@dimen/kf5_dimen_12dp"
+        android:drawableRight="@drawable/kf5_jump_icon"
+        android:drawableStart="@mipmap/more_problems_feedback"
+        android:gravity="center_vertical"
+        android:padding="@dimen/kf5_dimen_12dp"
+        android:text="@string/feed_back"
+        android:textColor="@color/person_info_title_color"
+        android:textSize="20sp"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@mipmap/more_problems_feedback" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="12dp"
-                android:layout_marginStart="12dp"
-                android:text="@string/feed_back"
-                android:textColor="@color/person_info_title_color"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@null"
-            android:src="@drawable/kf5_jump_icon" />
-    </RelativeLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/kf5_table_deliver" />
-
-    <RelativeLayout
-        android:id="@+id/setting_look_feed_back"
+    <TextView
+        android:id="@+id/tvLookFeedBack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:background="@drawable/item_bg"
-        android:padding="12dp">
+        android:drawableEnd="@drawable/kf5_jump_icon"
+        android:drawableLeft="@mipmap/look_feed_back"
+        android:drawablePadding="@dimen/kf5_dimen_12dp"
+        android:drawableRight="@drawable/kf5_jump_icon"
+        android:drawableStart="@mipmap/look_feed_back"
+        android:gravity="center_vertical"
+        android:padding="@dimen/kf5_dimen_12dp"
+        android:text="@string/look_feed_back"
+        android:textColor="@color/person_info_title_color"
+        android:textSize="20sp"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@mipmap/look_feed_back" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="12dp"
-                android:layout_marginStart="12dp"
-                android:text="@string/look_feed_back"
-                android:textColor="@color/person_info_title_color"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@null"
-            android:src="@drawable/kf5_jump_icon" />
-    </RelativeLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/kf5_table_deliver" />
-
-    <RelativeLayout
-        android:id="@+id/setting_chat"
+    <TextView
+        android:id="@+id/tvIM"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:background="@drawable/item_bg"
-        android:padding="12dp">
+        android:drawableEnd="@drawable/kf5_jump_icon"
+        android:drawableLeft="@mipmap/demo_chat"
+        android:drawablePadding="@dimen/kf5_dimen_12dp"
+        android:drawableRight="@drawable/kf5_jump_icon"
+        android:drawableStart="@mipmap/demo_chat"
+        android:gravity="center_vertical"
+        android:padding="@dimen/kf5_dimen_12dp"
+        android:text="@string/chat"
+        android:textColor="@color/person_info_title_color"
+        android:textSize="20sp"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:orientation="horizontal">
+    <!--<TextView-->
+        <!--android:id="@+id/tvSetting"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:background="@drawable/item_bg"-->
+        <!--android:drawableEnd="@drawable/kf5_jump_icon"-->
+        <!--android:drawableLeft="@mipmap/more_about_us"-->
+        <!--android:drawablePadding="@dimen/kf5_dimen_12dp"-->
+        <!--android:drawableRight="@drawable/kf5_jump_icon"-->
+        <!--android:drawableStart="@mipmap/more_about_us"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:padding="@dimen/kf5_dimen_12dp"-->
+        <!--android:text="@string/setting"-->
+        <!--android:textColor="@color/person_info_title_color"-->
+        <!--android:textSize="20sp"/>-->
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@mipmap/demo_chat" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="12dp"
-                android:layout_marginStart="12dp"
-                android:text="@string/chat"
-                android:textColor="@color/person_info_title_color"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@null"
-            android:src="@drawable/kf5_jump_icon" />
-    </RelativeLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/kf5_table_deliver" />
-
-    <RelativeLayout
-        android:id="@+id/setting_about_us"
+    <TextView
+        android:id="@+id/tvAboutUS"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:background="@drawable/item_bg"
-        android:padding="12dp">
+        android:drawableEnd="@drawable/kf5_jump_icon"
+        android:drawableLeft="@mipmap/more_about_us"
+        android:drawablePadding="@dimen/kf5_dimen_12dp"
+        android:drawableRight="@drawable/kf5_jump_icon"
+        android:drawableStart="@mipmap/more_about_us"
+        android:gravity="center_vertical"
+        android:padding="@dimen/kf5_dimen_12dp"
+        android:text="@string/about_us"
+        android:textColor="@color/person_info_title_color"
+        android:textSize="20sp"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@mipmap/more_about_us" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="12dp"
-                android:layout_marginStart="12dp"
-                android:text="@string/about_us"
-                android:textColor="@color/person_info_title_color"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@null"
-            android:src="@drawable/kf5_jump_icon" />
-    </RelativeLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/kf5_table_deliver" />
+    <View android:layout_width="match_parent"
+          android:layout_height="wrap_content"/>
 
 </LinearLayout>

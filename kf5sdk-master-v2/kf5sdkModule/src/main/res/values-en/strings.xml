@@ -54,9 +54,21 @@
     <string name="kf5_feedback">Feedback</string>
     <string name="kf5_remove">Remove</string>
     <string name="kf5_create_ticket_successfully">Feedback request submit successfully</string>
+    <string name="kf5_rating_text">Please rate our service:</string>
+    <string name="kf5_rating_placeholder">Comment (Optional)</string>
+    <string name="kf5_rate">Rating</string>
+    <string-array name="kf5_rating_status">
+        <item>Bad</item>
+        <item>Soso</item>
+        <item>OK</item>
+        <item>Good</item>
+        <item>Great</item>
+    </string-array>
+
 
     <!--权限相关-->
-    <string name="kf5_media_access_hint">Grant access to the photos/media and files on your device</string>
+    <string name="kf5_media_access_hint">Grant access to the photos/media and files on your device
+    </string>
     <string name="kf5_access_recording">Record voice</string>
     <string name="kf5_access_call">Make voice call</string>
     <string name="kf5_access_camera">Take photos and record videos</string>
@@ -65,13 +77,16 @@
     <string name="kf5_ai_to_agent">Agent</string>
     <string name="kf5_allocating">Transferring...</string>
     <string name="kf5_queue_waiting">Queue waiting...</string>
-    <string name="kf5_update_queue_num">You are in the %ld place of the queue</string>
+    <string name="kf5_update_queue_num">You are in the %1$d place of the queue</string>
     <string name="kf5_no_agent_online">No agent online</string>
     <string name="kf5_chat_ended">Chat is ended</string>
     <string name="kf5_cancel_queue_successfully">Queueing cancelled successfully</string>
     <string name="kf5_cancel_queue_failed">Queueing cancelled failed</string>
-    <string name="kf5_no_agent_online_leaving_message">No agent currently online,leave a message instead</string>
-    <string name="kf5_agent_handle_later_hint">An agent will handle your feedback request soon</string>
+    <string name="kf5_no_agent_online_leaving_message">No agent currently online,leave a message
+        instead
+    </string>
+    <string name="kf5_agent_handle_later_hint">An agent will handle your feedback request soon
+    </string>
 
     <string-array name="kf5_ticket_status">
         <item>New</item>
@@ -82,7 +97,8 @@
     </string-array>
 
 
-    <string name="kf5_cancel_queue_leave_message_hint">Cancel queue waiting and leave a message?</string>
+    <string name="kf5_cancel_queue_leave_message_hint">Cancel queue waiting and leave a message?
+    </string>
     <string name="kf5_leave_message">Leave a message</string>
     <string name="kf5_open">Open</string>
     <string name="kf5_open_file_hint">Open the file?</string>
@@ -116,4 +132,5 @@
     <string name="kf5_satisfied">Satisfied</string>
     <string name="kf5_unsatisfied">Unsatisfied</string>
     <string name="kf5_reminder">Reminder</string>
+    <string name="kf5_unknown_error">unknown error</string>
 </resources>

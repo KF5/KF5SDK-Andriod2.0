@@ -61,7 +61,7 @@ public class MessageServiceStub extends MessageManager.Stub {
                 }
                 try {
                     callback.onResult(code, result);
-                } catch (RemoteException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

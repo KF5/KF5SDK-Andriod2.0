@@ -33,6 +33,9 @@ class OkHttpManager {
                     sOkHttpClient = new OkHttpClient.Builder()
                             .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                             .connectTimeout(20, TimeUnit.SECONDS)
+                            .readTimeout(20, TimeUnit.SECONDS)
+                            .writeTimeout(20, TimeUnit.SECONDS)
+                            .retryOnConnectionFailure(true)
                             .addNetworkInterceptor(new HttpInterceptor(SPUtils.getUserAgent()))
                             .hostnameVerifier(new HostnameVerifier() {
                                 @Override
@@ -41,6 +44,7 @@ class OkHttpManager {
                                 }
                             })
                             .sslSocketFactory(TrustSSLContext.getSSLSocketFactory())
+
                             .build();
                 }
             }

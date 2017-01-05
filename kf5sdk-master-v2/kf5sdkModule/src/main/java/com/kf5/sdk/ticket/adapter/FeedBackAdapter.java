@@ -40,7 +40,7 @@ public class FeedBackAdapter extends CommonAdapter<Requester> {
 
         ViewHolder viewHolder;
         if (view == null) {
-            view = inflateLayout(R.layout.kf5_look_feed_back_listview_item);
+            view = inflateLayout(R.layout.kf5_look_feed_back_listview_item, viewGroup);
             viewHolder = new ViewHolder();
             viewHolder.mDate = findViewById(view, R.id.kf5_look_feed_back_listitem_date);
             viewHolder.mTitle = findViewById(view, R.id.kf5_look_feed_back_listitem_title);

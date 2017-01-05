@@ -9,40 +9,51 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application>
-        <activity android:name=".system.image.ImageSelectorActivity"
-                  android:theme="@style/KF5AppTheme">
+        <activity
+            android:name=".system.image.ImageSelectorActivity"
+            android:theme="@style/KF5AppTheme">
         </activity>
-        <activity android:name=".helpcenter.ui.HelpCenterActivity"
-                  android:theme="@style/KF5AppTheme">
+        <activity
+            android:name=".helpcenter.ui.HelpCenterActivity"
+            android:theme="@style/KF5AppTheme">
         </activity>
-        <activity android:name=".helpcenter.ui.HelpCenterTypeActivity"
-                  android:theme="@style/KF5AppTheme">
+        <activity
+            android:name=".helpcenter.ui.HelpCenterTypeActivity"
+            android:theme="@style/KF5AppTheme">
         </activity>
-        <activity android:name=".helpcenter.ui.HelpCenterTypeDetailsActivity"
-                  android:theme="@style/KF5AppTheme">
+        <activity
+            android:name=".helpcenter.ui.HelpCenterTypeDetailsActivity"
+            android:theme="@style/KF5AppTheme">
         </activity>
-        <activity android:name=".helpcenter.ui.HelpCenterTypeChildActivity"
-                  android:theme="@style/KF5AppTheme">
+        <activity
+            android:name=".helpcenter.ui.HelpCenterTypeChildActivity"
+            android:theme="@style/KF5AppTheme">
         </activity>
-        <activity android:name=".ticket.ui.LookFeedBackActivity"
-                  android:theme="@style/KF5AppTheme">
+        <activity
+            android:name=".ticket.ui.LookFeedBackActivity"
+            android:theme="@style/KF5AppTheme">
         </activity>
-        <activity android:name=".ticket.ui.FeedBackDetailsActivity"
-                  android:theme="@style/KF5AppTheme">
+        <activity
+            android:name=".ticket.ui.FeedBackDetailsActivity"
+            android:theme="@style/KF5AppTheme">
         </activity>
-        <activity android:name=".system.ui.ImageActivity"
-                  android:theme="@style/KF5AppTheme">
+        <activity
+            android:name=".system.ui.ImageActivity"
+            android:theme="@style/KF5AppTheme">
         </activity>
-        <activity android:name=".ticket.ui.OrderAttributeActivity"
-                  android:theme="@style/KF5AppTheme">
+        <activity
+            android:name=".ticket.ui.OrderAttributeActivity"
+            android:theme="@style/KF5AppTheme">
         </activity>
-        <activity android:name=".ticket.ui.FeedBackActivity"
-                  android:theme="@style/KF5AppTheme">
+        <activity
+            android:name=".ticket.ui.FeedBackActivity"
+            android:theme="@style/KF5AppTheme">
         </activity>
-        <activity android:name=".im.ui.KF5ChatActivity"
-                  android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
-                  android:screenOrientation="portrait"
-                  android:theme="@style/KF5AppTheme">
+        <activity
+            android:name=".im.ui.KF5ChatActivity"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/KF5AppTheme">
         </activity>
 
         <service
@@ -54,6 +65,9 @@
             </intent-filter>
         </service>
 
+        <activity android:name=".ticket.ui.RatingActivity"
+                  android:theme="@style/KF5AppTheme"
+        />
     </application>
 
 </manifest>

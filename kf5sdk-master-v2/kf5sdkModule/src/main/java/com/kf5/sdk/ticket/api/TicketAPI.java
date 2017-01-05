@@ -97,4 +97,15 @@ public final class TicketAPI extends BaseHttpManager {
         upload(KF5API.uploadTicketAttachment(SPUtils.getHelpAddress()), filedMap, fileList, callBack);
     }
 
+
+    /**
+     * 满意度评价
+     *
+     * @param fieldMap 评价参数
+     * @param callBack 请求回调
+     */
+    public void rating(Map<String, String> fieldMap, HttpRequestCallBack callBack) {
+        sendPostRequest(KF5API.rating(SPUtils.getHelpAddress()), fieldMap, callBack);
+    }
+
 }

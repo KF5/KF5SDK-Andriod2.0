@@ -650,9 +650,14 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                 @Override
                 public void onResult(int code, String result) throws RemoteException {
                     JSONObject jsonObject = JSONObject.parseObject(result);
+                    Log.i("KF5测试", "收到了客服的信息" + jsonObject.toString() + "====" + code);
                     if (code != RESULT_OK) {
                         String message = jsonObject.getString(Field.MESSAGE);
-                        getMvpView().setTitleContent(message);
+                        if (jsonObject.containsKey(Field.ERROR) && jsonObject.getInteger(Field.ERROR) == 1001) {
+                            getMvpView().setTitleContent(getMvpView().getContext().getString(R.string.kf5_no_agent_online));
+                        } else {
+                            getMvpView().setTitleContent(message);
+                        }
                         getMvpView().showIMView();
                     } else {
                         getMvpView().onGetAgentResult(code, result);

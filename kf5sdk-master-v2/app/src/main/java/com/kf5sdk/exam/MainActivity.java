@@ -111,17 +111,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initKF5SDK() {
         SPUtils.clearSP();
         final KF5User kf5User = new KF5User();
-//        kf5User.appid = "00155f5851e24de5079262dda41816a9cd253e165ef799cf";
-//        kf5User.email = "2016@qq.com";
-//        kf5User.helpAddress = "joymay.kf5.com";
 
-//        kf5User.appid = "00155f5851e24de5079262dda41816a9cd253e165ef799cf";
-//        kf5User.email = "2016@qq.com";
-//        kf5User.helpAddress = "joymay.kf5.com";
 
-        kf5User.appid = "0015703278adb2883f1e71145ffa131ef6a8073e3ac7ec00";
-        kf5User.email = "12346@qq.com";
-        kf5User.helpAddress = "chosen.kf5.com";
+        kf5User.appid = "001570f2c8a049396xxxxxxxxxxxxxxec320d0b35";
+        kf5User.email = "2xxxxx@qq.com";
+        kf5User.helpAddress = "xxxxx.kf5.com";
         kf5User.userAgent = Utils.getAgent(new SoftReference<Context>(MainActivity.this));
         Map<String, String> map = new ArrayMap<>();
         map.put(Field.EMAIL, kf5User.email);

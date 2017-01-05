@@ -125,6 +125,13 @@ public class LookFeedBackActivity extends BaseActivity<TicketListPresenter, ITic
         presenter.getTicketList();
     }
 
+
+    @Override
+    public void showError(int resultCode, String msg) {
+        super.showError(resultCode, msg);
+        showToast(msg);
+    }
+
     @Override
     public Map<String, String> getCustomMap() {
         Map<String, String> map = new ArrayMap<>();

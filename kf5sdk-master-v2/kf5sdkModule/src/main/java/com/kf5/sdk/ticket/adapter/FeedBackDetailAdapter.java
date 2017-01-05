@@ -38,7 +38,7 @@ public class FeedBackDetailAdapter extends CommonAdapter<Comment> {
         ViewHolder holder;
 
         if (view == null) {
-            view = inflateLayout(R.layout.kf5_feed_back_detail_item);
+            view = inflateLayout(R.layout.kf5_feed_back_detail_item, viewGroup);
             holder = new ViewHolder();
             holder.tvContent = findViewById(view, R.id.kf5_feed_back_detail_content);
             holder.tvDate = findViewById(view, R.id.kf5_feed_back_detail_date);

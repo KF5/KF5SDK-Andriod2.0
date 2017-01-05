@@ -55,8 +55,8 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
         return (T) convertView.findViewById(id);
     }
 
-    protected View inflateLayout(int layoutId) {
-        return mLayoutInflater.inflate(layoutId, null, false);
+    protected View inflateLayout(int layoutId, ViewGroup container) {
+        return mLayoutInflater.inflate(layoutId, container, false);
     }
 
 }

@@ -14,6 +14,9 @@ import java.util.Map;
 
 public interface IChatModel {
 
-    void uploadAttachment(Map<String ,String> fieldMap , List<File> fileList , HttpRequestCallBack callBack);
+    void uploadAttachment(Map<String, String> fieldMap, List<File> fileList, HttpRequestCallBack callBack);
+
+
+//    void initSystem(HttpRequestCallBack callBack);
 
 }

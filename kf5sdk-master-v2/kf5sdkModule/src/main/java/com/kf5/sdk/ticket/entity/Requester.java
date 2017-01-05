@@ -53,6 +53,36 @@ public class Requester implements Serializable {
     private int updated_at;
     @SerializedName(Field.LAST_COMMENT_ID)
     private int last_comment_id;
+    @SerializedName(Field.RATING)
+    private int rating;
+    @SerializedName(Field.RATING_CONTENT)
+    private String ratingContent;
+    @SerializedName(Field.RATING_FLAG)
+    private boolean ratingFlag;
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public String getRatingContent() {
+        return ratingContent;
+    }
+
+    public void setRatingContent(String ratingContent) {
+        this.ratingContent = ratingContent;
+    }
+
+    public boolean isRatingFlag() {
+        return ratingFlag;
+    }
+
+    public void setRatingFlag(boolean ratingFlag) {
+        this.ratingFlag = ratingFlag;
+    }
 
     public int getLast_comment_id() {
         return last_comment_id;

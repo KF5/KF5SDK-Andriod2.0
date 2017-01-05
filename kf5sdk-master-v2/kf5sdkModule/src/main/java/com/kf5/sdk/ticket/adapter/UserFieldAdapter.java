@@ -30,7 +30,7 @@ public class UserFieldAdapter extends CommonAdapter<UserField> {
 
         if (view == null) {
             viewHolder = new ViewHolder();
-            view = inflateLayout(R.layout.kf5_user_field_item);
+            view = inflateLayout(R.layout.kf5_user_field_item, viewGroup);
             viewHolder.mName = findViewById(view, R.id.kf5_user_field_name);
             viewHolder.mValue = findViewById(view, R.id.kf5_user_field_value);
             view.setTag(viewHolder);

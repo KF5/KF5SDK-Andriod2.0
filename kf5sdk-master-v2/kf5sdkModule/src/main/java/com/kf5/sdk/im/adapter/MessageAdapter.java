@@ -109,7 +109,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
         DefaultHolder holder;
         if (convertView == null) {
             holder = new DefaultHolder();
-            convertView = inflateLayout(R.layout.kf5_message_with_default);
+            convertView = inflateLayout(R.layout.kf5_message_with_default, parent);
             convertView.setTag(holder);
         } else {
             holder = (DefaultHolder) convertView.getTag();
@@ -132,7 +132,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         FileReceiveHolder holder = null;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_text_left);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_text_left, parent);
             holder = new FileReceiveHolder(convertView);
         } else {
             holder = (FileReceiveHolder) convertView.getTag();
@@ -155,7 +155,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         FileSendHolder holder = null;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_text_right);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_text_right,parent);
             holder = new FileSendHolder(convertView);
         } else {
             holder = (FileSendHolder) convertView.getTag();
@@ -179,7 +179,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         VoiceReceiveHolder holder = null;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_voice_left);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_voice_left,parent);
             holder = new VoiceReceiveHolder(convertView);
         } else {
             holder = (VoiceReceiveHolder) convertView.getTag();
@@ -203,7 +203,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         VoiceSendHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_voice_right);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_voice_right,parent);
             holder = new VoiceSendHolder(convertView);
         } else {
             holder = (VoiceSendHolder) convertView.getTag();
@@ -228,7 +228,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         final ImageReceiveHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_image_left);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_image_left,parent);
             holder = new ImageReceiveHolder(convertView);
         } else {
             holder = (ImageReceiveHolder) convertView.getTag();
@@ -251,7 +251,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         final ImageSendHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_image_right);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_image_right,parent);
             holder = new ImageSendHolder(convertView);
         } else {
             holder = (ImageSendHolder) convertView.getTag();
@@ -274,7 +274,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         TextReceiveHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_text_left);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_text_left,parent);
             holder = new TextReceiveHolder(convertView);
         } else {
             holder = (TextReceiveHolder) convertView.getTag();
@@ -295,7 +295,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         AIMessageReceiveHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_text_left);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_text_left,parent);
             holder = new AIMessageReceiveHolder(convertView);
         } else {
             holder = (AIMessageReceiveHolder) convertView.getTag();
@@ -315,7 +315,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         AIMessageSendHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_text_right);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_text_right,parent);
             holder = new AIMessageSendHolder(convertView);
         } else {
             holder = (AIMessageSendHolder) convertView.getTag();
@@ -338,7 +338,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         TextSendHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_text_right);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_text_right,parent);
             holder = new TextSendHolder(convertView);
         } else {
             holder = (TextSendHolder) convertView.getTag();
@@ -352,7 +352,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         SystemHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_system);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_system,parent);
             holder = new SystemHolder(convertView);
         } else {
             holder = (SystemHolder) convertView.getTag();
@@ -365,7 +365,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         QueueHolder queueHolder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_queue);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_queue,parent);
             queueHolder = new QueueHolder(convertView);
         } else {
             queueHolder = (QueueHolder) convertView.getTag();

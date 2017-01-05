@@ -18,8 +18,8 @@ import android.support.v7.app.AlertDialog;
 
 import com.kf5.sdk.R;
 import com.kf5.sdk.system.image.ImageSelectorActivity;
-import com.kf5.sdk.system.mvp.view.MvpView;
 import com.kf5.sdk.system.mvp.presenter.Presenter;
+import com.kf5.sdk.system.mvp.view.MvpView;
 import com.kf5.sdk.system.permission.EasyPermissions;
 import com.kf5.sdk.system.swipeback.BaseSwipeBackActivity;
 import com.kf5.sdk.system.utils.DialogHandler;
@@ -155,8 +155,13 @@ public abstract class BaseActivity<P extends Presenter<V>, V extends MvpView> ex
         }
     }
 
-    protected void showToast(String content) {
-        ToastUtil.showToast(mActivity, content);
+    protected void showToast(final String content) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtil.showToast(mActivity, content);
+            }
+        });
     }
 
     protected void initWidgets() {

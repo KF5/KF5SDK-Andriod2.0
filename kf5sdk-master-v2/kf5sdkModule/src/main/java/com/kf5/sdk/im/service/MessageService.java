@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.kf5Engine.service.BaseService;
 import com.kf5Engine.service.api.ActionCallBack;
@@ -25,14 +24,12 @@ public class MessageService extends BaseService {
     public void onCreate() {
         super.onCreate();
         mMessageServiceStub = new MessageServiceStub(this);
-        Log.i("=====", "服务创建");
     }
 
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.i("====", "服务绑定");
         return mMessageServiceStub;
     }
 

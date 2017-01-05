@@ -27,6 +27,8 @@ public class SPUtils {
 
     private static final String SDK_TITLE = "ticket_title";
 
+    private static final String CHAT_URL = "chat_url";
+
     private static SPUtils sSPUtils;
 
     private static SharedPreferences mSharedPreferences;
@@ -76,6 +78,14 @@ public class SPUtils {
 
     public static String getHelpAddress() {
         return mSharedPreferences.getString(HELP_ADDRESS, "");
+    }
+
+    public static void saveChatUrl(String chat_url) {
+        mSharedPreferences.edit().putString(CHAT_URL, chat_url).apply();
+    }
+
+    public static String getChatUrl() {
+        return mSharedPreferences.getString(CHAT_URL, "");
     }
 
     public static void clearSP() {

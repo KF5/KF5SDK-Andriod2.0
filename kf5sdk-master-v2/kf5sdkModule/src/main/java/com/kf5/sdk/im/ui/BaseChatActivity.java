@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.support.v4.util.ArrayMap;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.kf5.sdk.R;
 import com.kf5.sdk.im.adapter.MessageAdapter;
@@ -34,8 +34,11 @@ import com.kf5.sdk.im.mvp.usecase.IMCaseManager;
 import com.kf5.sdk.im.mvp.view.IIMView;
 import com.kf5.sdk.im.widget.AudioRecordButton;
 import com.kf5.sdk.im.widget.RatingDialog;
+import com.kf5.sdk.system.api.KF5SystemAPI;
 import com.kf5.sdk.system.base.BaseActivity;
+import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.image.ImageSelectorActivity;
+import com.kf5.sdk.system.internet.HttpRequestCallBack;
 import com.kf5.sdk.system.mvp.presenter.PresenterFactory;
 import com.kf5.sdk.system.mvp.presenter.PresenterLoader;
 import com.kf5.sdk.system.utils.ImageLoaderManager;
@@ -99,6 +102,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
 
     protected boolean isAgentOnline = false;
 
+
     @Override
     public Loader<IMPresenter> onCreateLoader(int id, Bundle args) {
         return new PresenterLoader<>(this, new PresenterFactory<IMPresenter>() {
@@ -144,9 +148,39 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
     @Override
     public void onLoadFinished(Loader<IMPresenter> loader, IMPresenter data) {
         super.onLoadFinished(loader, data);
-        dbMessageCount = presenter.getDBMessageCount();
-        presenter.connectIPC();
 
+        showDialog = true;
+        showLoading(null);
+        dbMessageCount = presenter.getDBMessageCount();
+        KF5SystemAPI.getInstance().systemInit(new HttpRequestCallBack() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    JSONObject jsonObject = JSONObject.parseObject(result);
+                    if (jsonObject.containsKey(Field.CHAT_URL)) {
+                        String url = jsonObject.getString(Field.CHAT_URL);
+                        SPUtils.saveChatUrl(url);
+                        presenter.connectIPC();
+                    } else if (jsonObject.containsKey(Field.MESSAGE)) {
+                        hideLoading();
+                        showToast(jsonObject.getString(Field.MESSAGE));
+                    } else {
+                        hideLoading();
+                        showToast(getString(R.string.kf5_unknown_error));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    hideLoading();
+                    showToast(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(String result) {
+                hideLoading();
+                showToast(result);
+            }
+        });
     }
 
     @Override
@@ -190,8 +224,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
     }
 
     private void bindConnect() {
-        showDialog = true;
-        showLoading(null);
+
         refreshListAndNotifyData(presenter.getLastMessages(dbMessageCount));
         Bundle bundle = new Bundle();
         Map<String, String> map = new ArrayMap<>();
@@ -200,10 +233,8 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         map.put("token", SPUtils.getUserToken());
         map.put("version", "2.0");
         map.put("uuid", Utils.getUUID(mActivity));
-        Log.i(Utils.KF5_TAG, Utils.getUUID(mActivity));
-        bundle.putString("url", com.kf5.sdk.im.utils.Utils.getMapAppend(map));
-//        bundle.putString("url", "kchatid=C703990A8F9000019C6318CEB4B018C7&kf5_user_id=6225840&appid=0015703278adb2883f1e71145ffa131ef6a8073e3ac7ec00&version=1.4&uuid=android-00000000-2d8e-6e5b-ffff-ffff99d603a9");
-//        bundle.putString("url", "kchatid=C695421D7CD00001F425FC106F308E70&kf5_user_id=6546858&appid=00155f5851e24de5079262dda41816a9cd253e165ef799cf&version=1.4&uuid=android-00000000-2d8e-6e5b-ffff-ffff99d603a9");
+        bundle.putString("query", com.kf5.sdk.im.utils.Utils.getMapAppend(map));
+        bundle.putString("url", SPUtils.getChatUrl());
         presenter.initParams(bundle);
         presenter.connect();
     }

@@ -26,4 +26,8 @@ public class TicketUseCaseManager {
         return new TicketFeedBackCase(TicketModelManager.provideTicketFeedBackModel());
     }
 
+    public static RatingCase provideRatingCase() {
+        return new RatingCase(TicketModelManager.provideRatingModel());
+    }
+
 }

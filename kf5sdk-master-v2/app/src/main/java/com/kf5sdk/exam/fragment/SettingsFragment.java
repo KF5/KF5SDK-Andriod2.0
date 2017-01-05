@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.kf5.sdk.helpcenter.ui.HelpCenterActivity;
 import com.kf5.sdk.im.ui.KF5ChatActivity;
@@ -25,7 +25,7 @@ import com.kf5sdk.exam.R;
 public class SettingsFragment extends Fragment implements View.OnClickListener {
 
 
-    private RelativeLayout layoutHelpCenter, layoutFeedBack, layoutLookFeedBack, layoutAboutUs, layoutChat;
+    private TextView layoutHelpCenter, layoutFeedBack, layoutLookFeedBack, layoutAboutUs, layoutChat;
 
     private View view;
 
@@ -43,15 +43,15 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initWidgets() {
-        layoutAboutUs = (RelativeLayout) view.findViewById(R.id.setting_about_us);
+        layoutAboutUs = (TextView) view.findViewById(R.id.tvAboutUS);
         layoutAboutUs.setOnClickListener(this);
-        layoutFeedBack = (RelativeLayout) view.findViewById(R.id.setting_feed_back);
+        layoutFeedBack = (TextView) view.findViewById(R.id.tvFeedBack);
         layoutFeedBack.setOnClickListener(this);
-        layoutHelpCenter = (RelativeLayout) view.findViewById(R.id.setting_help_center);
+        layoutHelpCenter = (TextView) view.findViewById(R.id.tvHelpCenter);
         layoutHelpCenter.setOnClickListener(this);
-        layoutLookFeedBack = (RelativeLayout) view.findViewById(R.id.setting_look_feed_back);
+        layoutLookFeedBack = (TextView) view.findViewById(R.id.tvLookFeedBack);
         layoutLookFeedBack.setOnClickListener(this);
-        layoutChat = (RelativeLayout) view.findViewById(R.id.setting_chat);
+        layoutChat = (TextView) view.findViewById(R.id.tvIM);
         layoutChat.setOnClickListener(this);
     }
 
@@ -64,26 +64,26 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         // TODO Auto-generated method stub
         switch (v.getId()) {
-            case R.id.setting_about_us:
+            case R.id.tvAboutUS:
 
                 startActivity(new Intent(getActivity(), AboutUsActivity.class));
 
                 break;
-            case R.id.setting_feed_back:
+            case R.id.tvFeedBack:
 
                 startActivity(new Intent(getContext(), FeedBackActivity.class));
                 break;
 
-            case R.id.setting_help_center:
+            case R.id.tvHelpCenter:
                 startActivity(new Intent(getContext(), HelpCenterActivity.class));
 
                 break;
-            case R.id.setting_look_feed_back:
+            case R.id.tvLookFeedBack:
 
                 startActivity(new Intent(getContext(), LookFeedBackActivity.class));
 
                 break;
-            case R.id.setting_chat:
+            case R.id.tvIM:
                 startActivity(new Intent(getContext(), KF5ChatActivity.class));
                 break;
             default:
