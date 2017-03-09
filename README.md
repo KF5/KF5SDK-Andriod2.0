@@ -49,6 +49,5 @@ _4.SDK现在支持滑动后退，并且默认开启，关闭则在BaseSwipeBackA
  v2.0中依赖的第三方库有
  ```Java
 compile 'com.google.code.gson:gson:2.7'
-compile 'com.alibaba:fastjson:1.2.18'
 compile 'com.github.bumptech.glide:glide:3.7.0
  ```
