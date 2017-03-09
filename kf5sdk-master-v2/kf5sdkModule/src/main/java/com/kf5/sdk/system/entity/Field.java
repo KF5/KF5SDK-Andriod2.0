@@ -109,11 +109,13 @@ public class Field {
 
     public static final String USERNAME = "userName";
 
-    public static final String DEVICETOKENS = "deviceTokens";
+    public static final String DEVICE_TOKEN = "deviceToken";
 
     public static final String ERROR = "error";
 
     public static final String MESSAGE = "message";
+
+    public static final String MESSAGE_ID = "message_id";
 
     public static final String ID = "id";
 
@@ -179,5 +181,17 @@ public class Field {
 
     public static final String REQUESTS = "requests";
 
+    public static final String TYPE = "type";
+
+    public static final String ANDROID = "ANDROID";
+
     public static final String TICKET_FIELD = "ticket_field";
+
+    public static final String AGENT_IDS = "agent_ids";
+
+    public static final String FORCE = "force";
+
+    public static final String AGENT_ASSIGN_FAIL = "agent.assign.fail";
+
+    public static final String EVENT = "event";
 }

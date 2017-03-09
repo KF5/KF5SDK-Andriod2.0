@@ -1,6 +1,7 @@
 package com.kf5.sdk.helpcenter.api;
 
 
+import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.internet.BaseHttpManager;
 import com.kf5.sdk.system.internet.HttpRequestCallBack;
 import com.kf5.sdk.system.utils.SPUtils;
@@ -42,6 +43,7 @@ public class HelpCenterHttpAPI extends BaseHttpManager {
      * @param callBack 请求回调
      */
     public void getCategoriesList(Map<String, String> queryMap, HttpRequestCallBack callBack) {
+        queryMap.put(Field.USERTOKEN, SPUtils.getUserToken());
         sendGetRequest(KF5API.getCategoriesList(SPUtils.getHelpAddress(), queryMap), queryMap, callBack);
     }
 
@@ -52,6 +54,7 @@ public class HelpCenterHttpAPI extends BaseHttpManager {
      * @param callBack 回调接口
      */
     public void getForumsList(Map<String, String> queryMap, HttpRequestCallBack callBack) {
+        queryMap.put(Field.USERTOKEN, SPUtils.getUserToken());
         sendGetRequest(KF5API.getForumsList(SPUtils.getHelpAddress(), queryMap), queryMap, callBack);
     }
 
@@ -64,6 +67,7 @@ public class HelpCenterHttpAPI extends BaseHttpManager {
      * @param callBack 请求回调
      */
     public void getPostList(Map<String, String> queryMap, HttpRequestCallBack callBack) {
+        queryMap.put(Field.USERTOKEN, SPUtils.getUserToken());
         sendGetRequest(KF5API.getPostList(SPUtils.getHelpAddress(), queryMap), queryMap, callBack);
     }
 
@@ -74,6 +78,7 @@ public class HelpCenterHttpAPI extends BaseHttpManager {
      * @param callBack 请求回调
      */
     public void viewPost(Map<String, String> queryMap, HttpRequestCallBack callBack) {
+        queryMap.put(Field.USERTOKEN, SPUtils.getUserToken());
         sendGetRequest(KF5API.viewPost(SPUtils.getHelpAddress(), queryMap), queryMap, callBack);
     }
 
@@ -85,6 +90,7 @@ public class HelpCenterHttpAPI extends BaseHttpManager {
      */
     public void searchPost(Map<String, String> queryMap, HttpRequestCallBack callBack) {
 //        queryMap.put(FULL_SEARCH, "1"); //添加当前参数，将支持全文搜索
+        queryMap.put(Field.USERTOKEN, SPUtils.getUserToken());
         sendGetRequest(KF5API.searchPost(SPUtils.getHelpAddress(), queryMap), queryMap, callBack);
     }
 

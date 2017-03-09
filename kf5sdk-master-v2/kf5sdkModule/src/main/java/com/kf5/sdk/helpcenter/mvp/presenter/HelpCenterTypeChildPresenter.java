@@ -2,20 +2,14 @@ package com.kf5.sdk.helpcenter.mvp.presenter;
 
 import android.support.v4.util.ArrayMap;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.kf5.sdk.helpcenter.entity.HelpCenterItem;
 import com.kf5.sdk.helpcenter.entity.HelpCenterRequestType;
 import com.kf5.sdk.helpcenter.mvp.usecase.HelpCenterTypeChildCase;
+import com.kf5.sdk.helpcenter.mvp.view.IHelpCenterBaseView;
 import com.kf5.sdk.helpcenter.mvp.view.IHelpCenterTypeChildView;
 import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.mvp.presenter.BasePresenter;
 import com.kf5.sdk.system.mvp.usecase.BaseUseCase;
-import com.kf5.sdk.system.utils.GsonManager;
-import com.kf5.sdk.system.utils.SafeJson;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,7 +33,7 @@ public class HelpCenterTypeChildPresenter extends BasePresenter<IHelpCenterTypeC
         map.put(Field.FORUM_ID, String.valueOf(getMvpView().getPostId()));
         map.putAll(getMvpView().getCustomMap());
         HelpCenterTypeChildCase.RequestCase requestCase = new HelpCenterTypeChildCase.RequestCase(helpCenterRequestType, map);
-        dealData(requestCase, Field.POSTS);
+        dealData(requestCase);
     }
 
     @Override
@@ -48,10 +42,10 @@ public class HelpCenterTypeChildPresenter extends BasePresenter<IHelpCenterTypeC
         map.put(Field.QUERY, getMvpView().getSearchKey());
         map.putAll(getMvpView().getCustomMap());
         HelpCenterTypeChildCase.RequestCase requestCase = new HelpCenterTypeChildCase.RequestCase(helpCenterRequestType, map);
-        dealData(requestCase, Field.POSTS);
+        dealData(requestCase);
     }
 
-    private void dealData(HelpCenterTypeChildCase.RequestCase requestCase, final String filedKey) {
+    private void dealData(HelpCenterTypeChildCase.RequestCase requestCase) {
 
         checkViewAttached();
         getMvpView().showLoading("");
@@ -63,21 +57,7 @@ public class HelpCenterTypeChildPresenter extends BasePresenter<IHelpCenterTypeC
                 if (isViewAttached()) {
                     getMvpView().hideLoading();
                     try {
-                        JSONObject jsonObject = SafeJson.parseObj(response.result);
-                        int resultCode = SafeJson.safeInt(jsonObject, Field.ERROR);
-                        if (resultCode == RESULT_OK) {
-                            JSONObject dataObj = SafeJson.safeObject(jsonObject, Field.DATA);
-                            JSONArray jsonArray = SafeJson.safeArray(dataObj, filedKey);
-                            List<HelpCenterItem> list = new ArrayList<>();
-                            int nextPage = SafeJson.safeInt(jsonObject, Field.NEXT_PAGE);
-                            if (jsonArray != null) {
-                                list.addAll(GsonManager.getInstance().getHelpCenterItemList(jsonArray.toString()));
-                            }
-                            getMvpView().onLoadPostList(nextPage, list);
-                        } else {
-                            String message = SafeJson.safeGet(jsonObject, Field.MESSAGE);
-                            getMvpView().showError(resultCode, message);
-                        }
+                        IHelpCenterBaseView.HelpCenterDataBuilder.dealPostList(response.result, getMvpView());
                     } catch (Exception e) {
                         e.printStackTrace();
                         getMvpView().showError(RESULT_ERROR, e.getMessage());

@@ -1,7 +1,6 @@
 package com.kf5.sdk.im.adapter;
 
 import android.graphics.Color;
-import android.text.util.Linkify;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -50,7 +49,7 @@ class AIMessageSendHolder extends BaseContext {
 
         try {
             ImageLoaderManager.getInstance(context).displayImage(R.drawable.kf5_end_user, headImg);
-            CustomTextView.stripUnderlines(context, contentText, message.getMessage(), Linkify.ALL);
+            CustomTextView.setTextWithAIMessage(context, contentText, message.getMessage());
             contentText.setOnLongClickListener(new MessageTextLongListener(context, message, position));
             if (message.getStatus() == Status.SENDING) {
                 progressBar.setVisibility(View.VISIBLE);
@@ -80,7 +79,6 @@ class AIMessageSendHolder extends BaseContext {
             }
 
         } catch (Exception e) {
-            // TODO: handle exception
             e.printStackTrace();
         }
 

@@ -1,10 +1,9 @@
 package com.kf5.sdk.system.utils;
 
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
-
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * author:chosen
@@ -15,13 +14,18 @@ import com.alibaba.fastjson.JSONObject;
 public class SafeJson {
 
 
-    public static JSONObject parseObj(String jsonString){
-        return JSONObject.parseObject(jsonString);
+    public static JSONObject parseObj(String jsonString) {
+        try {
+            return new JSONObject(jsonString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static String safeGet(JSONObject object, String field) {
 
-        if (object != null && object.containsKey(field)) {
+        if (object != null && object.has(field)) {
             try {
                 return object.getString(field);
             } catch (JSONException e) {
@@ -34,7 +38,7 @@ public class SafeJson {
 
     public static JSONObject safeObject(JSONObject object, String fledsString) {
 
-        if (object != null && object.containsKey(fledsString)) {
+        if (object != null && object.has(fledsString)) {
             try {
                 return object.getJSONObject(fledsString);
             } catch (JSONException e) {
@@ -46,7 +50,7 @@ public class SafeJson {
     }
 
     public static JSONArray safeArray(JSONObject object, String field) {
-        if (object != null && object.containsKey(field)) {
+        if (object != null && object.has(field)) {
             try {
                 return object.getJSONArray(field);
             } catch (JSONException e) {
@@ -59,7 +63,7 @@ public class SafeJson {
     }
 
     public static Float safeFloat(JSONObject object, String field) {
-        if (object != null && object.containsKey(field)) {
+        if (object != null && object.has(field)) {
             try {
                 return Float.parseFloat(object.getString(field));
             } catch (NumberFormatException e) {
@@ -73,7 +77,7 @@ public class SafeJson {
     }
 
     public static Integer safeInt(JSONObject object, String field) {
-        if (object != null && object.containsKey(field)) {
+        if (object != null && object.has(field)) {
             try {
                 return Integer.parseInt(object.getString(field));
             } catch (NumberFormatException e) {
@@ -86,7 +90,7 @@ public class SafeJson {
     }
 
     public static Long safeLong(JSONObject object, String field) {
-        if (object != null && object.containsKey(field)) {
+        if (object != null && object.has(field)) {
             try {
                 return Long.parseLong(object.getString(field));
             } catch (NumberFormatException e) {
@@ -99,7 +103,7 @@ public class SafeJson {
     }
 
     public static Boolean safeBoolean(JSONObject object, String field) {
-        if (object != null && object.containsKey(field)) {
+        if (object != null && object.has(field)) {
             try {
                 return Boolean.parseBoolean(object.getString(field));
             } catch (JSONException e) {

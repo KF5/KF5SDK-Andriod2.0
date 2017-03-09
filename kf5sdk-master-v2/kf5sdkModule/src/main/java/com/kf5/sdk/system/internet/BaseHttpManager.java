@@ -3,6 +3,7 @@ package com.kf5.sdk.system.internet;
 
 import android.support.v4.util.ArrayMap;
 
+import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.utils.SPUtils;
 import com.kf5Engine.okhttp.Call;
 import com.kf5Engine.okhttp.Callback;
@@ -40,6 +41,7 @@ public abstract class BaseHttpManager {
      * @param callBack
      */
     protected void sendPostRequest(String url, Map<String, String> map, HttpRequestCallBack callBack) {
+        map.put(Field.USERTOKEN, SPUtils.getUserToken());
         Param[] paramsArr = map2Params(map);
         Request request = buildPostRequest(url, paramsArr, map);
         deliveryResult(request, callBack);
@@ -66,7 +68,7 @@ public abstract class BaseHttpManager {
      * @param callBack 回调
      */
     protected void upload(String url, Map<String, String> map, List<File> fileList, HttpRequestCallBack callBack) {
-
+        map.put(Field.USERTOKEN, SPUtils.getUserToken());
         Param[] params = map2Params(map);
         params = validateParam(params);
         MultipartBody.Builder builder = new MultipartBody.Builder();
@@ -100,6 +102,7 @@ public abstract class BaseHttpManager {
      * @param callBack
      */
     protected void uploadIMAttachment(String url, Map<String, String> map, List<File> fileList, HttpRequestCallBack callBack) {
+        map.put(Field.USERTOKEN, SPUtils.getUserToken());
         Param[] params = map2Params(map);
         params = validateParam(params);
         MultipartBody.Builder builder = new MultipartBody.Builder();

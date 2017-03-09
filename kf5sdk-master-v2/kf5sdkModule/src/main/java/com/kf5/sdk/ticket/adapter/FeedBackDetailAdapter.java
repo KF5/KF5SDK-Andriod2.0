@@ -36,7 +36,6 @@ public class FeedBackDetailAdapter extends CommonAdapter<Comment> {
     public View getView(int position, View view, ViewGroup viewGroup) {
 
         ViewHolder holder;
-
         if (view == null) {
             view = inflateLayout(R.layout.kf5_feed_back_detail_item, viewGroup);
             holder = new ViewHolder();

@@ -1,5 +1,6 @@
 package com.kf5.sdk.ticket.api;
 
+import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.internet.BaseHttpManager;
 import com.kf5.sdk.system.internet.HttpRequestCallBack;
 import com.kf5.sdk.system.utils.SPUtils;
@@ -42,6 +43,7 @@ public final class TicketAPI extends BaseHttpManager {
      * @param callBack 请求回调
      */
     public void getTicketList(Map<String, String> queryMap, HttpRequestCallBack callBack) {
+        queryMap.put(Field.USERTOKEN, SPUtils.getUserToken());
         sendGetRequest(KF5API.getTicketList(SPUtils.getHelpAddress(), queryMap), queryMap, callBack);
     }
 
@@ -52,6 +54,7 @@ public final class TicketAPI extends BaseHttpManager {
      * @param callBack 请求回调
      */
     public void getTicketDetail(Map<String, String> queryMap, HttpRequestCallBack callBack) {
+        queryMap.put(Field.USERTOKEN, SPUtils.getUserToken());
         sendGetRequest(KF5API.getTicketDetail(SPUtils.getHelpAddress(), queryMap), queryMap, callBack);
     }
 
@@ -63,6 +66,7 @@ public final class TicketAPI extends BaseHttpManager {
      * @param callBack 请求回调
      */
     public void updateTicket(Map<String, String> fieldMap, HttpRequestCallBack callBack) {
+
         sendPostRequest(KF5API.updateTicket(SPUtils.getHelpAddress()), fieldMap, callBack);
     }
 
@@ -73,6 +77,7 @@ public final class TicketAPI extends BaseHttpManager {
      * @param callBack 请求回调
      */
     public void getTicketAttribute(Map<String, String> queryMap, HttpRequestCallBack callBack) {
+        queryMap.put(Field.USERTOKEN, SPUtils.getUserToken());
         sendGetRequest(KF5API.getTicketAttribute(SPUtils.getHelpAddress(), queryMap), queryMap, callBack);
     }
 

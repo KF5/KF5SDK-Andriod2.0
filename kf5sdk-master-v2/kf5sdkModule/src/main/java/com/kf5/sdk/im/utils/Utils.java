@@ -4,10 +4,11 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.utils.SafeJson;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -68,7 +69,7 @@ public class Utils {
         StringBuilder stringBuilder = new StringBuilder();
         String content = null;
         try {
-            jsonObject = JSONObject.parseObject(message);
+            jsonObject = SafeJson.parseObj(message);
             content = SafeJson.safeGet(jsonObject, Field.CONTENT);
             if (content.contains("{{") && content.contains("}}")) {
                 content = content.replaceAll("\\{\\{", "<a href=\"" + Field.GET_AGENT + "\">");
@@ -77,7 +78,7 @@ public class Utils {
             stringBuilder.append(content);
             JSONArray jsonArray = SafeJson.safeArray(jsonObject, Field.DOCUMENTS);
             if (jsonArray != null) {
-                int size = jsonArray.size();
+                int size = jsonArray.length();
                 if (size > 0) {
                     stringBuilder.append("<br/>");
                 }

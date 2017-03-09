@@ -1,6 +1,7 @@
 package com.kf5.sdk.im.adapter;
 
 import android.graphics.Color;
+import android.text.util.Linkify;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -11,9 +12,9 @@ import com.kf5.sdk.im.adapter.listener.MessageResendListener;
 import com.kf5.sdk.im.adapter.listener.MessageTextLongListener;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.entity.Status;
-import com.kf5.sdk.im.expression.utils.ExpressionCommonUtils;
 import com.kf5.sdk.im.widget.CircleImageView;
 import com.kf5.sdk.system.base.BaseContext;
+import com.kf5.sdk.system.utils.CustomTextView;
 import com.kf5.sdk.system.utils.ImageLoaderManager;
 import com.kf5.sdk.system.utils.Utils;
 
@@ -50,8 +51,8 @@ class TextSendHolder extends BaseContext {
 
         try {
             ImageLoaderManager.getInstance(context).displayImage(R.drawable.kf5_end_user, headImg);
-//            CustomTextView.stripUnderlines(context, contentText, message.getMessage(), Linkify.ALL);
-            ExpressionCommonUtils.spannableEmoticonFilter(contentText, message.getMessage());
+            CustomTextView.stripUnderlines(context, contentText, message.getMessage(), Linkify.ALL);
+//            ExpressionCommonUtils.spannableEmoticonFilter(contentText, message.getMessage());
             contentText.setOnLongClickListener(new MessageTextLongListener(context, message, position));
             if (message.getStatus() == Status.SENDING) {
                 progressBar.setVisibility(View.VISIBLE);

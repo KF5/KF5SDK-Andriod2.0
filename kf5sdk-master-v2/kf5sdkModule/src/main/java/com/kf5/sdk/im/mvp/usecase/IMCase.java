@@ -3,10 +3,8 @@ package com.kf5.sdk.im.mvp.usecase;
 import android.support.v4.util.ArrayMap;
 
 import com.kf5.sdk.im.mvp.model.api.IChatModel;
-import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.internet.HttpRequestCallBack;
 import com.kf5.sdk.system.mvp.usecase.BaseUseCase;
-import com.kf5.sdk.system.utils.SPUtils;
 
 import java.io.File;
 import java.util.List;
@@ -34,7 +32,6 @@ public class IMCase extends BaseUseCase<IMCase.RequestCase, IMCase.ResponseValue
     @Override
     public void executeUseCase(RequestCase requestValues) {
         Map<String, String> map = new ArrayMap<>();
-        map.put(Field.USERTOKEN, SPUtils.getUserToken());
         mIChatModel.uploadAttachment(map, requestValues.mFileList, new HttpRequestCallBack() {
             @Override
             public void onSuccess(String result) {

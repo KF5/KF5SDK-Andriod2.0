@@ -1,8 +1,5 @@
 package com.kf5.sdk.helpcenter.entity;
 
-import com.google.gson.annotations.SerializedName;
-import com.kf5.sdk.system.entity.Field;
-
 /**
  * author:chosen
  * date:2016/10/19 10:52
@@ -11,11 +8,13 @@ import com.kf5.sdk.system.entity.Field;
 
 public class HelpCenterItem {
 
-    @SerializedName(Field.ID)
     private int id;
 
-    @SerializedName(Field.TITLE)
     private String title;
+
+    private String content;
+
+    private int sort;
 
     public int getId() {
         return id;
@@ -31,5 +30,21 @@ public class HelpCenterItem {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
     }
 }

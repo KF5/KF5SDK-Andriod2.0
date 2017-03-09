@@ -14,6 +14,7 @@ import com.kf5.sdk.R;
 import com.kf5.sdk.helpcenter.ui.HelpCenterTypeDetailsActivity;
 import com.kf5.sdk.im.ui.BaseChatActivity;
 import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.utils.CustomTextView;
 import com.kf5.sdk.system.utils.Utils;
 import com.kf5.sdk.system.widget.DialogBox;
 
@@ -52,7 +53,7 @@ public class AIURLSpan extends ClickableSpan {
                 //超链接
             } else if (Patterns.WEB_URL.matcher(url).matches()) {
                 Intent intent = new Intent();
-                Uri uri = Uri.parse(url);
+                Uri uri = Uri.parse(CustomTextView.makeWebUrl(url));
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.setData(uri);
                 if (Utils.isIntentAvailable(context, intent))
@@ -67,7 +68,6 @@ public class AIURLSpan extends ClickableSpan {
 
                             @Override
                             public void onClick(DialogBox dialog) {
-                                // TODO Auto-generated method stub
                                 dialog.dismiss();
                                 Intent intent = new Intent(Intent.ACTION_SEND);
                                 intent.setData(Uri.parse(url));
@@ -80,11 +80,12 @@ public class AIURLSpan extends ClickableSpan {
                         }).show();
             } else {
                 Intent intent = new Intent(context, HelpCenterTypeDetailsActivity.class);
-                intent.putExtra(Field.ID, url);
+                intent.putExtra(Field.ID, Integer.parseInt(url));
                 context.startActivity(intent);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }

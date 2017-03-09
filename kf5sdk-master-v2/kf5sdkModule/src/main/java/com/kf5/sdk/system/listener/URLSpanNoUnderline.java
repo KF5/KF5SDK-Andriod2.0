@@ -6,12 +6,14 @@ import android.net.Uri;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 
 import com.kf5.sdk.R;
 import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.ui.ImageActivity;
+import com.kf5.sdk.system.utils.CustomTextView;
 import com.kf5.sdk.system.utils.Utils;
 import com.kf5.sdk.system.widget.DialogBox;
 
@@ -103,6 +105,9 @@ public class URLSpanNoUnderline extends ClickableSpan {
                 intent.putStringArrayListExtra(Field.EXTRA_IMAGE_URLS, list);
                 context.startActivity(intent);
             } else {
+                if (Patterns.WEB_URL.matcher(url).matches()) {
+                    url = CustomTextView.makeWebUrl(url);
+                }
                 Intent intent = new Intent();
                 Uri uri = Uri.parse(url);
                 intent.setAction(Intent.ACTION_VIEW);
@@ -116,6 +121,7 @@ public class URLSpanNoUnderline extends ClickableSpan {
             e.printStackTrace();
         }
     }
+
 
 }
 

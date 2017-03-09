@@ -2,17 +2,17 @@ package com.kf5.sdk.ticket.mvp.presenter;
 
 import android.support.v4.util.ArrayMap;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.kf5.sdk.helpcenter.entity.Attachment;
 import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.entity.Result;
 import com.kf5.sdk.system.mvp.presenter.BasePresenter;
 import com.kf5.sdk.system.mvp.usecase.BaseUseCase;
-import com.kf5.sdk.system.utils.GsonManager;
-import com.kf5.sdk.system.utils.SPUtils;
-import com.kf5.sdk.system.utils.SafeJson;
+import com.kf5.sdk.ticket.entity.AttachmentsObj;
+import com.kf5.sdk.ticket.entity.RequesterObj;
 import com.kf5.sdk.ticket.mvp.usecase.TicketFeedBackCase;
 import com.kf5.sdk.ticket.mvp.view.ITicketFeedBackView;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,6 @@ public class TicketFeedBackPresenter extends BasePresenter<ITicketFeedBackView> 
         checkViewAttached();
         getMvpView().showLoading("");
         Map<String, String> map = new ArrayMap<>();
-        map.put(Field.USERTOKEN, SPUtils.getUserToken());
         map.putAll(getMvpView().getDataMap());
         if (uploadMap != null)
             map.putAll(uploadMap);
@@ -49,13 +48,14 @@ public class TicketFeedBackPresenter extends BasePresenter<ITicketFeedBackView> 
                 if (isViewAttached()) {
                     getMvpView().hideLoading();
                     try {
-                        JSONObject jsonObject = JSONObject.parseObject(response.result);
-                        int resultCode = SafeJson.safeInt(jsonObject, Field.ERROR);
-                        if (resultCode == RESULT_OK) {
-                            getMvpView().createTicketSuccess();
-                        } else {
-                            String message = SafeJson.safeGet(jsonObject, Field.MESSAGE);
-                            getMvpView().showError(resultCode, message);
+                        Result<RequesterObj> result = Result.fromJson(response.result, RequesterObj.class);
+                        if (result != null) {
+                            int resultCode = result.getCode();
+                            if (resultCode == RESULT_OK) {
+                                getMvpView().createTicketSuccess();
+                            } else {
+                                getMvpView().showError(resultCode, result.getMessage());
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -80,7 +80,6 @@ public class TicketFeedBackPresenter extends BasePresenter<ITicketFeedBackView> 
         checkViewAttached();
         getMvpView().showLoading("");
         Map<String, String> map = new ArrayMap<>();
-        map.put(Field.USERTOKEN, SPUtils.getUserToken());
         final TicketFeedBackCase.RequestCase requestCase = new TicketFeedBackCase.RequestCase(map, getMvpView().getUploadFileList(), TicketFeedBackCase.RequestType.UPLOAD_ATTACHMENT);
         mTicketFeedBackCase.setRequestValues(requestCase);
         mTicketFeedBackCase.setUseCaseCallBack(new BaseUseCase.UseCaseCallBack<TicketFeedBackCase.ResponseValue>() {
@@ -89,23 +88,28 @@ public class TicketFeedBackPresenter extends BasePresenter<ITicketFeedBackView> 
                 if (isViewAttached()) {
                     getMvpView().hideLoading();
                     try {
-                        JSONObject jsonObject = JSONObject.parseObject(response.result);
-                        int resultCode = SafeJson.safeInt(jsonObject, Field.ERROR);
-                        if (resultCode == RESULT_OK) {
-                            JSONObject dataObj = SafeJson.safeObject(jsonObject, Field.DATA);
-                            JSONArray attachmentArray = SafeJson.safeArray(dataObj, Field.ATTACHMENTS);
-                            List<Attachment> list = new ArrayList<>();
-                            if (attachmentArray != null)
-                                list.addAll(GsonManager.getInstance().getAttachmentList(attachmentArray.toString()));
-                            Map<String, String> dataMap = new ArrayMap<>();
-                            JSONArray jsonArray = new JSONArray();
-                            for (int i = 0; i < list.size(); i++)
-                                jsonArray.add(i, list.get(i).getToken());
-                            dataMap.put(Field.UPLOADS, jsonArray.toString());
-                            getMvpView().loadUploadData(dataMap);
-                        } else {
-                            String message = SafeJson.safeGet(jsonObject, Field.MESSAGE);
-                            getMvpView().showError(resultCode, message);
+                        Result<AttachmentsObj> result = Result.fromJson(response.result, AttachmentsObj.class);
+                        if (result != null) {
+                            int resultCode = result.getCode();
+                            if (resultCode == RESULT_OK) {
+                                AttachmentsObj attachmentsObj = result.getData();
+                                List<Attachment> attachments = new ArrayList<>();
+                                if (attachmentsObj != null) {
+                                    List<Attachment> list = attachmentsObj.getAttachments();
+                                    if (list != null) {
+                                        attachments.addAll(list);
+                                    }
+                                }
+                                Map<String, String> dataMap = new ArrayMap<>();
+                                JSONArray jsonArray = new JSONArray();
+                                for (int i = 0; i < attachments.size(); i++) {
+                                    jsonArray.put(i, attachments.get(i).getToken());
+                                }
+                                dataMap.put(Field.UPLOADS, jsonArray.toString());
+                                getMvpView().loadUploadData(dataMap);
+                            } else {
+                                getMvpView().showError(resultCode, result.getMessage());
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

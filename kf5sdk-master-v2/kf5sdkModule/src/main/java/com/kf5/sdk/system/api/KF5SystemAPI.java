@@ -41,7 +41,8 @@ public class KF5SystemAPI extends BaseHttpManager {
      */
     public void systemInit(HttpRequestCallBack callBack) {
         Map<String, String> map = new ArrayMap<>();
-        sendGetRequest(KF5API.systemInit(SPUtils.getHelpAddress()), map, callBack);
+//        sendGetRequest(KF5API.systemInit(SPUtils.getHelpAddress()), map, callBack);
+        sendPostRequest(KF5API.systemInit(SPUtils.getHelpAddress()), map, callBack);
     }
 
 }

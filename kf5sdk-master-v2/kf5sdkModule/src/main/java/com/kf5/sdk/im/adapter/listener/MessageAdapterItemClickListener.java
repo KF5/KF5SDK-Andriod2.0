@@ -1,5 +1,6 @@
 package com.kf5.sdk.im.adapter.listener;
 
+import android.text.TextUtils;
 import android.view.View;
 
 import com.kf5.sdk.im.entity.IMMessage;
@@ -40,6 +41,8 @@ public class MessageAdapterItemClickListener implements View.OnClickListener {
                 File file = new File(FilePath.SAVE_RECORDER + upload.getName());
                 if (file.exists()) {
                     VoicePlayListener.getInstance().startPlay(file.getAbsolutePath());
+                } else if (!TextUtils.isEmpty(url)) {
+                    VoicePlayListener.getInstance().startPlay(url);
                 }
             }
         } catch (Exception e) {

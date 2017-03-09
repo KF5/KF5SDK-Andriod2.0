@@ -1,8 +1,9 @@
 package com.kf5.sdk.im.service.params;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static com.kf5.sdk.system.entity.Field.CHAT_UPLOAD;
 
@@ -58,6 +59,8 @@ public class SocketParams {
 
     private static final String METADATA = "metadata";
 
+    private static final String TIMESTAMP = "timestamp";
+
 
     public static String getSettingParams() {
 
@@ -73,30 +76,23 @@ public class SocketParams {
     /**
      * 分配客服
      *
-     * @param ids
+     * @param agentArray
      * @param force
      * @return
      */
-    public static String getAgentsAssignParams(int[] ids, boolean force) {
+    public static String getAgentsAssignParams(String agentArray, int force) {
 
         JSONObject obj1 = new JSONObject();
         try {
             obj1.put(ACTION, ASSIGN_AGENT);
             JSONObject queryObj = new JSONObject();
-            if (ids != null) {
-                JSONArray jsonArray = new JSONArray();
-                for (int i = 0; i < ids.length; i++) {
-                    jsonArray.add(ids[i]);
-                }
-                queryObj.put(AGENT_IDS, jsonArray);
-            }
+            queryObj.put(AGENT_IDS, agentArray);
             queryObj.put(FORCE, force);
             obj1.put(PARAMS, queryObj);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
         return obj1.toString();
     }
 
@@ -132,7 +128,7 @@ public class SocketParams {
     /*
     * 获取发送消息时的必要参数
     */
-    public static String getSendMessagesParams(String content) {
+    public static String getSendMessagesParams(String content, String timeStamp) {
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -140,7 +136,7 @@ public class SocketParams {
             JSONObject bodyObj = new JSONObject();
             bodyObj.put(TYPE, CHAT_MSG);
             bodyObj.put(MSG, content);
-//            bodyObj.put(V, tag);
+            bodyObj.put(TIMESTAMP, timeStamp);
             jsonObject.put(PARAMS, bodyObj);
         } catch (JSONException e) {
             // TODO Auto-generated catch block
@@ -156,7 +152,7 @@ public class SocketParams {
      * @param token
      * @return
      */
-    public static String getUploadParams(String token) {
+    public static String getUploadParams(String token, String timeStamp) {
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -164,9 +160,8 @@ public class SocketParams {
             JSONObject paramObj = new JSONObject();
             paramObj.put(TYPE, CHAT_UPLOAD);
             paramObj.put(UPLOAD_TOKEN, token);
+            paramObj.put(TIMESTAMP, timeStamp);
             jsonObject.put(PARAMS, paramObj);
-//            paramObj.put(V, tag);
-
         } catch (Exception e) {
             // TODO: handle exception
         }
@@ -205,7 +200,7 @@ public class SocketParams {
             jsonObject.put(ACTION, AI_MESSAGE);
             JSONObject paramsObj = new JSONObject();
             paramsObj.put(MSG, msg);
-            paramsObj.put(V, tag);
+            paramsObj.put(TIMESTAMP, tag);
             jsonObject.put(PARAMS, paramsObj);
         } catch (JSONException e) {
             e.printStackTrace();

@@ -2,15 +2,13 @@ package com.kf5.sdk.helpcenter.mvp.presenter;
 
 import android.support.v4.util.ArrayMap;
 
-import com.alibaba.fastjson.JSONObject;
-import com.kf5.sdk.helpcenter.entity.Post;
+import com.kf5.sdk.helpcenter.entity.HelpCenterDetail;
 import com.kf5.sdk.helpcenter.mvp.usecase.HelpCenterDetailCase;
 import com.kf5.sdk.helpcenter.mvp.view.IHelpCenterDetailView;
 import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.entity.Result;
 import com.kf5.sdk.system.mvp.presenter.BasePresenter;
 import com.kf5.sdk.system.mvp.usecase.BaseUseCase;
-import com.kf5.sdk.system.utils.GsonManager;
-import com.kf5.sdk.system.utils.SafeJson;
 
 import java.util.Map;
 
@@ -42,15 +40,16 @@ public class HelpCenterDetailPresenter extends BasePresenter<IHelpCenterDetailVi
                 if (isViewAttached()) {
                     getMvpView().hideLoading();
                     try {
-                        JSONObject jsonObject = SafeJson.parseObj(response.result);
-                        int resultCode = SafeJson.safeInt(jsonObject, Field.ERROR);
-                        if (resultCode == RESULT_OK) {
-                            JSONObject dataObj = SafeJson.safeObject(jsonObject, Field.DATA);
-                            JSONObject postObj = SafeJson.safeObject(dataObj, Field.POST);
-                            getMvpView().onLoadResult(GsonManager.getInstance().buildEntity(Post.class, postObj.toString()));
-                        } else {
-                            String message = SafeJson.safeGet(jsonObject, Field.MESSAGE);
-                            getMvpView().showError(resultCode, message);
+                        Result<HelpCenterDetail> result = Result.fromJson(response.result, HelpCenterDetail.class);
+                        if (result != null) {
+                            int resultCode = result.getCode();
+                            if (resultCode == RESULT_OK) {
+                                if (result.getData() != null && result.getData().getPost() != null) {
+                                    getMvpView().onLoadResult(result.getData().getPost());
+                                }
+                            } else {
+                                getMvpView().showError(resultCode, result.getMessage());
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -389,10 +389,14 @@ public class SwipeBackLayout extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         mInLayout = true;
-        if (mContentView != null)
-            mContentView.layout(mContentLeft, mContentTop,
-                    mContentLeft + mContentView.getMeasuredWidth(),
-                    mContentTop + mContentView.getMeasuredHeight());
+        try {
+            if (mContentView != null)
+                mContentView.layout(mContentLeft, mContentTop,
+                        mContentLeft + mContentView.getMeasuredWidth(),
+                        mContentTop + mContentView.getMeasuredHeight());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mInLayout = false;
     }
 

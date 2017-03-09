@@ -210,7 +210,6 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
                         }
                         mRatingContent = requester.getRatingContent();
                     }
-
                     mFeedBackDetailAdapter.notifyDataSetChanged();
                     nextPage = _nextPage;
                 } catch (Exception e) {

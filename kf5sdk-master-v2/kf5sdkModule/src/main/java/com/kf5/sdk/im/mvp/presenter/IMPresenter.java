@@ -11,8 +11,6 @@ import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.kf5.im.aidl.ConnectionCallBack;
 import com.kf5.im.aidl.IPCCallBack;
 import com.kf5.im.aidl.MessageManager;
@@ -24,6 +22,7 @@ import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.entity.IMMessageManager;
 import com.kf5.sdk.im.entity.MessageType;
 import com.kf5.sdk.im.entity.Status;
+import com.kf5.sdk.im.entity.TimeOut;
 import com.kf5.sdk.im.entity.Upload;
 import com.kf5.sdk.im.mvp.usecase.IMCase;
 import com.kf5.sdk.im.mvp.view.IIMView;
@@ -33,11 +32,14 @@ import com.kf5.sdk.im.service.params.SocketParams;
 import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.mvp.presenter.BasePresenter;
 import com.kf5.sdk.system.mvp.usecase.BaseUseCase;
-import com.kf5.sdk.system.utils.FilePath;
 import com.kf5.sdk.system.utils.GsonManager;
-import com.kf5.sdk.system.utils.MD5Utils;
+import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.SafeJson;
 import com.kf5.sdk.system.utils.Utils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -81,6 +83,14 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
     private Map<String, Timer> mTimerMap = new ArrayMap<>();
 
     private static final int THIRTY_SECONDS = 30 * 1000, ONE_MINUTE = 60 * 1000;
+
+    private boolean timeOutEnable;
+
+    private String timeOutMsg;
+
+    private int timeOutSeconds;
+
+    private Timer mTimer;
 
     public IMPresenter(IMCase imCase) {
         mIMCase = imCase;
@@ -156,6 +166,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
     public void disconnectIPC() {
         try {
             removeAllTask();
+            cancelAgentTimerTask();
             mMessageManager.unregisterConnectionCallBack(mCallBack);
             getMvpView().getContext().unbindService(mServiceConnection);
         } catch (Exception e) {
@@ -174,13 +185,21 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
             mMessageManager.sendEventMessage(params, new IPCCallBack.Stub() {
                 @Override
                 public void onResult(int code, String result) throws RemoteException {
-                    Log.i(Utils.KF5_TAG, params + "=====" + result);
+                    LogUtil.printf(params + "=====" + result);
                     if (code == 0) {
-                        JSONObject jsonObject = JSONObject.parseObject(result);
+                        JSONObject jsonObject = SafeJson.parseObj(result);
                         switch (requestCode) {
                             case INIT_IM:
                                 Chat chat = GsonManager.getInstance().buildChat(jsonObject.toString());
                                 getMvpView().onChatStatus(chat);
+                                if (chat != null) {
+                                    TimeOut timeOut = chat.getTimeout();
+                                    if (timeOut != null) {
+                                        timeOutEnable = timeOut.isEnable();
+                                        timeOutMsg = timeOut.getMsg();
+                                        timeOutSeconds = timeOut.getSeconds();
+                                    }
+                                }
                                 break;
                             case ON_MESSAGE:
                                 try {
@@ -211,15 +230,14 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                                             else imMessage.setCom(true);
                                             imMessage.setStatus(Status.SUCCESS);
                                         }
-                                        insertMessageToDB(list);
-                                        getMvpView().onReceiveMessageList(list);
+//                                        insertMessageToDB(list);
+                                        getMvpView().onReceiveMessageList(insertMessageToDB(list));
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                                 break;
                             case SET_METADATA:
-
                                 break;
                         }
 
@@ -283,7 +301,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      * @param message
      */
     public void sendTextMessage(IMMessage message) {
-        sendMessage(SocketParams.getSendMessagesParams(message.getMessage()), message, true);
+        sendMessage(SocketParams.getSendMessagesParams(message.getMessage(), message.getTimeStamp()), message, true);
     }
 
     /**
@@ -298,24 +316,24 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
             mMessageManager.sendEventMessage(SocketParams.getAIMessageParams(message.getMessage(), message.getTimeStamp()), new IPCCallBack.Stub() {
                 @Override
                 public void onResult(int code, String result) throws RemoteException {
-                    Log.i(Utils.KF5_TAG, result);
-                    String timeStamp = message.getTimeStamp();
-                    removeTimerTask(timeStamp);
-                    if (code == 0) {
-                        message.setStatus(Status.SUCCESS);
-                        updateMessageByTimeStamp(message, timeStamp);
-                        JSONObject jsonObject = JSONObject.parseObject(result);
-                        IMMessage aiMessage = new IMMessage();
-                        aiMessage.setMessageType(MessageType.AI_MESSAGE);
-                        aiMessage.setStatus(Status.SUCCESS);
-                        aiMessage.setCreated(System.currentTimeMillis() / 1000);
-                        aiMessage.setCom(true);
-                        aiMessage.setMessage(com.kf5.sdk.im.utils.Utils.dealAIMessage(result));
-                        aiMessage.setTimeStamp(SafeJson.safeGet(jsonObject, Field.TIMESTAMP));
-                        aiMessage.setType(Field.CHAT_MSG);
-                        getMvpView().onReceiveMessageList(Collections.singletonList(aiMessage));
+                    Log.i(Utils.KF5_TAG, "收到机器人消息" + result);
+                    try {
+                        String timeStamp = message.getTimeStamp();
+                        removeTimerTask(timeStamp);
+                        if (code == 0) {
+                            message.setStatus(Status.SUCCESS);
+                            updateMessageByTimeStamp(message, timeStamp);
+                            JSONObject jsonObject = SafeJson.parseObj(result);
+                            IMMessage aiMessage = new IMMessage();
+                            aiMessage.setMessageType(MessageType.AI_MESSAGE);
+                            aiMessage.setStatus(Status.SUCCESS);
+                            aiMessage.setCreated(System.currentTimeMillis() / 1000);
+                            aiMessage.setCom(true);
+                            aiMessage.setMessage(com.kf5.sdk.im.utils.Utils.dealAIMessage(result));
+                            aiMessage.setTimeStamp(SafeJson.safeGet(jsonObject, Field.TIMESTAMP));
+                            aiMessage.setType(Field.CHAT_MSG);
+                            getMvpView().onReceiveMessageList(Collections.singletonList(aiMessage));
 
-                        {
                             IMMessage dbMessage = new IMMessage();
                             dbMessage.setMessageType(MessageType.TEXT);
                             dbMessage.setStatus(Status.SUCCESS);
@@ -327,7 +345,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                             stringBuilder.append(SafeJson.safeGet(jsonObject, Field.CONTENT));
                             JSONArray jsonArray = SafeJson.safeArray(jsonObject, Field.DOCUMENTS);
                             if (jsonArray != null) {
-                                int size = jsonArray.size();
+                                int size = jsonArray.length();
                                 if (size > 0)
                                     stringBuilder.append("<br/>");
                                 for (int i = 0; i < size; i++) {
@@ -340,15 +358,17 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                                 dbMessage.setMessage(stringBuilder.toString());
                                 insertMessageToDB(Collections.singletonList(dbMessage));
                             }
+                        } else {
+                            message.setStatus(Status.FAILED);
+                            updateMessageByTimeStamp(message, timeStamp);
                         }
-                    } else {
-                        message.setStatus(Status.FAILED);
-                        updateMessageByTimeStamp(message, timeStamp);
+                        getMvpView().onSendMessageResult();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                    getMvpView().onSendMessageResult();
                 }
             });
-        } catch (RemoteException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -412,9 +432,9 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
             public void onSuccess(IMCase.ResponseValue response) {
                 try {
                     deleteFile(Collections.singletonList(file));
-                    Log.i(Utils.KF5_TAG, "上传图片的返回值" + response.result);
-                    JSONObject jsonObject = JSONObject.parseObject(response.result);
-                    if (jsonObject.containsKey(Field.DATA)) {
+                    LogUtil.printf("上传图片的返回值" + response.result);
+                    JSONObject jsonObject = SafeJson.parseObj(response.result);
+                    if (jsonObject.has(Field.DATA)) {
                         JSONObject dataObj = SafeJson.safeObject(jsonObject, Field.DATA);
                         String token = SafeJson.safeGet(dataObj, Field.TOKEN);
                         String url = SafeJson.safeGet(dataObj, Field.CONTENT_URL);
@@ -434,7 +454,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
 
             @Override
             public void onError(String msg) {
-                Log.i(Utils.KF5_TAG, "上传失败" + msg);
+                LogUtil.printf("上传失败" + msg);
                 deleteFile(Collections.singletonList(file));
                 resetUploadMessageStatusFailed(Collections.singletonList(imMessage), true, RESULT_ERROR, msg);
             }
@@ -458,24 +478,26 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
             @Override
             public void onSuccess(IMCase.ResponseValue response) {
                 try {
-                    Log.i(Utils.KF5_TAG, "上传语音的返回值" + response.result);
-                    JSONObject jsonObject = JSONObject.parseObject(response.result);
-                    if (jsonObject.containsKey(Field.DATA)) {
-                        JSONObject dataObj = SafeJson.safeObject(jsonObject, Field.DATA);
-                        String token = SafeJson.safeGet(dataObj, Field.TOKEN);
-                        String url = SafeJson.safeGet(dataObj, Field.URL);
-                        Upload upload = imMessage.getUpload();
-                        upload.setUrl(url);
-                        File newFile = new File(FilePath.SAVE_RECORDER, MD5Utils.GetMD5Code(url) + ".amr");
-                        //noinspection ResultOfMethodCallIgnored
-                        voiceFile.renameTo(newFile);
-                        //noinspection ResultOfMethodCallIgnored
-                        voiceFile.delete();
-                        dealUploadMessageResult(imMessage, token);
-                    } else {
-                        int resultCode = SafeJson.safeInt(jsonObject, Field.ERROR);
-                        String message = SafeJson.safeGet(jsonObject, Field.MESSAGE);
-                        resetUploadMessageStatusFailed(Collections.singletonList(imMessage), true, resultCode, message);
+                    LogUtil.printf("上传语音的返回值" + response.result);
+                    JSONObject jsonObject = SafeJson.parseObj(response.result);
+                    if (jsonObject != null) {
+                        if (jsonObject.has(Field.DATA)) {
+                            JSONObject dataObj = SafeJson.safeObject(jsonObject, Field.DATA);
+                            String token = SafeJson.safeGet(dataObj, Field.TOKEN);
+                            String url = SafeJson.safeGet(dataObj, Field.URL);
+                            Upload upload = imMessage.getUpload();
+                            upload.setUrl(url);
+//                            File newFile = new File(FilePath.SAVE_RECORDER, MD5Utils.GetMD5Code(url) + ".amr");
+//                            //noinspection ResultOfMethodCallIgnored
+//                            voiceFile.renameTo(newFile);
+//                            //noinspection ResultOfMethodCallIgnored
+//                            voiceFile.delete();
+                            dealUploadMessageResult(imMessage, token);
+                        } else {
+                            int resultCode = SafeJson.safeInt(jsonObject, Field.ERROR);
+                            String message = SafeJson.safeGet(jsonObject, Field.MESSAGE);
+                            resetUploadMessageStatusFailed(Collections.singletonList(imMessage), true, resultCode, message);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -485,7 +507,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
 
             @Override
             public void onError(String msg) {
-                Log.i(Utils.KF5_TAG, "上传失败" + msg);
+                LogUtil.printf("上传失败" + msg);
                 deleteFile(Collections.singletonList(voiceFile));
                 resetUploadMessageStatusFailed(Collections.singletonList(imMessage), true, RESULT_ERROR, msg);
             }
@@ -505,13 +527,16 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
         if (!TextUtils.isEmpty(token)) {
             try {
                 addTimerTask(message, THIRTY_SECONDS);
-                mMessageManager.sendEventMessage(SocketParams.getUploadParams(token), new IPCCallBack.Stub() {
+                String params = SocketParams.getUploadParams(token, message.getTimeStamp());
+                LogUtil.printf("附件Params" + params);
+                mMessageManager.sendEventMessage(params, new IPCCallBack.Stub() {
                     @Override
                     public void onResult(int code, String result) throws RemoteException {
-                        Log.i(Utils.KF5_TAG, code + "==============" + result);
+                        LogUtil.printf(code + "==============" + result);
                         String timeStamp = message.getTimeStamp();
                         removeTimerTask(timeStamp);
                         if (code == 0) {
+                            addAgentReplyTimerTask();
                             message.setStatus(Status.SUCCESS);
                             JSONObject jsonObject = SafeJson.parseObj(result);
                             JSONObject messageObj = SafeJson.safeObject(jsonObject, Field.MESSAGE);
@@ -522,7 +547,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                         } else {
                             message.setStatus(Status.FAILED);
                         }
-                        Log.i(Utils.KF5_TAG, "时间戳" + message.getTimeStamp() + "====" + timeStamp);
+                        LogUtil.printf("时间戳" + message.getTimeStamp() + "====" + timeStamp);
                         updateMessageByTimeStamp(message, timeStamp);
                         getMvpView().onSendMessageResult();
                     }
@@ -563,7 +588,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      */
     private void addTimerTask(final IMMessage message, int seconds) {
 
-        Log.i(Utils.KF5_TAG, "添加计时器");
+        LogUtil.printf("添加计时器");
         Timer timer = new Timer();
         mTimerMap.put(message.getTimeStamp(), timer);
         //发送时间30s；
@@ -585,7 +610,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      */
     private void removeTimerTask(String tag) {
         if (mTimerMap != null && mTimerMap.containsKey(tag)) {
-            Log.i(Utils.KF5_TAG, "移除计时器");
+            LogUtil.printf("移除计时器");
             mTimerMap.get(tag).cancel();
             mTimerMap.remove(tag);
         }
@@ -596,7 +621,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      * 清除所有计时器
      */
     private void removeAllTask() {
-        Log.i(Utils.KF5_TAG, "移除所有计时器");
+        LogUtil.printf("移除所有计时器");
         Iterator<String> iterator = mTimerMap.keySet().iterator();
         while (iterator.hasNext()) {
             String tag = iterator.next();
@@ -610,10 +635,15 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      *
      * @param messageList
      */
-    private void insertMessageToDB(List<IMMessage> messageList) {
+    private List<IMMessage> insertMessageToDB(List<IMMessage> messageList) {
+        List<IMMessage> list = new ArrayList<>();
         for (IMMessage imMessage : messageList) {
-            IMSQLManager.insertMessage(getMvpView().getContext(), imMessage);
+            IMMessage newMessage = IMSQLManager.insertMessage(getMvpView().getContext(), imMessage);
+            if (newMessage != null) {
+                list.add(newMessage);
+            }
         }
+        return list;
     }
 
     /**
@@ -641,26 +671,30 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
     /**
      * 分配客服
      *
-     * @param ids   客服id数组
-     * @param force 是否强制分配
+     * @param agentIdArray 客服id数组
+     * @param force        是否强制分配
      */
-    public void getAgents(int[] ids, boolean force) {
+    public void getAgents(String agentIdArray, int force) {
         try {
-            mMessageManager.sendEventMessage(SocketParams.getAgentsAssignParams(ids, force), new IPCCallBack.Stub() {
+            mMessageManager.sendEventMessage(SocketParams.getAgentsAssignParams(agentIdArray, force), new IPCCallBack.Stub() {
                 @Override
                 public void onResult(int code, String result) throws RemoteException {
-                    JSONObject jsonObject = JSONObject.parseObject(result);
-                    Log.i("KF5测试", "收到了客服的信息" + jsonObject.toString() + "====" + code);
-                    if (code != RESULT_OK) {
-                        String message = jsonObject.getString(Field.MESSAGE);
-                        if (jsonObject.containsKey(Field.ERROR) && jsonObject.getInteger(Field.ERROR) == 1001) {
-                            getMvpView().setTitleContent(getMvpView().getContext().getString(R.string.kf5_no_agent_online));
+                    try {
+                        JSONObject jsonObject = SafeJson.parseObj(result);
+                        LogUtil.printf("收到了客服的信息" + jsonObject.toString() + "====" + code);
+                        if (code != RESULT_OK) {
+                            String message = jsonObject.getString(Field.MESSAGE);
+                            if (jsonObject.has(Field.ERROR) && jsonObject.getInt(Field.ERROR) == 1001) {
+                                getMvpView().setTitleContent(getMvpView().getContext().getString(R.string.kf5_no_agent_online));
+                            } else {
+                                getMvpView().setTitleContent(message);
+                            }
+                            getMvpView().showIMView();
                         } else {
-                            getMvpView().setTitleContent(message);
+                            getMvpView().onGetAgentResult(code, result);
                         }
-                        getMvpView().showIMView();
-                    } else {
-                        getMvpView().onGetAgentResult(code, result);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
             });
@@ -704,13 +738,15 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
             if (saveToDB)
                 insertMessageToDB(Collections.singletonList(message));
             addTimerTask(message, THIRTY_SECONDS);
+            LogUtil.printf("发送消息的参数" + params);
             mMessageManager.sendEventMessage(params, new IPCCallBack.Stub() {
                 @Override
                 public void onResult(int code, String result) throws RemoteException {
-                    Log.i(Utils.KF5_TAG, code + "==============" + result);
+                    LogUtil.printf(code + "==============" + result);
                     String timeStamp = message.getTimeStamp();
                     removeTimerTask(timeStamp);
                     if (code == 0) {
+                        addAgentReplyTimerTask();
                         message.setStatus(Status.SUCCESS);
                         if (saveToDB) {
                             JSONObject jsonObject = SafeJson.parseObj(result);
@@ -720,7 +756,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                             message.setTimeStamp(SafeJson.safeGet(messageObj, Field.TIMESTAMP));
                             message.setCreated(SafeJson.safeInt(messageObj, Field.CREATED));
                             updateMessageByTimeStamp(message, timeStamp);
-                            Log.i(Utils.KF5_TAG, "时间戳" + message.getTimeStamp() + "====" + timeStamp);
+                            LogUtil.printf("时间戳" + message.getTimeStamp() + "====" + timeStamp);
                         }
                     } else {
                         message.setStatus(Status.FAILED);
@@ -757,129 +793,135 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
     private ConnectionCallBack mCallBack = new ConnectionCallBack.Stub() {
         @Override
         public void connect() throws RemoteException {
-            Log.i(Utils.KF5_TAG, "连接成功");
+            LogUtil.printf("连接成功");
             getMvpView().scConnect();
         }
 
         @Override
         public void connectError(String connectErrorMsg) throws RemoteException {
-            Log.i(Utils.KF5_TAG, "连接失败" + connectErrorMsg);
+            LogUtil.printf("连接失败" + connectErrorMsg);
             getMvpView().scConnectError(connectErrorMsg);
         }
 
         @Override
         public void connectTimeout(String timeOutMsg) throws RemoteException {
-            Log.i(Utils.KF5_TAG, "连接超时" + timeOutMsg);
+            LogUtil.printf("连接超时" + timeOutMsg);
             getMvpView().scConnectTimeout(timeOutMsg);
         }
 
         @Override
         public void disConnect(String disConnectMsg) throws RemoteException {
-            Log.i(Utils.KF5_TAG, "断开连接" + disConnectMsg);
+            LogUtil.printf("断开连接" + disConnectMsg);
             getMvpView().scDisConnect(disConnectMsg);
         }
 
         @Override
         public void error(String errorMsg) throws RemoteException {
-            Log.i(Utils.KF5_TAG, "连接错误" + errorMsg);
+            LogUtil.printf("连接错误" + errorMsg);
             getMvpView().scError(errorMsg);
             getMvpView().setTitleContent(getMvpView().getContext().getString(R.string.kf5_not_connected));
         }
 
         @Override
         public void onMessage(String message) throws RemoteException {
-            Log.i(Utils.KF5_TAG, "收到消息" + message);
+            LogUtil.printf("收到消息" + message);
             if (isReconnect)
                 isReconnect = false;
-            JSONObject jsonObject = JSONObject.parseObject(message);
-            JSONObject valueObj = jsonObject.getJSONObject(Field.VALUE);
-            String path = jsonObject.getString(Field.PATH);
-            //排队位置push
-            if (valueObj.containsKey(Field.QUEUE_UPDATE)) {
-                JSONObject updateObj = valueObj.getJSONObject(Field.QUEUE_UPDATE);
-                getMvpView().updateQueueNum(updateObj.toString());
-            }
-            //接收到Message消息
-            if (valueObj.containsKey(Field.MESSAGES)) {
-                if (valueObj.containsKey(Field.AGENT)) {
-                    JSONObject agentObj = SafeJson.safeObject(valueObj, Field.AGENT);
-                    isChangeAgent(agentObj);
-                } else {
-                    //新消息接收
-                    JSONArray msgArray = SafeJson.safeArray(valueObj, Field.MESSAGES);
-                    List<IMMessage> messageList = GsonManager.getInstance().getIMMessageList(msgArray.toString());
-                    if (messageList != null) {
-                        for (IMMessage imMessage : messageList) {
-                            String type = imMessage.getType();
-                            switch (type) {
-                                case Field.CHAT_MSG:
-                                    imMessage.setMessageType(MessageType.TEXT);
-                                    imMessage.setCom(true);
-                                    break;
-                                case Field.CHAT_UPLOAD:
-                                    Upload upload = imMessage.getUpload();
-                                    String uploadType = upload.getType();
-                                    imMessage.setCom(true);
-                                    if (Utils.isImage(uploadType))
-                                        imMessage.setMessageType(MessageType.IMAGE);
-                                    else if (Utils.isAMR(uploadType))
-                                        imMessage.setMessageType(MessageType.VOICE);
-                                    else imMessage.setMessageType(MessageType.FILE);
-                                    break;
-                                case Field.CHAT_SYSTEM:
-                                    imMessage.setMessageType(MessageType.SYSTEM);
-                                    imMessage.setCom(true);
-                                    if (valueObj.containsKey(Field.AGENT)) {
-                                        isChangeAgent(SafeJson.safeObject(valueObj, Field.AGENT));
-                                    }
-                                    break;
+            try {
+                cancelAgentTimerTask();
+                JSONObject jsonObject = SafeJson.parseObj(message);
+                dealForceAgentAssignFailure(jsonObject);
+                JSONObject valueObj = SafeJson.safeObject(jsonObject, Field.VALUE);
+                String path = jsonObject.getString(Field.PATH);
+                //排队位置push
+                if (valueObj.has(Field.QUEUE_UPDATE)) {
+                    JSONObject updateObj = valueObj.getJSONObject(Field.QUEUE_UPDATE);
+                    getMvpView().updateQueueNum(updateObj.toString());
+                }
+                //接收到Message消息
+                if (valueObj.has(Field.MESSAGES)) {
+                    if (valueObj.has(Field.AGENT)) {
+                        JSONObject agentObj = SafeJson.safeObject(valueObj, Field.AGENT);
+                        isChangeAgent(agentObj);
+                    } else {
+                        //新消息接收
+                        JSONArray msgArray = SafeJson.safeArray(valueObj, Field.MESSAGES);
+                        List<IMMessage> messageList = GsonManager.getInstance().getIMMessageList(msgArray.toString());
+                        if (messageList != null) {
+                            for (IMMessage imMessage : messageList) {
+                                String type = imMessage.getType();
+                                switch (type) {
+                                    case Field.CHAT_MSG:
+                                        imMessage.setMessageType(MessageType.TEXT);
+                                        imMessage.setCom(true);
+                                        break;
+                                    case Field.CHAT_UPLOAD:
+                                        Upload upload = imMessage.getUpload();
+                                        String uploadType = upload.getType();
+                                        imMessage.setCom(true);
+                                        if (Utils.isImage(uploadType))
+                                            imMessage.setMessageType(MessageType.IMAGE);
+                                        else if (Utils.isAMR(uploadType))
+                                            imMessage.setMessageType(MessageType.VOICE);
+                                        else imMessage.setMessageType(MessageType.FILE);
+                                        break;
+                                    case Field.CHAT_SYSTEM:
+                                        imMessage.setMessageType(MessageType.SYSTEM);
+                                        imMessage.setCom(true);
+                                        if (valueObj.has(Field.AGENT)) {
+                                            isChangeAgent(SafeJson.safeObject(valueObj, Field.AGENT));
+                                        }
+                                        break;
+                                }
+                                imMessage.setStatus(Status.SUCCESS);
+                                IMSQLManager.insertMessage(getMvpView().getContext(), imMessage);
                             }
-                            imMessage.setStatus(Status.SUCCESS);
-                            IMSQLManager.insertMessage(getMvpView().getContext(), imMessage);
+                            getMvpView().onReceiveMessageList(messageList);
                         }
-                        getMvpView().onReceiveMessageList(messageList);
+                    }
+                } else if (valueObj.has(Field.AGENT)) {
+                    JSONObject agentObj = valueObj.getJSONObject(Field.AGENT);
+                    if (!isChangeAgent(agentObj))
+                        getMvpView().onQueueSuccess(null);
+                } else if (valueObj.has(Field.RATING)) {
+                    //请求评价
+                    if (TextUtils.equals(Field.SDK_PUSH, path)) {
+                        getMvpView().onShowRatingView();
                     }
                 }
-            } else if (valueObj.containsKey(Field.AGENT)) {
-                JSONObject agentObj = valueObj.getJSONObject(Field.AGENT);
-                if (!isChangeAgent(agentObj))
-                    getMvpView().onQueueSuccess(null);
-            } else if (valueObj.containsKey(Field.RATING)) {
-                //请求评价
-                if (TextUtils.equals(Field.SDK_PUSH, path)) {
-                    getMvpView().onShowRatingView();
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
         @Override
         public void reconnect(String reconnectMsg) throws RemoteException {
-            Log.i(Utils.KF5_TAG, "重连" + reconnectMsg);
+            LogUtil.printf("重连" + reconnectMsg);
             getMvpView().scReconnect(reconnectMsg);
             isReconnect = true;
         }
 
         @Override
         public void reconnectAttempt(String reconnectAttemptMsg) throws RemoteException {
-            Log.i(Utils.KF5_TAG, "尝试重连" + reconnectAttemptMsg);
+            LogUtil.printf("尝试重连" + reconnectAttemptMsg);
             getMvpView().scReconnectAttempt(reconnectAttemptMsg);
         }
 
         @Override
         public void reconnectError(String reconnectErrorMsg) throws RemoteException {
-            Log.i(Utils.KF5_TAG, "连接异常" + reconnectErrorMsg);
+            LogUtil.printf("连接异常" + reconnectErrorMsg);
             getMvpView().scReconnectError(reconnectErrorMsg);
         }
 
         @Override
         public void reconnectFailed(String reconnectFailedMsg) throws RemoteException {
-            Log.i(Utils.KF5_TAG, "连接失败" + reconnectFailedMsg);
+            LogUtil.printf("连接失败" + reconnectFailedMsg);
             getMvpView().scReconnectFailed(reconnectFailedMsg);
         }
 
         @Override
         public void reconnecting(String reconnectingMsg) throws RemoteException {
-            Log.i(Utils.KF5_TAG, "正在重连" + reconnectingMsg);
+            LogUtil.printf("正在重连" + reconnectingMsg);
             getMvpView().scReconnecting(reconnectingMsg);
         }
     };
@@ -896,15 +938,64 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
         //会话进行时
         if (hasAgent) {
             getMvpView().onQueueSuccess(agent);
-            if (agentObj.containsKey(Field.WELCOME_MSG)) {
+            if (agentObj.has(Field.WELCOME_MSG)) {
                 String welComeMsg = SafeJson.safeGet(agentObj, Field.WELCOME_MSG);
-                List<IMMessage> list = new ArrayList<>();
-                list.add(IMMessageManager.buildReceiveTextMessage(welComeMsg));
-                getMvpView().onReceiveMessageList(list);
+                if (!TextUtils.isEmpty(welComeMsg)) {
+                    List<IMMessage> list = new ArrayList<>();
+                    list.add(IMMessageManager.buildReceiveTextMessage(welComeMsg));
+                    getMvpView().onReceiveMessageList(list);
+                }
             }
         }
         return hasAgent;
     }
 
+
+    /**
+     * 添加客服超时应答计时器
+     */
+    private void addAgentReplyTimerTask() {
+
+        //先判断前提条件是否成立，只有在超时时间大于0和超时提醒消息不为空成立并且timeOutEnable
+        if (timeOutEnable && timeOutSeconds > 0 && !TextUtils.isEmpty(timeOutMsg)) {
+            //先将之前的计时器取消
+            cancelAgentTimerTask();
+            mTimer = new Timer();
+            mTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    mTimer = null;
+                    pushAgentTimeOutMessage();
+                }
+            }, timeOutSeconds * 1000);
+        }
+    }
+
+    /**
+     * 取消计时器
+     */
+    private void cancelAgentTimerTask() {
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
+    }
+
+    private void pushAgentTimeOutMessage() {
+        getMvpView().onReceiveMessageList(Collections.singletonList(IMMessageManager.buildSystemMessage(timeOutMsg)));
+    }
+
+    /**
+     * 强制分配失败更新UI
+     */
+    private void dealForceAgentAssignFailure(JSONObject jsonObject) throws JSONException {
+        if (jsonObject != null && jsonObject.has(Field.EVENT)) {
+            String event = jsonObject.getString(Field.EVENT);
+            if (TextUtils.equals(Field.AGENT_ASSIGN_FAIL, event)) {
+                getMvpView().setTitleContent(getMvpView().getContext().getString(R.string.kf5_no_agent_online));
+                getMvpView().showIMView();
+            }
+        }
+    }
 
 }

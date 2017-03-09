@@ -2,15 +2,11 @@ package com.kf5.sdk.ticket.mvp.presenter;
 
 import android.support.v4.util.ArrayMap;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.entity.Result;
 import com.kf5.sdk.system.mvp.presenter.BasePresenter;
 import com.kf5.sdk.system.mvp.usecase.BaseUseCase;
-import com.kf5.sdk.system.utils.GsonManager;
-import com.kf5.sdk.system.utils.SPUtils;
-import com.kf5.sdk.system.utils.SafeJson;
 import com.kf5.sdk.ticket.entity.Requester;
+import com.kf5.sdk.ticket.entity.TicketListObj;
 import com.kf5.sdk.ticket.mvp.usecase.TicketListCase;
 import com.kf5.sdk.ticket.mvp.view.ITicketListView;
 
@@ -37,7 +33,6 @@ public class TicketListPresenter extends BasePresenter<ITicketListView> implemen
         checkViewAttached();
         getMvpView().showLoading("");
         Map<String, String> map = new ArrayMap<>();
-        map.put(Field.USERTOKEN, SPUtils.getUserToken());
         map.putAll(getMvpView().getCustomMap());
         final TicketListCase.RequestCase requestCase = new TicketListCase.RequestCase(map);
         mTicketListCase.setRequestValues(requestCase);
@@ -47,18 +42,25 @@ public class TicketListPresenter extends BasePresenter<ITicketListView> implemen
                 if (isViewAttached()) {
                     getMvpView().hideLoading();
                     try {
-                        JSONObject jsonObject = JSONObject.parseObject(response.result);
-                        int resultCode = SafeJson.safeInt(jsonObject, Field.ERROR);
-                        if (resultCode == RESULT_OK) {
-                            JSONObject dataObj = SafeJson.safeObject(jsonObject, Field.DATA);
-                            JSONArray jsonArray = SafeJson.safeArray(dataObj, Field.REQUESTS);
-                            List<Requester> requestList = new ArrayList<>();
-                            requestList.addAll(GsonManager.getInstance().getRequesterList(jsonArray.toString()));
-                            int nextPage = SafeJson.safeInt(dataObj, Field.NEXT_PAGE);
-                            getMvpView().loadResultData(nextPage, requestList);
-                        } else {
-                            String message = SafeJson.safeGet(jsonObject, Field.MESSAGE);
-                            getMvpView().showError(resultCode, message);
+                        Result<TicketListObj> result = Result.fromJson(response.result, TicketListObj.class);
+                        if (result != null) {
+                            int resultCode = result.getCode();
+                            if (resultCode == RESULT_OK) {
+                                List<Requester> list = new ArrayList<>();
+                                int nextPage = 1;
+                                TicketListObj ticketListObj = result.getData();
+                                if (ticketListObj != null) {
+                                    if (ticketListObj.getRequests() != null) {
+                                        list.addAll(ticketListObj.getRequests());
+                                    }
+                                    if (ticketListObj.getNext_page() > 0) {
+                                        nextPage = ticketListObj.getNext_page();
+                                    }
+                                }
+                                getMvpView().loadResultData(nextPage, list);
+                            } else {
+                                getMvpView().showError(resultCode, result.getMessage());
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,6 +100,8 @@ public class ExpressionCommonUtils {
      * @param emoticonClickListener
      */
     public static void addEmojiPageSetEntity(PageSetAdapter pageSetAdapter, Context context, final EmoticonClickListener emoticonClickListener) {
+
+
         ArrayList<EmojiBean> emojiArray = new ArrayList<>();
         Collections.addAll(emojiArray, DefEmoticons.emojiArray);
         EmoticonPageSetEntity emojiPageSetEntity
@@ -139,6 +142,7 @@ public class ExpressionCommonUtils {
 
     @SuppressWarnings("unchecked")
     public static Object newInstance(Class _Class, Object... args) throws Exception {
+
         return newInstance(_Class, 0, args);
     }
 
@@ -157,6 +161,7 @@ public class ExpressionCommonUtils {
     }
 
     public static PageViewInstantiateListener<EmoticonPageEntity> getEmoticonPageViewInstantiateItem(final Class _class, final EmoticonClickListener onEmoticonClickListener, final EmoticonDisplayListener<Object> emoticonDisplayListener) {
+
         return new PageViewInstantiateListener<EmoticonPageEntity>() {
             @Override
             public View instantiateItem(ViewGroup container, int position, EmoticonPageEntity pageEntity) {
@@ -166,12 +171,15 @@ public class ExpressionCommonUtils {
                     pageEntity.setRootView(pageView);
                     try {
                         EmoticonsAdapter adapter = (EmoticonsAdapter) newInstance(_class, container.getContext(), pageEntity, onEmoticonClickListener);
+//                        EmoticonsAdapter adapter = new EmoticonsAdapter(container.getContext(), pageEntity, onEmoticonClickListener);
                         if (emoticonDisplayListener != null) {
                             adapter.setOnDisPlayListener(emoticonDisplayListener);
                         }
                         pageView.getEmoticonsGridView().setAdapter(adapter);
                     } catch (Exception e) {
                         e.printStackTrace();
+                        Log.i("KF5测试", "这里出问题咯", e);
+                        Log.i("KF5测试", "能不能给点正常的信息" + e.getMessage());
                     }
                 }
                 return pageEntity.getRootView();

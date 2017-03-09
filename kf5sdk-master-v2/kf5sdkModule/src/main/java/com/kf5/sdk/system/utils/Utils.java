@@ -40,7 +40,7 @@ public class Utils {
 
     public static final int TAKE_PHOTO = 200;
 
-    public static final String KF5_TAG = "kf5测试";
+    public static final String KF5_TAG = "D/OkHttp";
 
     /**
      * 隐藏软键盘

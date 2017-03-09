@@ -49,7 +49,23 @@ public class IMSQLManager extends SQLManager {
      * @param context
      * @param iMMessage
      */
-    public static void insertMessage(Context context, IMMessage iMMessage) {
+    public static IMMessage insertMessage(Context context, IMMessage iMMessage) {
+        if (isContainTimeStamp(context, iMMessage.getTimeStamp())) {
+            return update(context, iMMessage);
+        } else {
+            insert(context, iMMessage);
+            return null;
+        }
+    }
+
+    /**
+     * 插入消息
+     *
+     * @param context
+     * @param iMMessage
+     * @return
+     */
+    private static void insert(Context context, IMMessage iMMessage) {
 
         Log.i(Utils.KF5_TAG, "插入消息");
         if (iMMessage == null) return;
@@ -87,7 +103,56 @@ public class IMSQLManager extends SQLManager {
         } finally {
             contentValues.clear();
         }
+    }
 
+
+    /**
+     * 更新消息
+     *
+     * @param context
+     * @param iMMessage
+     * @return
+     */
+    private static IMMessage update(Context context, IMMessage iMMessage) {
+
+        Log.i(Utils.KF5_TAG, "更新消息");
+        if (iMMessage == null) return null;
+        ContentValues contentValues = new ContentValues();
+        try {
+            contentValues.put(DataBaseColumn.CHAT_ID, iMMessage.getChatId());
+            contentValues.put(DataBaseColumn.MESSAGE_TYPE, iMMessage.getType());
+            contentValues.put(DataBaseColumn.IS_READ, iMMessage.getIsRead());
+            contentValues.put(DataBaseColumn.MESSAGE, iMMessage.getMessage());
+            contentValues.put(DataBaseColumn.CREATED_DATE, iMMessage.getCreated());
+            contentValues.put(DataBaseColumn.MESSAGE_ID, iMMessage.getId());
+            contentValues.put(DataBaseColumn.IS_COM, iMMessage.isCom() ? 0 : 1);
+            contentValues.put(DataBaseColumn.MARK, iMMessage.getTimeStamp());
+            switch (iMMessage.getStatus()) {
+                case FAILED:
+                    contentValues.put(DataBaseColumn.SEND_STATUS, -1);
+                    break;
+                case SUCCESS:
+                    contentValues.put(DataBaseColumn.SEND_STATUS, 0);
+                    break;
+                case SENDING:
+                    contentValues.put(DataBaseColumn.SEND_STATUS, 1);
+                    break;
+            }
+            Upload upload = iMMessage.getUpload();
+            if (upload != null) {
+                contentValues.put(DataBaseColumn.FILE_TYPE, upload.getType());
+                contentValues.put(DataBaseColumn.FILE_URL, upload.getUrl());
+                contentValues.put(DataBaseColumn.FILE_NAME, upload.getName());
+                contentValues.put(DataBaseColumn.LOCAL_PATH, upload.getLocalPath());
+            }
+//            getInstance(context).openSqlDB().insert(DataBaseHelper.DB_TABLE, null, contentValues);
+            getInstance(context).openSqlDB().update(DataBaseHelper.DB_TABLE, contentValues, DataBaseColumn.MARK + " = ?", new String[]{iMMessage.getTimeStamp()});
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            contentValues.clear();
+        }
+        return null;
     }
 
 
@@ -412,12 +477,12 @@ public class IMSQLManager extends SQLManager {
      * 是否包含当前消息
      *
      * @param context
-     * @param tag
+     * @param timeStamp
      * @return
      */
-    public static boolean isContainThisMessageByTag(Context context, String tag) {
+    private static boolean isContainTimeStamp(Context context, String timeStamp) {
 
-        String sql = "select * from " + DataBaseHelper.DB_TABLE + " where " + DataBaseColumn.MARK + "=" + tag;
+        String sql = "select * from " + DataBaseHelper.DB_TABLE + " where " + DataBaseColumn.MARK + "=" + timeStamp;
         try {
             Cursor cursor = getInstance(context).openSqlDB().rawQuery(sql, null);
             if (cursor == null)
@@ -433,6 +498,7 @@ public class IMSQLManager extends SQLManager {
         }
         return false;
     }
+
 
     /**
      * 获取消息的总条数

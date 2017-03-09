@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
-import com.alibaba.fastjson.JSONObject;
 import com.kf5.sdk.R;
 import com.kf5.sdk.im.entity.Agent;
 import com.kf5.sdk.im.entity.Chat;
@@ -18,6 +18,11 @@ import com.kf5.sdk.im.mvp.presenter.IMPresenter;
 import com.kf5.sdk.im.widget.RatingDialog;
 import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.utils.FilePathUtils;
+import com.kf5.sdk.system.utils.SafeJson;
+import com.kf5.sdk.system.utils.Utils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Collections;
@@ -46,7 +51,6 @@ public class KF5ChatActivity extends BaseChatActivity {
     public Context getContext() {
         return mActivity;
     }
-
 
     /**
      * 连接成功
@@ -193,7 +197,7 @@ public class KF5ChatActivity extends BaseChatActivity {
                     mXhsEmoticonsKeyBoard.showIMView();
                     //如果状态为queue,则开始排队，同时接受push过来处于的排队位置
                 } else if (TextUtils.equals(Field.QUEUE, status)) {
-                    presenter.getAgents(null, false);
+                    presenter.getAgents(agentIds, force);
                     mXhsEmoticonsKeyBoard.showQueueView();
                     isAgentOnline = false;
                     //如果状态为none，则进入下一级判断
@@ -206,7 +210,7 @@ public class KF5ChatActivity extends BaseChatActivity {
                         isAgentOnline = false;
                     } else {
                         isAgentOnline = false;
-                        presenter.getAgents(null, false);
+                        presenter.getAgents(agentIds, force);
                         mXhsEmoticonsKeyBoard.showQueueView();
                         dealMessageData();
                         //显示排队输入框
@@ -226,6 +230,7 @@ public class KF5ChatActivity extends BaseChatActivity {
 
     @Override
     public void onSendMessageResult() {
+        Log.i(Utils.KF5_TAG, "前台收到了消息");
         refreshData();
     }
 
@@ -237,23 +242,27 @@ public class KF5ChatActivity extends BaseChatActivity {
      */
     @Override
     public void onGetAgentResult(int code, String message) {
-        if (code == OK) {
-            JSONObject jsonObject = JSONObject.parseObject(message);
-            int index;
-            if (jsonObject.containsKey(Field.INDEX)) {
-                index = jsonObject.getIntValue(Field.INDEX);
-            } else {
-                index = -1;
+        try {
+            if (code == OK) {
+                JSONObject jsonObject = new JSONObject(message);
+                int index;
+                if (jsonObject.has(Field.INDEX)) {
+                    index = SafeJson.safeInt(jsonObject, Field.INDEX);
+                } else {
+                    index = -1;
+                }
+                //处于排队中
+                if (index >= 0) {
+                    setTitleContent(getString(R.string.kf5_queue_waiting));
+                    refreshListAndNotifyData(IMMessageManager.addIMMessageToList(IMMessageManager.buildSendQueueMessage(getString(R.string.kf5_update_queue_num, (index + 1)))));
+                } else {
+                    setTitleContent(getString(R.string.kf5_no_agent_online));
+                    showNoAgentOnlineReminderDialog();
+                    isAgentOnline = false;
+                }
             }
-            //处于排队中
-            if (index >= 0) {
-                setTitleContent(getString(R.string.kf5_queue_waiting));
-                refreshListAndNotifyData(IMMessageManager.addIMMessageToList(IMMessageManager.buildSendQueueMessage(getString(R.string.kf5_update_queue_num, (index + 1)))));
-            } else {
-                setTitleContent(getString(R.string.kf5_no_agent_online));
-                showNoAgentOnlineReminderDialog();
-                isAgentOnline = false;
-            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -321,21 +330,25 @@ public class KF5ChatActivity extends BaseChatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                JSONObject jsonObject = JSONObject.parseObject(message);
-                String agentStatus = jsonObject.getString(Field.STATUS);
-                if (TextUtils.equals(Field.ONLINE, agentStatus)) {
-                    int index = jsonObject.getIntValue(Field.INDEX);
-                    for (IMMessage imMessage : mIMMessageList) {
-                        if (imMessage.getMessageType() == MessageType.QUEUE_WAITING) {
-                            imMessage.setMessage(getString(R.string.kf5_update_queue_num, (index + 1)));
-                            break;
+                try {
+                    JSONObject jsonObject = SafeJson.parseObj(message);
+                    String agentStatus = SafeJson.safeGet(jsonObject, Field.STATUS);
+                    if (TextUtils.equals(Field.ONLINE, agentStatus)) {
+                        int index = SafeJson.safeInt(jsonObject, Field.INDEX);
+                        for (IMMessage imMessage : mIMMessageList) {
+                            if (imMessage.getMessageType() == MessageType.QUEUE_WAITING) {
+                                imMessage.setMessage(getString(R.string.kf5_update_queue_num, (index + 1)));
+                                break;
+                            }
                         }
+                        refreshData();
+                    } else {
+                        isAgentOnline = false;
+                        setTitleContent(getString(R.string.kf5_no_agent_online));
+                        showNoAgentOnlineReminderDialog();
                     }
-                    refreshData();
-                } else {
-                    isAgentOnline = false;
-                    setTitleContent(getString(R.string.kf5_no_agent_online));
-                    showNoAgentOnlineReminderDialog();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -393,6 +406,7 @@ public class KF5ChatActivity extends BaseChatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                removeQueueItemView();
                 showNoAgentOnlineReminderDialog();
                 mXhsEmoticonsKeyBoard.showQueueViewToIMView();
             }

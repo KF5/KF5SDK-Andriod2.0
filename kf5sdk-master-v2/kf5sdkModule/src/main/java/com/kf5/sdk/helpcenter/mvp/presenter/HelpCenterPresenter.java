@@ -2,17 +2,16 @@ package com.kf5.sdk.helpcenter.mvp.presenter;
 
 import android.support.v4.util.ArrayMap;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.kf5.sdk.helpcenter.entity.HelpCenterItem;
+import com.kf5.sdk.helpcenter.entity.HelpCenterItemCategory;
 import com.kf5.sdk.helpcenter.entity.HelpCenterRequestType;
 import com.kf5.sdk.helpcenter.mvp.usecase.HelpCenterCase;
+import com.kf5.sdk.helpcenter.mvp.view.IHelpCenterBaseView;
 import com.kf5.sdk.helpcenter.mvp.view.IHelpCenterView;
 import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.entity.Result;
 import com.kf5.sdk.system.mvp.presenter.BasePresenter;
 import com.kf5.sdk.system.mvp.usecase.BaseUseCase;
-import com.kf5.sdk.system.utils.GsonManager;
-import com.kf5.sdk.system.utils.SafeJson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class HelpCenterPresenter extends BasePresenter<IHelpCenterView> implemen
     public void getCategoriesList(HelpCenterRequestType helpCenterRequestType) {
         Map<String, String> map = new ArrayMap<>();
         map.putAll(getMvpView().getCustomMap());
-        dealData(helpCenterRequestType, map, Field.CATEGORIES);
+        dealData(helpCenterRequestType, map);
     }
 
     @Override
@@ -44,10 +43,10 @@ public class HelpCenterPresenter extends BasePresenter<IHelpCenterView> implemen
         Map<String, String> map = new ArrayMap<>();
         map.put(Field.QUERY, getMvpView().getSearchKey());
         map.putAll(getMvpView().getCustomMap());
-        dealData(helpCenterRequestType, map, Field.POSTS);
+        dealData(helpCenterRequestType, map);
     }
 
-    private void dealData(HelpCenterRequestType helpCenterRequestType, Map<String, String> map, final String fieldKey) {
+    private void dealData(final HelpCenterRequestType helpCenterRequestType, Map<String, String> map) {
         checkViewAttached();
         getMvpView().showLoading("");
         final HelpCenterCase.RequestCase requestCase = new HelpCenterCase.RequestCase(helpCenterRequestType, map);
@@ -58,20 +57,13 @@ public class HelpCenterPresenter extends BasePresenter<IHelpCenterView> implemen
                 if (isViewAttached()) {
                     getMvpView().hideLoading();
                     try {
-                        JSONObject jsonObject = SafeJson.parseObj(response.result);
-                        int resultCode = SafeJson.safeInt(jsonObject, Field.ERROR);
-                        if (resultCode == RESULT_OK) {
-                            JSONObject dataObj = SafeJson.safeObject(jsonObject, Field.DATA);
-                            JSONArray jsonArray = SafeJson.safeArray(dataObj, fieldKey);
-                            List<HelpCenterItem> list = new ArrayList<>();
-                            int nextPage = SafeJson.safeInt(jsonObject, Field.NEXT_PAGE);
-                            if (jsonArray != null) {
-                                list.addAll(GsonManager.getInstance().getHelpCenterItemList(jsonArray.toString()));
-                            }
-                            getMvpView().onLoadCategoriesList(nextPage, list);
-                        } else {
-                            String message = SafeJson.safeGet(jsonObject, Field.MESSAGE);
-                            getMvpView().showError(resultCode, message);
+                        switch (helpCenterRequestType) {
+                            case DEFAULT:
+                                dealCategoriesList(response.result);
+                                break;
+                            case SEARCH:
+                                IHelpCenterBaseView.HelpCenterDataBuilder.dealPostList(response.result, getMvpView());
+                                break;
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -89,6 +81,33 @@ public class HelpCenterPresenter extends BasePresenter<IHelpCenterView> implemen
             }
         });
         mHelpCenterCase.run();
+    }
+
+
+    /**
+     * 处理获取文档分区返回值
+     *
+     * @param data
+     */
+    private void dealCategoriesList(String data) {
+        Result<HelpCenterItemCategory> result = Result.fromJson(data, HelpCenterItemCategory.class);
+        if (result != null) {
+            int resultCode = result.getCode();
+            List<HelpCenterItem> list = new ArrayList<>();
+            int nextPage = 1;
+            if (resultCode == RESULT_OK) {
+                HelpCenterItemCategory helpCenterItemObj = result.getData();
+                if (helpCenterItemObj != null) {
+                    if (helpCenterItemObj.getCategories() != null) {
+                        list.addAll(helpCenterItemObj.getCategories());
+                    }
+                    if (helpCenterItemObj.getNext_page() > 0) {
+                        nextPage = helpCenterItemObj.getNext_page();
+                    }
+                }
+            }
+            IHelpCenterBaseView.HelpCenterDataBuilder.dealHelpCenterData(resultCode, result.getMessage(), nextPage, list, getMvpView());
+        }
     }
 
 }

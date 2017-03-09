@@ -25,6 +25,16 @@ public class Chat {
     @SerializedName("robot_enable")
     private boolean robotEnable;
 
+    private TimeOut timeout;
+
+    public TimeOut getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(TimeOut timeout) {
+        this.timeout = timeout;
+    }
+
     public Agent getAgent() {
         return mAgent;
     }

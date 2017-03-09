@@ -1,5 +1,6 @@
 package com.kf5.sdk.im.api;
 
+import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.internet.BaseHttpManager;
 import com.kf5.sdk.system.internet.HttpRequestCallBack;
 import com.kf5.sdk.system.utils.SPUtils;
@@ -44,4 +45,17 @@ public class IMAPI extends BaseHttpManager {
     public void uploadAttachment(Map<String, String> filedMap, List<File> fileList, HttpRequestCallBack callBack) {
         uploadIMAttachment(KF5API.uploadIMAttachment(SPUtils.getHelpAddress()), filedMap, fileList, callBack);
     }
+
+
+    /**
+     * 获取未读消息数
+     *
+     * @param queryMap 请求参数
+     * @param callBack 请求回调
+     */
+    public void getUnReadMessageCount(Map<String, String> queryMap, HttpRequestCallBack callBack) {
+        queryMap.put(Field.USERTOKEN, SPUtils.getUserToken());
+        sendGetRequest(KF5API.getIMMessageCount(SPUtils.getHelpAddress(), queryMap), queryMap, callBack);
+    }
+
 }

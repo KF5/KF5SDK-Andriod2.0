@@ -129,22 +129,6 @@ public class HelpCenterActivity extends BaseActivity<HelpCenterPresenter, IHelpC
     }
 
     @Override
-    public void onLoadCategoriesList(final int _nextPage, final List<HelpCenterItem> list) {
-        runOnUiThread(new TimerTask() {
-            @Override
-            public void run() {
-                if (_nextPage == 1 || _nextPage == -100 || _nextPage == 0)
-                    listItem.clear();
-                nextPage = _nextPage;
-                listItem.addAll(list);
-                mListView.onRefreshComplete();
-                mListView.setFooterViewInvisible();
-                mHelpCenterAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    @Override
     public void showError(int resultCode, final String msg) {
         super.showError(resultCode, msg);
         runOnUiThread(new TimerTask() {
@@ -168,6 +152,22 @@ public class HelpCenterActivity extends BaseActivity<HelpCenterPresenter, IHelpC
         map.put(Field.PAGE, String.valueOf(nextPage));
         map.put(Field.PER_PAGE, String.valueOf(Field.PAGE_SIZE));
         return map;
+    }
+
+    @Override
+    public void onLoadHelpCenterList(final int _nextPage, final List<HelpCenterItem> list) {
+        runOnUiThread(new TimerTask() {
+            @Override
+            public void run() {
+                if (_nextPage == 1 || _nextPage == -100 || _nextPage == 0)
+                    listItem.clear();
+                nextPage = _nextPage;
+                listItem.addAll(list);
+                mListView.onRefreshComplete();
+                mListView.setFooterViewInvisible();
+                mHelpCenterAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override

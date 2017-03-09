@@ -69,10 +69,12 @@ public class BigEmoticonsAdapter extends EmoticonsAdapter<EmoticonEntity> {
         if (isDelBtn) {
             viewHolder.iv_emoticon.setImageResource(R.drawable.kf5_emoji_delete);
             viewHolder.iv_emoticon.setBackgroundResource(R.drawable.kf5_emotion_bg);
+
         } else {
             if (emoticonEntity != null) {
                 ImageLoaderManager.getInstance(viewHolder.iv_emoticon.getContext()).displayImage(emoticonEntity.getIconUri(), viewHolder.iv_emoticon);
                 viewHolder.iv_emoticon.setBackgroundResource(R.drawable.kf5_emotion_bg);
+            } else {
             }
         }
 

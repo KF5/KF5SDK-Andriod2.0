@@ -20,11 +20,11 @@ public class VoicePlayListener implements MediaPlayer.OnPreparedListener {
     private VoicePlayListener() {
     }
 
-    public static VoicePlayListener getInstance(){
+    public static VoicePlayListener getInstance() {
 
-        if (voicePlayListener  == null) {
-            synchronized (VoicePlayListener.class){
-                if (voicePlayListener == null){
+        if (voicePlayListener == null) {
+            synchronized (VoicePlayListener.class) {
+                if (voicePlayListener == null) {
                     voicePlayListener = new VoicePlayListener();
                 }
             }
@@ -33,7 +33,7 @@ public class VoicePlayListener implements MediaPlayer.OnPreparedListener {
     }
 
 
-    public void startPlay(String path){
+    public void startPlay(String path) {
 
         if (mediaPlayer == null) {
             mediaPlayer = new MediaPlayer();
@@ -45,7 +45,7 @@ public class VoicePlayListener implements MediaPlayer.OnPreparedListener {
             mediaPlayer.reset();
             mediaPlayer.setDataSource(path);
             mediaPlayer.prepareAsync();
-        }  catch (Exception e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -54,19 +54,29 @@ public class VoicePlayListener implements MediaPlayer.OnPreparedListener {
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        // TODO Auto-generated method stub
         mediaPlayer.start();
     }
 
     public void onDestroy() {
-        // TODO Auto-generated method stub
-
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
+        try {
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    public void onPause() {
+        try {
+            if (mediaPlayer != null) {
+                mediaPlayer.pause();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
 

@@ -1,5 +1,6 @@
 package com.kf5.sdk.system.init;
 
+import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.internet.BaseHttpManager;
 import com.kf5.sdk.system.internet.HttpRequestCallBack;
 import com.kf5.sdk.system.utils.SPUtils;
@@ -38,6 +39,7 @@ public final class UserInfoAPI extends BaseHttpManager {
      * @param callBack 请求回调
      */
     public void saveDeviceToken(Map<String, String> fieldMap, HttpRequestCallBack callBack) {
+        fieldMap.put(Field.TYPE, Field.ANDROID);
         sendPostRequest(KF5API.saveDeviceToken(SPUtils.getHelpAddress()), fieldMap, callBack);
     }
 
@@ -48,6 +50,7 @@ public final class UserInfoAPI extends BaseHttpManager {
      * @param callBack 请求回调
      */
     public void deleteDeviceToken(Map<String, String> fieldMap, HttpRequestCallBack callBack) {
+        fieldMap.put(Field.TYPE, Field.ANDROID);
         sendPostRequest(KF5API.deleteDeviceToken(SPUtils.getHelpAddress()), fieldMap, callBack);
     }
 
@@ -88,6 +91,7 @@ public final class UserInfoAPI extends BaseHttpManager {
      * @param callBack 请求回调
      */
     public void getUserInfo(Map<String, String> queryMap, HttpRequestCallBack callBack) {
+        queryMap.put(Field.USERTOKEN, SPUtils.getUserToken());
         sendGetRequest(KF5API.getUserInfo(SPUtils.getHelpAddress(), queryMap), queryMap, callBack);
     }
 

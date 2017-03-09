@@ -124,23 +124,6 @@ public class HelpCenterTypeActivity extends BaseActivity<HelpCenterTypePresenter
         presenter.getForumListById(HelpCenterRequestType.DEFAULT);
     }
 
-
-    @Override
-    public void onLoadForumList(final int _nextPage, final List<HelpCenterItem> helpCenterItems) {
-        runOnUiThread(new TimerTask() {
-            @Override
-            public void run() {
-                if (_nextPage == 1 || _nextPage == -100 || _nextPage == 0)
-                    listItem.clear();
-                nextPage = _nextPage;
-                listItem.addAll(helpCenterItems);
-                mListView.onRefreshComplete();
-                mListView.setFooterViewInvisible();
-                mHelpCenterAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
     @Override
     public void showError(int resultCode, final String msg) {
         super.showError(resultCode, msg);
@@ -272,5 +255,22 @@ public class HelpCenterTypeActivity extends BaseActivity<HelpCenterTypePresenter
         map.put(Field.PAGE, String.valueOf(nextPage));
         map.put(Field.PER_PAGE, String.valueOf(Field.PAGE_SIZE));
         return map;
+    }
+
+    @Override
+    public void onLoadHelpCenterList(final int _nextPage, final List<HelpCenterItem> helpCenterItems) {
+        runOnUiThread(new TimerTask() {
+            @Override
+            public void run() {
+                if (_nextPage == 1 || _nextPage == -100 || _nextPage == 0)
+                    listItem.clear();
+                nextPage = _nextPage;
+                listItem.addAll(helpCenterItems);
+                mListView.onRefreshComplete();
+                mListView.setFooterViewInvisible();
+                mHelpCenterAdapter.notifyDataSetChanged();
+            }
+        });
+
     }
 }

@@ -16,10 +16,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.kf5.sdk.R;
 import com.kf5.sdk.im.adapter.MessageAdapter;
+import com.kf5.sdk.im.adapter.listener.VoicePlayListener;
 import com.kf5.sdk.im.db.IMSQLManager;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.entity.IMMessageManager;
@@ -43,12 +43,15 @@ import com.kf5.sdk.system.mvp.presenter.PresenterFactory;
 import com.kf5.sdk.system.mvp.presenter.PresenterLoader;
 import com.kf5.sdk.system.utils.ImageLoaderManager;
 import com.kf5.sdk.system.utils.SPUtils;
+import com.kf5.sdk.system.utils.SafeJson;
 import com.kf5.sdk.system.utils.Utils;
 import com.kf5.sdk.system.widget.DialogBox;
 import com.kf5.sdk.ticket.ui.FeedBackActivity;
 import com.kf5.sdk.ticket.ui.LookFeedBackActivity;
 import com.kf5Engine.image.ImageCompressManager;
 import com.kf5Engine.image.OnCompressListener;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -102,6 +105,10 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
 
     protected boolean isAgentOnline = false;
 
+    protected String agentIds;
+
+    protected int force;
+
 
     @Override
     public Loader<IMPresenter> onCreateLoader(int id, Bundle args) {
@@ -116,14 +123,24 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
     @Override
     protected void onPause() {
         super.onPause();
-        mXhsEmoticonsKeyBoard.reset();
+        try {
+            mXhsEmoticonsKeyBoard.reset();
+            VoicePlayListener.getInstance().onPause();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ImageLoaderManager.getInstance(mActivity).clearMemory();
-        mXhsEmoticonsKeyBoard.getAudioRecordButton().releaseResource();
+        try {
+            ImageLoaderManager.getInstance(mActivity).clearMemory();
+            VoicePlayListener.getInstance().onDestroy();
+            mXhsEmoticonsKeyBoard.getAudioRecordButton().releaseResource();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -156,18 +173,20 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
             @Override
             public void onSuccess(String result) {
                 try {
-                    JSONObject jsonObject = JSONObject.parseObject(result);
-                    if (jsonObject.containsKey(Field.CHAT_URL)) {
+                    JSONObject jsonObject = new JSONObject(result);
+                    if (jsonObject.has(Field.CHAT_URL)) {
                         String url = jsonObject.getString(Field.CHAT_URL);
                         SPUtils.saveChatUrl(url);
                         presenter.connectIPC();
-                    } else if (jsonObject.containsKey(Field.MESSAGE)) {
+                    } else if (jsonObject.has(Field.MESSAGE)) {
                         hideLoading();
                         showToast(jsonObject.getString(Field.MESSAGE));
                     } else {
                         hideLoading();
                         showToast(getString(R.string.kf5_unknown_error));
                     }
+                    agentIds = SafeJson.safeGet(jsonObject, Field.AGENT_IDS);
+                    force = SafeJson.safeInt(jsonObject, Field.FORCE);
                 } catch (Exception e) {
                     e.printStackTrace();
                     hideLoading();
@@ -426,7 +445,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      */
     public void aiToGetAgents() {
         mXhsEmoticonsKeyBoard.showAIViewToQueueView();
-        presenter.getAgents(null, false);
+        presenter.getAgents(agentIds, force);
     }
 
 

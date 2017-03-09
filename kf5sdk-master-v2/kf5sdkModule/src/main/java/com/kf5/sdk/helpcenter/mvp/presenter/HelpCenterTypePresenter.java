@@ -2,17 +2,16 @@ package com.kf5.sdk.helpcenter.mvp.presenter;
 
 import android.support.v4.util.ArrayMap;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.kf5.sdk.helpcenter.entity.HelpCenterItem;
+import com.kf5.sdk.helpcenter.entity.HelpCenterItemForum;
 import com.kf5.sdk.helpcenter.entity.HelpCenterRequestType;
 import com.kf5.sdk.helpcenter.mvp.usecase.HelpCenterTypeCase;
+import com.kf5.sdk.helpcenter.mvp.view.IHelpCenterBaseView;
 import com.kf5.sdk.helpcenter.mvp.view.IHelpCenterTypeView;
 import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.entity.Result;
 import com.kf5.sdk.system.mvp.presenter.BasePresenter;
 import com.kf5.sdk.system.mvp.usecase.BaseUseCase;
-import com.kf5.sdk.system.utils.GsonManager;
-import com.kf5.sdk.system.utils.SafeJson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,7 @@ public class HelpCenterTypePresenter extends BasePresenter<IHelpCenterTypeView> 
         map.put(Field.CATEGORY_ID, String.valueOf(getMvpView().getForumId()));
         map.putAll(getMvpView().getCustomMap());
         HelpCenterTypeCase.RequestCase requestCase = new HelpCenterTypeCase.RequestCase(helpCenterRequestType, map);
-        dealData(requestCase, Field.FORUMS);
+        dealData(helpCenterRequestType, requestCase);
     }
 
     @Override
@@ -47,10 +46,10 @@ public class HelpCenterTypePresenter extends BasePresenter<IHelpCenterTypeView> 
         map.put(Field.QUERY, getMvpView().getSearchKey());
         map.putAll(getMvpView().getCustomMap());
         HelpCenterTypeCase.RequestCase requestCase = new HelpCenterTypeCase.RequestCase(helpCenterRequestType, map);
-        dealData(requestCase, Field.POSTS);
+        dealData(helpCenterRequestType, requestCase);
     }
 
-    private void dealData(HelpCenterTypeCase.RequestCase requestCase, final String filedKey) {
+    private void dealData(final HelpCenterRequestType type, HelpCenterTypeCase.RequestCase requestCase) {
         checkViewAttached();
         getMvpView().showLoading("");
         mHelpCenterTypeCase.setRequestValues(requestCase);
@@ -60,20 +59,13 @@ public class HelpCenterTypePresenter extends BasePresenter<IHelpCenterTypeView> 
                 if (isViewAttached()) {
                     getMvpView().hideLoading();
                     try {
-                        JSONObject jsonObject = SafeJson.parseObj(response.result);
-                        int resultCode = SafeJson.safeInt(jsonObject, Field.ERROR);
-                        if (resultCode == RESULT_OK) {
-                            JSONObject dataObj = SafeJson.safeObject(jsonObject, Field.DATA);
-                            JSONArray jsonArray = SafeJson.safeArray(dataObj, filedKey);
-                            List<HelpCenterItem> list = new ArrayList<>();
-                            int nextPage = SafeJson.safeInt(jsonObject, Field.NEXT_PAGE);
-                            if (jsonArray != null) {
-                                list.addAll(GsonManager.getInstance().getHelpCenterItemList(jsonArray.toString()));
-                            }
-                            getMvpView().onLoadForumList(nextPage, list);
-                        } else {
-                            String message = SafeJson.safeGet(jsonObject, Field.MESSAGE);
-                            getMvpView().showError(resultCode, message);
+                        switch (type) {
+                            case DEFAULT:
+                                dealForumsList(response.result);
+                                break;
+                            case SEARCH:
+                                IHelpCenterBaseView.HelpCenterDataBuilder.dealPostList(response.result, getMvpView());
+                                break;
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -91,6 +83,32 @@ public class HelpCenterTypePresenter extends BasePresenter<IHelpCenterTypeView> 
             }
         });
         mHelpCenterTypeCase.run();
+    }
+
+    /**
+     * 处理文档分类返回值
+     *
+     * @param data
+     */
+    private void dealForumsList(String data) {
+        Result<HelpCenterItemForum> result = Result.fromJson(data, HelpCenterItemForum.class);
+        if (result != null) {
+            int resultCode = result.getCode();
+            List<HelpCenterItem> list = new ArrayList<>();
+            int nextPage = 1;
+            if (resultCode == RESULT_OK) {
+                HelpCenterItemForum helpCenterItemObj = result.getData();
+                if (helpCenterItemObj != null) {
+                    if (helpCenterItemObj.getForums() != null) {
+                        list.addAll(helpCenterItemObj.getForums());
+                    }
+                    if (helpCenterItemObj.getNext_page() > 0) {
+                        nextPage = helpCenterItemObj.getNext_page();
+                    }
+                }
+            }
+            IHelpCenterBaseView.HelpCenterDataBuilder.dealHelpCenterData(resultCode, result.getMessage(), nextPage, list, getMvpView());
+        }
     }
 
 }
