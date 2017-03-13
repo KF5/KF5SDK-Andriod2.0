@@ -84,22 +84,22 @@
         android:textColor="@color/person_info_title_color"
         android:textSize="20sp"/>
 
-    <!--<TextView-->
-        <!--android:id="@+id/tvSetting"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center_vertical"-->
-        <!--android:background="@drawable/item_bg"-->
-        <!--android:drawableEnd="@drawable/kf5_jump_icon"-->
-        <!--android:drawableLeft="@mipmap/more_about_us"-->
-        <!--android:drawablePadding="@dimen/kf5_dimen_12dp"-->
-        <!--android:drawableRight="@drawable/kf5_jump_icon"-->
-        <!--android:drawableStart="@mipmap/more_about_us"-->
-        <!--android:gravity="center_vertical"-->
-        <!--android:padding="@dimen/kf5_dimen_12dp"-->
-        <!--android:text="@string/setting"-->
-        <!--android:textColor="@color/person_info_title_color"-->
-        <!--android:textSize="20sp"/>-->
+    <TextView
+        android:id="@+id/tvSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/item_bg"
+        android:drawableEnd="@drawable/kf5_jump_icon"
+        android:drawableLeft="@mipmap/more_about_us"
+        android:drawablePadding="@dimen/kf5_dimen_12dp"
+        android:drawableRight="@drawable/kf5_jump_icon"
+        android:drawableStart="@mipmap/more_about_us"
+        android:gravity="center_vertical"
+        android:padding="@dimen/kf5_dimen_12dp"
+        android:text="@string/language_setting"
+        android:textColor="@color/person_info_title_color"
+        android:textSize="20sp"/>
 
     <TextView
         android:id="@+id/tvAboutUS"

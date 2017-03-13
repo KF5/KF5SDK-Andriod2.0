@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/topLayout"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="?attr/actionBarSize"
         android:layout_alignParentTop="true"
         android:background="@color/kf5_title_bar_bg">
 
@@ -19,7 +19,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:contentDescription="@null"
-            android:src="@drawable/kf5_back_img_bg" />
+            android:src="@drawable/kf5_back_img_bg"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -27,7 +27,7 @@
             android:layout_centerInParent="true"
             android:text="@string/login"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/kf5_text_xh_size" />
+            android:textSize="@dimen/kf5_text_xh_size"/>
     </RelativeLayout>
 
     <ScrollView
@@ -54,12 +54,12 @@
                 android:paddingTop="12dp"
                 android:singleLine="true"
                 android:textColor="@color/login_info_text_color"
-                android:textColorHint="@color/text_color_hint" />
+                android:textColorHint="@color/text_color_hint"/>
 
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/table_devider"
-                android:background="@color/kf5_table_deliver" />
+                android:background="@color/kf5_table_deliver"/>
 
             <EditText
                 android:id="@+id/et_email"
@@ -73,12 +73,12 @@
                 android:paddingTop="12dp"
                 android:singleLine="true"
                 android:textColor="@color/login_info_text_color"
-                android:textColorHint="@color/text_color_hint" />
+                android:textColorHint="@color/text_color_hint"/>
 
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/table_devider"
-                android:background="@color/kf5_table_deliver" />
+                android:background="@color/kf5_table_deliver"/>
 
             <EditText
                 android:id="@+id/et_helpaddress"
@@ -92,12 +92,12 @@
                 android:paddingTop="12dp"
                 android:singleLine="true"
                 android:textColor="@color/login_info_text_color"
-                android:textColorHint="@color/text_color_hint" />
+                android:textColorHint="@color/text_color_hint"/>
 
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/table_devider"
-                android:background="@color/kf5_table_deliver" />
+                android:background="@color/kf5_table_deliver"/>
 
             <EditText
                 android:id="@+id/et_appid"
@@ -112,12 +112,12 @@
                 android:paddingTop="12dp"
                 android:textColor="@color/login_info_text_color"
                 android:textColorHint="@color/text_color_hint"
-                android:textSize="@dimen/high_size" />
+                android:textSize="@dimen/high_size"/>
 
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/table_devider"
-                android:background="@color/kf5_table_deliver" />
+                android:background="@color/kf5_table_deliver"/>
 
             <Button
                 android:id="@+id/login"
@@ -132,7 +132,7 @@
                 android:text="@string/login"
                 android:textColor="@drawable/login_text_bg"
                 android:textSize="@dimen/big_size"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
         </LinearLayout>
     </ScrollView>

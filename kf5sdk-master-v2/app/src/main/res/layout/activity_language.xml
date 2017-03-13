@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_language"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider"
+    android:orientation="vertical"
+    android:showDividers="middle"
+    tools:context="com.kf5sdk.exam.LanguageActivity">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/kf5_title_bar_bg">
+
+        <ImageView
+            android:id="@+id/back_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@null"
+            android:src="@drawable/kf5_back_img_bg"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/language_setting"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/kf5_text_xh_size"/>
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/tvChinese"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/item_bg"
+        android:drawablePadding="@dimen/kf5_dimen_12dp"
+        android:gravity="center_vertical"
+        android:padding="@dimen/kf5_dimen_16dp"
+        android:text="@string/chinese"
+        android:textColor="@color/person_info_title_color"
+        android:textSize="20sp"/>
+
+
+    <TextView
+        android:id="@+id/tvEnglish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/item_bg"
+        android:drawablePadding="@dimen/kf5_dimen_12dp"
+        android:gravity="center_vertical"
+        android:padding="@dimen/kf5_dimen_16dp"
+        android:text="@string/english"
+        android:textColor="@color/person_info_title_color"
+        android:textSize="20sp"/>
+
+</LinearLayout>

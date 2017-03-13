@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,16 +15,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSONObject;
 import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.entity.KF5User;
 import com.kf5.sdk.system.init.UserInfoAPI;
 import com.kf5.sdk.system.internet.HttpRequestCallBack;
 import com.kf5.sdk.system.utils.MD5Utils;
 import com.kf5.sdk.system.utils.SPUtils;
+import com.kf5.sdk.system.utils.SafeJson;
 import com.kf5sdk.exam.fragment.HomeFragment;
 import com.kf5sdk.exam.fragment.SettingsFragment;
 import com.kf5sdk.exam.utils.Utils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.ref.SoftReference;
 import java.util.Map;
@@ -111,11 +115,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initKF5SDK() {
         SPUtils.clearSP();
         final KF5User kf5User = new KF5User();
+//        kf5User.appid = "00155f5851e24de5079262dda41816a9cd253e165ef799cf";
+//        kf5User.email = "2016@qq.com";
+//        kf5User.helpAddress = "joymay.kf5.com";
+
+//        kf5User.appid = "00155f5851e24de5079262dda41816a9cd253e165ef799cf";
+//        kf5User.email = "2016@qq.com";
+//        kf5User.helpAddress = "joymay.kf5.com";
 
 
-        kf5User.appid = "001570f2c8a049396xxxxxxxxxxxxxxec320d0b35";
-        kf5User.email = "2xxxxx@qq.com";
-        kf5User.helpAddress = "xxxxx.kf5.com";
+//        kf5User.appid = "0015703278adb2883f1e71145ffa131ef6a8073e3ac7ec00";
+//        kf5User.email = "12346@qq.com";
+//        kf5User.helpAddress = "chosen.kf5.com";
+
+        kf5User.appid = "001570f2c8a0493961e0a5d927d3f8168dc1d3ec320d0b35";
+        kf5User.email = "234567@qq.com";
+        kf5User.helpAddress = "wuruo.kf5.com";
         kf5User.userAgent = Utils.getAgent(new SoftReference<Context>(MainActivity.this));
         Map<String, String> map = new ArrayMap<>();
         map.put(Field.EMAIL, kf5User.email);
@@ -128,24 +143,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onSuccess(String result) {
                 Log.i("kf5测试", "登录成功" + result);
 
-                final JSONObject jsonObject = JSONObject.parseObject(result);
-                int resultCode = jsonObject.getIntValue("error");
-                if (resultCode == 0) {
-                    JSONObject dataObj = jsonObject.getJSONObject(Field.DATA);
-                    JSONObject userObj = dataObj.getJSONObject(Field.USER);
-                    String userToken = userObj.getString(Field.USERTOKEN);
-                    int id = userObj.getIntValue(Field.ID);
-                    SPUtils.saveUserToken(userToken);
-                    SPUtils.saveUserId(id);
-                    Log.i("kf5测试", MD5Utils.GetMD5Code("kf5_ticket_" + SPUtils.getUserId()));
-                } else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String message = jsonObject.getString("message");
-                            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                try {
+                    final JSONObject jsonObject = SafeJson.parseObj(result);
+                    int resultCode = SafeJson.safeInt(jsonObject, "error");
+                    if (resultCode == 0) {
+                        JSONObject dataObj = SafeJson.safeObject(jsonObject, Field.DATA);
+                        JSONObject userObj = SafeJson.safeObject(dataObj, Field.USER);
+                        if (userObj != null) {
+                            String userToken = userObj.getString(Field.USERTOKEN);
+                            int id = userObj.getInt(Field.ID);
+                            SPUtils.saveUserToken(userToken);
+                            SPUtils.saveUserId(id);
+                            Log.i("kf5测试", MD5Utils.GetMD5Code("kf5_ticket_" + SPUtils.getUserId()));
                         }
-                    });
+                    } else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                String message = SafeJson.safeGet(jsonObject, "message");
+                                if (!TextUtils.isEmpty(message))
+                                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
 
             }
@@ -193,17 +215,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            }
 //        });
 //
-//        UserInfoAPI.getInstance().saveDeviceToken(map, new HttpRequestCallBack() {
-//            @Override
-//            public void onSuccess(String result) {
-//                Log.i("kf5测试", "保存设备Token成功" + result);
-//            }
-//
-//            @Override
-//            public void onFailure(String result) {
-//                Log.i("kf5测试", "保存设备Token失败" + result);
-//            }
-//        });
+        UserInfoAPI.getInstance().saveDeviceToken(map, new HttpRequestCallBack() {
+            @Override
+            public void onSuccess(String result) {
+                Log.i("kf5测试", "保存设备Token成功" + result);
+            }
+
+            @Override
+            public void onFailure(String result) {
+                Log.i("kf5测试", "保存设备Token失败" + result);
+            }
+        });
 //
 //        UserInfoAPI.getInstance().deleteDeviceToken(map, new HttpRequestCallBack() {
 //            @Override
