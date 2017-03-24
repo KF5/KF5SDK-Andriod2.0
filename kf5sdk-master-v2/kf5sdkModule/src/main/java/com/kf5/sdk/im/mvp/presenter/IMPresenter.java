@@ -19,8 +19,7 @@ import com.kf5.sdk.im.db.IMSQLManager;
 import com.kf5.sdk.im.entity.Agent;
 import com.kf5.sdk.im.entity.Chat;
 import com.kf5.sdk.im.entity.IMMessage;
-import com.kf5.sdk.im.entity.IMMessageManager;
-import com.kf5.sdk.im.entity.MessageType;
+import com.kf5.sdk.im.entity.IMMessageBuilder;
 import com.kf5.sdk.im.entity.Status;
 import com.kf5.sdk.im.entity.TimeOut;
 import com.kf5.sdk.im.entity.Upload;
@@ -207,30 +206,8 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                                     if (jsonArray != null) {
                                         List<IMMessage> list = GsonManager.getInstance().getIMMessageList(jsonArray.toString());
                                         for (IMMessage imMessage : list) {
-                                            String type = imMessage.getType();
-                                            switch (type) {
-                                                case Field.CHAT_MSG:
-                                                    imMessage.setMessageType(MessageType.TEXT);
-                                                    break;
-                                                case Field.CHAT_UPLOAD:
-                                                    Upload upload = imMessage.getUpload();
-                                                    String uploadType = upload.getType();
-                                                    if (Utils.isImage(uploadType))
-                                                        imMessage.setMessageType(MessageType.IMAGE);
-                                                    else if (Utils.isAMR(uploadType))
-                                                        imMessage.setMessageType(MessageType.VOICE);
-                                                    else imMessage.setMessageType(MessageType.FILE);
-                                                    break;
-                                                case Field.CHAT_SYSTEM:
-                                                    imMessage.setMessageType(MessageType.SYSTEM);
-                                                    break;
-                                            }
-                                            if (TextUtils.equals(Field.VISITOR, imMessage.getRole()))
-                                                imMessage.setCom(false);
-                                            else imMessage.setCom(true);
                                             imMessage.setStatus(Status.SUCCESS);
                                         }
-//                                        insertMessageToDB(list);
                                         getMvpView().onReceiveMessageList(insertMessageToDB(list));
                                     }
                                 } catch (Exception e) {
@@ -325,21 +302,20 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                             updateMessageByTimeStamp(message, timeStamp);
                             JSONObject jsonObject = SafeJson.parseObj(result);
                             IMMessage aiMessage = new IMMessage();
-                            aiMessage.setMessageType(MessageType.AI_MESSAGE);
+                            aiMessage.setRole(Field.ROBOT);
+                            aiMessage.setType(Field.AI_RECEIVE);
                             aiMessage.setStatus(Status.SUCCESS);
                             aiMessage.setCreated(System.currentTimeMillis() / 1000);
-                            aiMessage.setCom(true);
                             aiMessage.setMessage(com.kf5.sdk.im.utils.Utils.dealAIMessage(result));
                             aiMessage.setTimeStamp(SafeJson.safeGet(jsonObject, Field.TIMESTAMP));
                             aiMessage.setType(Field.CHAT_MSG);
                             getMvpView().onReceiveMessageList(Collections.singletonList(aiMessage));
 
                             IMMessage dbMessage = new IMMessage();
-                            dbMessage.setMessageType(MessageType.TEXT);
+                            dbMessage.setType(Field.AI_RECEIVE);
+                            dbMessage.setRole(Field.ROBOT);
                             dbMessage.setStatus(Status.SUCCESS);
                             dbMessage.setCreated(aiMessage.getCreated());
-                            dbMessage.setCom(true);
-                            dbMessage.setType(Field.CHAT_MSG);
                             dbMessage.setTimeStamp(aiMessage.getTimeStamp());
                             StringBuilder stringBuilder = new StringBuilder();
                             stringBuilder.append(SafeJson.safeGet(jsonObject, Field.CONTENT));
@@ -719,7 +695,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                         content = getMvpView().getContext().getString(R.string.kf5_rating_successfully);
                     else
                         content = getMvpView().getContext().getString(R.string.kf5_rating_failed);
-                    getMvpView().onReceiveMessageList(IMMessageManager.addIMMessageToList(IMMessageManager.buildSystemMessage(content)));
+                    getMvpView().onReceiveMessageList(IMMessageBuilder.addIMMessageToList(IMMessageBuilder.buildSystemMessage(content)));
                 }
             });
         } catch (RemoteException e) {
@@ -852,22 +828,10 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                                 String type = imMessage.getType();
                                 switch (type) {
                                     case Field.CHAT_MSG:
-                                        imMessage.setMessageType(MessageType.TEXT);
-                                        imMessage.setCom(true);
                                         break;
                                     case Field.CHAT_UPLOAD:
-                                        Upload upload = imMessage.getUpload();
-                                        String uploadType = upload.getType();
-                                        imMessage.setCom(true);
-                                        if (Utils.isImage(uploadType))
-                                            imMessage.setMessageType(MessageType.IMAGE);
-                                        else if (Utils.isAMR(uploadType))
-                                            imMessage.setMessageType(MessageType.VOICE);
-                                        else imMessage.setMessageType(MessageType.FILE);
                                         break;
                                     case Field.CHAT_SYSTEM:
-                                        imMessage.setMessageType(MessageType.SYSTEM);
-                                        imMessage.setCom(true);
                                         if (valueObj.has(Field.AGENT)) {
                                             isChangeAgent(SafeJson.safeObject(valueObj, Field.AGENT));
                                         }
@@ -942,7 +906,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                 String welComeMsg = SafeJson.safeGet(agentObj, Field.WELCOME_MSG);
                 if (!TextUtils.isEmpty(welComeMsg)) {
                     List<IMMessage> list = new ArrayList<>();
-                    list.add(IMMessageManager.buildReceiveTextMessage(welComeMsg));
+                    list.add(IMMessageBuilder.buildReceiveTextMessage(welComeMsg));
                     getMvpView().onReceiveMessageList(list);
                 }
             }
@@ -982,7 +946,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
     }
 
     private void pushAgentTimeOutMessage() {
-        getMvpView().onReceiveMessageList(Collections.singletonList(IMMessageManager.buildSystemMessage(timeOutMsg)));
+        getMvpView().onReceiveMessageList(Collections.singletonList(IMMessageBuilder.buildSystemMessage(timeOutMsg)));
     }
 
     /**

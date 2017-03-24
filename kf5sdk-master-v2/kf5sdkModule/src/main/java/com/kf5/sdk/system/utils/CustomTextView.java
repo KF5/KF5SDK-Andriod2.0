@@ -1,21 +1,29 @@
 package com.kf5.sdk.system.utils;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.widget.TextView;
 
+import com.kf5.sdk.R;
+import com.kf5.sdk.im.adapter.clickspan.CustomClickSpan;
+import com.kf5.sdk.im.adapter.clickspan.CustomLinkMovementMethod;
+import com.kf5.sdk.im.entity.CustomField;
 import com.kf5.sdk.im.expression.bean.EmojiDisplay;
 import com.kf5.sdk.im.keyboard.utils.EmoticonsKeyboardUtils;
 import com.kf5.sdk.system.listener.AIMessageMovementMethod;
 import com.kf5.sdk.system.listener.AIURLSpan;
 import com.kf5.sdk.system.listener.RichLinkMovementMethod;
 import com.kf5.sdk.system.listener.URLSpanNoUnderline;
+
+import org.json.JSONObject;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,18 +48,23 @@ public class CustomTextView {
 
         //至于dealData为什么要调用两次呢？我现在也muji，可能是第一次针对的是链接解析，第二次是html解析
         tv_content.setText(Html.fromHtml(filterHtmlTag(text)));
-        dealData(tv_content, context);
+        dealUnderLinesData(tv_content, context);
         Linkify.addLinks(tv_content, mask);
         tv_content.setMovementMethod(new RichLinkMovementMethod());
-        dealData(tv_content, context);
+        dealUnderLinesData(tv_content, context);
     }
 
 
-    private static void dealData(TextView tv_content, Context context) {
+    /**
+     * 解析link
+     *
+     * @param tv_content
+     * @param context
+     */
+    private static void dealUnderLinesData(TextView tv_content, Context context) {
         CharSequence charSequence = tv_content.getText();
         if (charSequence instanceof Spannable) {
             tv_content.setText("");
-//            Spannable s = (Spannable) charSequence;
             Spannable s = EmojiDisplay.spannableFilter(tv_content.getContext(),
                     new SpannableStringBuilder(charSequence),
                     charSequence,
@@ -76,23 +89,19 @@ public class CustomTextView {
      * @param text
      */
     public static void setTextWithAIMessage(Context context, TextView textView, String text) {
-
         textView.setText(Html.fromHtml(filterHtmlTag(text)));
-        CharSequence content = textView.getText();
-        if (content instanceof Spannable) {
-            textView.setText("");
-            Spannable s = (Spannable) content;
-            URLSpan[] spans = s.getSpans(0, s.length(), URLSpan.class);
-            for (URLSpan span : spans) {
-                int start = s.getSpanStart(span);
-                int end = s.getSpanEnd(span);
-                AIURLSpan myURLSpan = new AIURLSpan(span.getURL(), context);
-                s.setSpan(myURLSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            textView.append(s);
-        }
+        dealAILink(textView);
         Linkify.addLinks(textView, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
         textView.setMovementMethod(new AIMessageMovementMethod());
+        dealAILink(textView);
+    }
+
+    /**
+     * 解析机器人对话link
+     *
+     * @param textView
+     */
+    private static void dealAILink(TextView textView) {
         CharSequence charSequence = textView.getText();
         if (charSequence instanceof Spannable) {
             textView.setText("");
@@ -101,13 +110,88 @@ public class CustomTextView {
             for (URLSpan span : spans) {
                 int start = s.getSpanStart(span);
                 int end = s.getSpanEnd(span);
-                AIURLSpan myURLSpan = new AIURLSpan(span.getURL(), context);
+                AIURLSpan myURLSpan = new AIURLSpan(span.getURL(), textView.getContext());
                 s.setSpan(myURLSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             textView.append(s);
         }
     }
 
+
+    /**
+     * 显示富文本消息
+     *
+     * @param textView
+     * @param message
+     */
+    public static void setCustomMessage(TextView textView, String message) {
+        JSONObject jsonObject = SafeJson.parseObj(message);
+        if (SafeJson.isContainKey(jsonObject, CustomField.TYPE)) {
+            String type = SafeJson.safeGet(jsonObject, CustomField.TYPE);
+            if (TextUtils.equals(CustomField.VIDEO, type)) {
+                if (SafeJson.isContainKey(jsonObject, CustomField.VISITOR_URL)) {
+                    String url = SafeJson.safeGet(jsonObject, CustomField.VISITOR_URL);
+                    textView.setText(makeUrlWithHtmlHref(url, textView.getContext().getString(R.string.kf5_invite_video_chat)));
+                } else {
+                    textView.setText(resolveTextWithHtmlTag(message));
+                }
+            } else {
+                textView.setText(resolveTextWithHtmlTag(message));
+            }
+        } else {
+            textView.setText(resolveTextWithHtmlTag(message));
+        }
+        dealCustomLink(textView);
+        Linkify.addLinks(textView, Linkify.ALL);
+        textView.setMovementMethod(new CustomLinkMovementMethod());
+        dealCustomLink(textView);
+    }
+
+    /**
+     * 解析富文本link
+     *
+     * @param textView
+     */
+    private static void dealCustomLink(TextView textView) {
+        CharSequence charSequence = textView.getText();
+        if (charSequence instanceof Spannable) {
+            textView.setText("");
+            Spannable s = (Spannable) charSequence;
+            URLSpan[] spans = s.getSpans(0, s.length(), URLSpan.class);
+            for (URLSpan span : spans) {
+                int start = s.getSpanStart(span);
+                int end = s.getSpanEnd(span);
+                CustomClickSpan myURLSpan = new CustomClickSpan(textView.getContext(), span.getURL());
+                s.setSpan(myURLSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            textView.append(s);
+        }
+    }
+
+    /**
+     * url拼接A标签
+     *
+     * @param url
+     * @param hrefText
+     * @return
+     */
+    public static Spanned makeUrlWithHtmlHref(String url, String hrefText) {
+        String string = "<a href=" +
+                url +
+                ">" +
+                hrefText +
+                "</a>";
+        return resolveTextWithHtmlTag(string);
+    }
+
+
+    private static Spanned resolveTextWithHtmlTag(String text) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT);
+        } else {
+            return Html.fromHtml(text);
+        }
+    }
 
     private final static String[] PROTOCOL = new String[]{"http://", "https://", "rtsp://"};
 

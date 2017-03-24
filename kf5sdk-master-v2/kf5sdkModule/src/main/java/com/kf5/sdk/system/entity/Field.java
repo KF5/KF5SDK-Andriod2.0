@@ -9,7 +9,11 @@ package com.kf5.sdk.system.entity;
 
 public class Field {
 
+    public static final String RECT = "rect";
+
     public static final String VISITOR = "visitor";
+
+    public static final String ROBOT = "robot";
 
     public static final String DOCUMENTS = "documents";
 
@@ -33,6 +37,12 @@ public class Field {
 
     public static final String QUEUE_UPDATE = "queue_update";
 
+    public static final String QUEUE_WAITING = "queue.waiting";
+
+    public static final String AI_SEND = "chat.ai_send";
+
+    public static final String AI_RECEIVE = "chat.ai_receive";
+
     public static final String INDEX = "index";
 
     public static final String NONE = "none";
@@ -44,6 +54,8 @@ public class Field {
     public static final String CHAT_SYSTEM = "chat.system";
 
     public static final String CHAT_UPLOAD = "chat.upload";
+
+    public static final String CHAT_CUSTOM = "chat.custom";
 
     public static final String CHAT_URL = "chat_url";
 

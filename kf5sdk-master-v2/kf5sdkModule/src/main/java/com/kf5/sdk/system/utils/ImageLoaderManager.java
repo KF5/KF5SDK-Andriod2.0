@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
 import com.kf5.sdk.R;
-import com.kf5.sdk.im.utils.ImageUtils;
 
 /**
  * author:chosen
@@ -71,35 +70,21 @@ public class ImageLoaderManager {
         Glide.with(context)
                 .load(id)
                 .asBitmap()
-                .centerCrop()
                 .thumbnail(0.1f)
                 .placeholder(R.drawable.kf5_image_loading)
                 .into(imageView);
     }
+
 
     public void displayImage(String url, ImageView imageView, RequestListener<String, Bitmap> requestListener) {
+
         Glide.with(context)
                 .load(url)
                 .asBitmap()
-                .centerCrop()
-                .placeholder(R.drawable.kf5_image_loading)
-                .error(R.drawable.kf5_image_loading_failed)
-                .listener(requestListener)
-                .into(imageView);
-    }
-
-    public void displayImage(String url, ImageView imageView, int width, int height, RequestListener<String, Bitmap> requestListener) {
-
-        ImageUtils.ImageSize imageSize = ImageUtils.getImageSize(context, width, height);
-        Glide.with(context)
-                .load(url)
-                .asBitmap()
-                .centerCrop()
                 .thumbnail(0.1f)
                 .placeholder(R.drawable.kf5_image_loading)
                 .error(R.drawable.kf5_image_loading_failed)
                 .listener(requestListener)
-                .override(imageSize.width, imageSize.height)
                 .into(imageView);
     }
 

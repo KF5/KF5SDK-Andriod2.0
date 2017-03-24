@@ -23,6 +23,11 @@ public class SafeJson {
         return null;
     }
 
+
+    public static boolean isContainKey(JSONObject jsonObject, String key) {
+        return jsonObject != null && jsonObject.has(key);
+    }
+
     public static String safeGet(JSONObject object, String field) {
 
         if (object != null && object.has(field)) {

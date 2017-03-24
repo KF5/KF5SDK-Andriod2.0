@@ -9,23 +9,21 @@ import com.kf5.sdk.im.widget.CircleImageView;
 
 /**
  * author:chosen
- * date:2016/10/26 15:05
+ * date:2017/3/22 11:09
  * email:812219713@qq.com
  */
 
-class TextReceiveHolder extends AbstractHolder {
+public class CustomSendHolder extends AbstractHolder {
 
     private TextView contentText;
-
     private CircleImageView headImg;
-
     private TextView tvDate;
 
 
-    TextReceiveHolder(View convertView) {
+    public CustomSendHolder(View convertView) {
         super(convertView.getContext());
-        headImg = (CircleImageView) convertView.findViewById(R.id.kf5_message_item_with_text_head_img);
-        contentText = (TextView) convertView.findViewById(R.id.kf5_message_item_with_text);
+        headImg = (CircleImageView) convertView.findViewById(R.id.kf5_message_item_head_img);
+        contentText = (TextView) convertView.findViewById(R.id.kf5_message_item_with_custom_content);
         tvDate = (TextView) convertView.findViewById(R.id.kf5_tvDate);
         convertView.setTag(this);
     }
@@ -33,12 +31,11 @@ class TextReceiveHolder extends AbstractHolder {
     public void bindData(IMMessage message, int position, IMMessage previousMessage) {
 
         try {
-            loadImage(headImg, R.drawable.kf5_agent);
-            loadTextData(message, contentText, position);
+            loadImage(headImg, R.drawable.kf5_end_user);
+            loadCustomData(message, contentText);
             dealDate(position, tvDate, message, previousMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }

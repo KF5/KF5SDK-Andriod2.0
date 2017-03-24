@@ -5,7 +5,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.support.v4.util.ArrayMap;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -21,10 +20,10 @@ import com.kf5.sdk.R;
 import com.kf5.sdk.helpcenter.entity.Attachment;
 import com.kf5.sdk.system.base.BaseActivity;
 import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.entity.ParamsKey;
 import com.kf5.sdk.system.mvp.presenter.PresenterFactory;
 import com.kf5.sdk.system.mvp.presenter.PresenterLoader;
 import com.kf5.sdk.system.utils.ImageLoaderManager;
-import com.kf5.sdk.system.utils.SPUtils;
 import com.kf5.sdk.system.utils.Utils;
 import com.kf5.sdk.system.widget.DialogBox;
 import com.kf5.sdk.ticket.adapter.FeedBackDetailAdapter;
@@ -88,6 +87,8 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
     private int mRatingStatus;
 
     private RatingReceiver mRatingReceiver;
+
+    private String nickName;
 
 
     @Override
@@ -174,8 +175,8 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
     @Override
     public Map<String, String> getTicketDetailMap() {
         Map<String, String> map = new ArrayMap<>();
-        map.put(Field.PAGE, String.valueOf(nextPage));
-        map.put(Field.PER_PAGE, String.valueOf(Field.PAGE_SIZE));
+        map.put(ParamsKey.PAGE, String.valueOf(nextPage));
+        map.put(ParamsKey.PER_PAGE, String.valueOf(Field.PAGE_SIZE));
         return map;
     }
 
@@ -209,6 +210,7 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
                             mRatingStatus = requester.getRating();
                         }
                         mRatingContent = requester.getRatingContent();
+                        nickName = commentList.get(0).getAuthorName();
                     }
                     mFeedBackDetailAdapter.notifyDataSetChanged();
                     nextPage = _nextPage;
@@ -275,7 +277,8 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
         comment.setContent(mETContent.getText().toString());
         comment.setCreatedAt(System.currentTimeMillis() / 1000);
         comment.setMessageStatus(MessageStatus.SENDING);
-        comment.setAuthorName(!TextUtils.isEmpty(SPUtils.getUserName()) ? SPUtils.getUserName() : "Android SDK");
+//        comment.setAuthorName(!TextUtils.isEmpty(SPUtils.getUserName()) ? SPUtils.getUserName() : "Android SDK");
+        comment.setAuthorName(nickName);
         List<Attachment> attachments = new ArrayList<>();
         for (int i = 0; i < getFileList().size(); i++) {
             Attachment attachment = new Attachment();
@@ -290,8 +293,8 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
         showDialog = false;
         String content = mETContent.getText().toString();
         Map<String, String> map = new ArrayMap<>();
-        map.put(Field.CONTENT, content);
-        map.put(Field.TICKET_ID, String.valueOf(ticket_id));
+        map.put(ParamsKey.CONTENT, content);
+        map.put(ParamsKey.TICKET_ID, String.valueOf(ticket_id));
         mETContent.setText("");
         presenter.replayTicket(map);
     }
@@ -331,8 +334,8 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
                             try {
                                 dialog.dismiss();
                                 Map<String, String> map = new ArrayMap<>();
-                                map.put(Field.CONTENT, comment.getContent());
-                                map.put(Field.TICKET_ID, String.valueOf(ticket_id));
+                                map.put(ParamsKey.CONTENT, comment.getContent());
+                                map.put(ParamsKey.TICKET_ID, String.valueOf(ticket_id));
                                 presenter.replayTicket(map);
                                 comment.setMessageStatus(MessageStatus.SENDING);
                                 mFeedBackDetailAdapter.notifyDataSetChanged();

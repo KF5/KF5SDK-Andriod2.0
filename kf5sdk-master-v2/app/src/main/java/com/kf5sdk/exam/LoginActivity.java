@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.entity.ParamsKey;
 import com.kf5.sdk.system.init.UserInfoAPI;
 import com.kf5.sdk.system.internet.HttpRequestCallBack;
 import com.kf5.sdk.system.utils.SPUtils;
@@ -52,10 +53,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         etName = (EditText) findViewById(R.id.et_name);
         btnLogin = (Button) findViewById(R.id.login);
         btnLogin.setOnClickListener(this);
+
         etEmail.setText("123456@qq.com");
         etAddress.setText("chosen.kf5.com");
         etAppid.setText("0015703278adb2883f1e71145ffa131ef6a8073e3ac7ec00");
         etName.setText("Android 用户");
+
+//        etEmail.setText("123456@qq.com");
+//        etAddress.setText("im2.kf5.com");
+//        etAppid.setText("00158b3c29707edc00722d20870160827178d782697e97b7");
+//        etName.setText("Android 用户");
 
 
         //第一个测试App
@@ -93,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.login:
                 final Map<String, String> map = new ArrayMap<>();
-                map.put(Field.EMAIL, etEmail.getText().toString());
+                map.put(ParamsKey.EMAIL, etEmail.getText().toString());
 //                map.put(Field.PHONE, "18715965784");
                 SPUtils.saveAppID(etAppid.getText().toString());
                 SPUtils.saveHelpAddress(etAddress.getText().toString());
@@ -223,7 +230,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
     private void saveToken(Map<String, String> map) {
-        map.put(Field.DEVICE_TOKEN, "123456");
+        map.put(ParamsKey.DEVICE_TOKEN, "123456");
         UserInfoAPI.getInstance().saveDeviceToken(map, new HttpRequestCallBack() {
             @Override
             public void onSuccess(String result) {

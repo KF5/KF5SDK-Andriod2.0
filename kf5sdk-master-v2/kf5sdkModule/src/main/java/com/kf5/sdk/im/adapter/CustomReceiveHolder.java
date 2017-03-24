@@ -9,11 +9,11 @@ import com.kf5.sdk.im.widget.CircleImageView;
 
 /**
  * author:chosen
- * date:2016/10/26 15:05
+ * date:2017/3/22 10:38
  * email:812219713@qq.com
  */
 
-class TextReceiveHolder extends AbstractHolder {
+public class CustomReceiveHolder extends AbstractHolder {
 
     private TextView contentText;
 
@@ -22,23 +22,22 @@ class TextReceiveHolder extends AbstractHolder {
     private TextView tvDate;
 
 
-    TextReceiveHolder(View convertView) {
-        super(convertView.getContext());
-        headImg = (CircleImageView) convertView.findViewById(R.id.kf5_message_item_with_text_head_img);
-        contentText = (TextView) convertView.findViewById(R.id.kf5_message_item_with_text);
-        tvDate = (TextView) convertView.findViewById(R.id.kf5_tvDate);
-        convertView.setTag(this);
+    public CustomReceiveHolder(View itemView) {
+        super(itemView.getContext());
+        headImg = (CircleImageView) itemView.findViewById(R.id.kf5_message_item_head_img);
+        contentText = (TextView) itemView.findViewById(R.id.kf5_message_item_with_custom_content);
+        tvDate = (TextView) itemView.findViewById(R.id.kf5_tvDate);
+        itemView.setTag(this);
+
     }
 
     public void bindData(IMMessage message, int position, IMMessage previousMessage) {
-
         try {
             loadImage(headImg, R.drawable.kf5_agent);
-            loadTextData(message, contentText, position);
+            loadCustomData(message, contentText);
             dealDate(position, tvDate, message, previousMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }

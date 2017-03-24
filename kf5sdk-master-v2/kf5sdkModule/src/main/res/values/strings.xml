@@ -127,4 +127,5 @@
     <string name="kf5_unsatisfied">不满意</string>
     <string name="kf5_reminder">温馨提示</string>
     <string name="kf5_unknown_error">未知错误</string>
+    <string name="kf5_invite_video_chat">客服邀请您进行视频聊天</string>
 </resources>

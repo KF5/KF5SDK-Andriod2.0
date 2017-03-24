@@ -54,7 +54,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 + DataBaseColumn.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + DataBaseColumn.CHAT_ID + " INTEGER, "
                 + DataBaseColumn.MESSAGE_ID + " INTEGER, "
-                + DataBaseColumn.IS_COM + " INTEGER DEFAULT 0, "
                 + DataBaseColumn.MESSAGE + " TEXT, "
                 + DataBaseColumn.CREATED_DATE + " INTEGER, "
                 + DataBaseColumn.FILE_URL + " TEXT, "
@@ -63,6 +62,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 + DataBaseColumn.FILE_NAME + " TEXT, "
                 + DataBaseColumn.SEND_STATUS + " INTEGER DEFAULT 0, "
                 + DataBaseColumn.MESSAGE_TYPE + " TEXT, "
+                + DataBaseColumn.ROLE + " TEXT, "
                 + DataBaseColumn.IS_READ + "  INTEGER DEFAULT 0, "
                 + DataBaseColumn.MARK + " TEXT "
                 + ");";

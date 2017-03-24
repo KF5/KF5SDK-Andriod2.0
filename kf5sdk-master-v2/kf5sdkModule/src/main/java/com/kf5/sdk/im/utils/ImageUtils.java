@@ -78,8 +78,11 @@ public class ImageUtils {
         }
     }
 
-    public static ImageSize getImageSize(Context context, int width, int height) {
-        return getThumbnailDisplaySize(width, height, Utils.getImageMaxEdge(context), Utils.getImageMinEdge(context));
+
+    public static void setNetImageSize(ImageView imageView, int width, int height) {
+        Context context = imageView.getContext();
+        ImageSize imageSize = getThumbnailDisplaySize(width, height, Utils.getImageMaxEdge(context), Utils.getImageMinEdge(context));
+        setLayoutParams(imageSize.width, imageSize.height, imageView);
     }
 
 

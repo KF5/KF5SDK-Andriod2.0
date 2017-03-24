@@ -15,7 +15,7 @@ import java.util.List;
  * 消息实体工厂提供类
  */
 
-public class IMMessageManager {
+public class IMMessageBuilder {
 
     /**
      * 发送文本消息实体
@@ -24,7 +24,7 @@ public class IMMessageManager {
      * @return
      */
     public static IMMessage buildSendTextMessage(String content) {
-        return buildCommonIMMessage(content, Field.CHAT_MSG, MessageType.TEXT, Status.SENDING, false);
+        return buildCommonIMMessage(content, Field.CHAT_MSG, Field.VISITOR, Status.SENDING);
     }
 
     /**
@@ -34,7 +34,7 @@ public class IMMessageManager {
      * @return
      */
     public static IMMessage buildSystemMessage(String content) {
-        return buildCommonIMMessage(content, Field.CHAT_SYSTEM, MessageType.SYSTEM, Status.SENDING, false);
+        return buildCommonIMMessage(content, Field.CHAT_SYSTEM, "", Status.SENDING);
     }
 
     /**
@@ -44,7 +44,7 @@ public class IMMessageManager {
      * @return
      */
     public static IMMessage buildSendImageMessage(String path) {
-        return buildCommonUploadMessage(path, MessageType.IMAGE, false);
+        return buildCommonUploadMessage(path, Field.VISITOR);
     }
 
     /**
@@ -82,7 +82,7 @@ public class IMMessageManager {
      * @return
      */
     public static IMMessage buildSendQueueMessage(String content) {
-        return buildCommonIMMessage(content, Field.CHAT_MSG, MessageType.QUEUE_WAITING, Status.SENDING, false);
+        return buildCommonIMMessage(content, Field.QUEUE_WAITING, "", Status.SENDING);
     }
 
     /**
@@ -92,7 +92,7 @@ public class IMMessageManager {
      * @return
      */
     public static IMMessage buildSendVoiceMessage(String path) {
-        return buildCommonUploadMessage(path, MessageType.VOICE, false);
+        return buildCommonUploadMessage(path, Field.VISITOR);
     }
 
     /**
@@ -102,7 +102,7 @@ public class IMMessageManager {
      * @return
      */
     public static IMMessage buildSendAIMessage(String content) {
-        return buildCommonIMMessage(content, Field.CHAT_MSG, MessageType.AI_MESSAGE, Status.SENDING, false);
+        return buildCommonIMMessage(content, Field.AI_SEND, Field.VISITOR, Status.SENDING);
     }
 
     /**
@@ -112,7 +112,7 @@ public class IMMessageManager {
      * @return
      */
     public static IMMessage buildReceiveTextMessage(String content) {
-        return buildCommonIMMessage(content, Field.CHAT_MSG, MessageType.TEXT, Status.SENDING, true);
+        return buildCommonIMMessage(content, Field.CHAT_MSG, Field.AGENT, Status.SENDING);
     }
 
 
@@ -129,8 +129,8 @@ public class IMMessageManager {
     }
 
 
-    private static IMMessage buildCommonUploadMessage(String path, MessageType messageType, boolean isCom) {
-        IMMessage imMessage = buildCommonIMMessage("", Field.CHAT_UPLOAD, messageType, Status.SENDING, isCom);
+    private static IMMessage buildCommonUploadMessage(String path, String role) {
+        IMMessage imMessage = buildCommonIMMessage("", Field.CHAT_UPLOAD, role, Status.SENDING);
         imMessage.setUpload(buildCommonUpload(path));
         return imMessage;
     }
@@ -139,23 +139,20 @@ public class IMMessageManager {
     /**
      * @param content
      * @param type
-     * @param messageType
+     * @param role
      * @param status
-     * @param isCom
      * @return
      */
-    private static IMMessage buildCommonIMMessage(String content, String type, MessageType messageType, Status status, boolean isCom) {
+    private static IMMessage buildCommonIMMessage(String content, String type, String role, Status status) {
         IMMessage imMessage = new IMMessage();
-        imMessage.setCom(isCom);
         imMessage.setMessage(content);
         imMessage.setStatus(status);
         imMessage.setIsRead(0);
-        imMessage.setMessageType(messageType);
+        imMessage.setRole(role);
         imMessage.setType(type);
         long time = System.currentTimeMillis();
         imMessage.setTimeStamp(String.valueOf(time));
         imMessage.setCreated(time / 1000);
-//        imMessage.setTag(String.valueOf(time));
         return imMessage;
     }
 

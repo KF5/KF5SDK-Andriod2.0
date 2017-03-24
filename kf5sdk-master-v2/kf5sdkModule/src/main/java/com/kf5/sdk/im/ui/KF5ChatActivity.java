@@ -11,8 +11,7 @@ import com.kf5.sdk.R;
 import com.kf5.sdk.im.entity.Agent;
 import com.kf5.sdk.im.entity.Chat;
 import com.kf5.sdk.im.entity.IMMessage;
-import com.kf5.sdk.im.entity.IMMessageManager;
-import com.kf5.sdk.im.entity.MessageType;
+import com.kf5.sdk.im.entity.IMMessageBuilder;
 import com.kf5.sdk.im.entity.Status;
 import com.kf5.sdk.im.mvp.presenter.IMPresenter;
 import com.kf5.sdk.im.widget.RatingDialog;
@@ -68,8 +67,14 @@ public class KF5ChatActivity extends BaseChatActivity {
      */
     @Override
     public void scConnectError(String connectErrorMsg) {
-        isAgentOnline = false;
-        hideLoading();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                isAgentOnline = false;
+                hideLoading();
+                setTitleText(getString(R.string.kf5_not_connected));
+            }
+        });
     }
 
     /**
@@ -241,29 +246,36 @@ public class KF5ChatActivity extends BaseChatActivity {
      * @param message
      */
     @Override
-    public void onGetAgentResult(int code, String message) {
-        try {
-            if (code == OK) {
-                JSONObject jsonObject = new JSONObject(message);
-                int index;
-                if (jsonObject.has(Field.INDEX)) {
-                    index = SafeJson.safeInt(jsonObject, Field.INDEX);
-                } else {
-                    index = -1;
-                }
-                //处于排队中
-                if (index >= 0) {
-                    setTitleContent(getString(R.string.kf5_queue_waiting));
-                    refreshListAndNotifyData(IMMessageManager.addIMMessageToList(IMMessageManager.buildSendQueueMessage(getString(R.string.kf5_update_queue_num, (index + 1)))));
-                } else {
-                    setTitleContent(getString(R.string.kf5_no_agent_online));
-                    showNoAgentOnlineReminderDialog();
-                    isAgentOnline = false;
+    public void onGetAgentResult(final int code, final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (code == OK) {
+                        JSONObject jsonObject = new JSONObject(message);
+                        int index;
+                        if (jsonObject.has(Field.INDEX)) {
+                            index = SafeJson.safeInt(jsonObject, Field.INDEX);
+                        } else {
+                            index = -1;
+                        }
+                        //处于排队中
+                        if (index >= 0) {
+                            setTitleContent(getString(R.string.kf5_queue_waiting));
+                            refreshListAndNotifyData(IMMessageBuilder.addIMMessageToList(IMMessageBuilder.buildSendQueueMessage(getString(R.string.kf5_update_queue_num, (index + 1)))));
+                        } else {
+                            setTitleContent(getString(R.string.kf5_no_agent_online));
+                            showNoAgentOnlineReminderDialog();
+                            mXhsEmoticonsKeyBoard.showQueueViewToIMView();
+                            isAgentOnline = false;
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        });
+
     }
 
     /**
@@ -336,7 +348,7 @@ public class KF5ChatActivity extends BaseChatActivity {
                     if (TextUtils.equals(Field.ONLINE, agentStatus)) {
                         int index = SafeJson.safeInt(jsonObject, Field.INDEX);
                         for (IMMessage imMessage : mIMMessageList) {
-                            if (imMessage.getMessageType() == MessageType.QUEUE_WAITING) {
+                            if (TextUtils.equals(Field.QUEUE_WAITING, imMessage.getType())) {
                                 imMessage.setMessage(getString(R.string.kf5_update_queue_num, (index + 1)));
                                 break;
                             }
@@ -480,7 +492,7 @@ public class KF5ChatActivity extends BaseChatActivity {
 
     private void removeQueueItemView() {
         for (IMMessage imMessage : mIMMessageList) {
-            if (imMessage.getMessageType() == MessageType.QUEUE_WAITING) {
+            if (TextUtils.equals(Field.QUEUE_WAITING, imMessage.getType())) {
                 mIMMessageList.remove(imMessage);
                 refreshData();
                 break;

@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.kf5.sdk.im.entity.IMMessage;
-import com.kf5.sdk.im.entity.MessageType;
 import com.kf5.sdk.im.entity.Status;
 import com.kf5.sdk.im.entity.Upload;
 import com.kf5.sdk.system.entity.Field;
@@ -51,10 +50,10 @@ public class IMSQLManager extends SQLManager {
      */
     public static IMMessage insertMessage(Context context, IMMessage iMMessage) {
         if (isContainTimeStamp(context, iMMessage.getTimeStamp())) {
-            return update(context, iMMessage);
-        } else {
-            insert(context, iMMessage);
+            update(context, iMMessage);
             return null;
+        } else {
+            return insert(context, iMMessage);
         }
     }
 
@@ -65,10 +64,10 @@ public class IMSQLManager extends SQLManager {
      * @param iMMessage
      * @return
      */
-    private static void insert(Context context, IMMessage iMMessage) {
+    private static IMMessage insert(Context context, IMMessage iMMessage) {
 
         Log.i(Utils.KF5_TAG, "插入消息");
-        if (iMMessage == null) return;
+        if (iMMessage == null) return null;
         ContentValues contentValues = new ContentValues();
         try {
             contentValues.put(DataBaseColumn.CHAT_ID, iMMessage.getChatId());
@@ -77,8 +76,8 @@ public class IMSQLManager extends SQLManager {
             contentValues.put(DataBaseColumn.MESSAGE, iMMessage.getMessage());
             contentValues.put(DataBaseColumn.CREATED_DATE, iMMessage.getCreated());
             contentValues.put(DataBaseColumn.MESSAGE_ID, iMMessage.getId());
-            contentValues.put(DataBaseColumn.IS_COM, iMMessage.isCom() ? 0 : 1);
             contentValues.put(DataBaseColumn.MARK, iMMessage.getTimeStamp());
+            contentValues.put(DataBaseColumn.ROLE, iMMessage.getRole());
             switch (iMMessage.getStatus()) {
                 case FAILED:
                     contentValues.put(DataBaseColumn.SEND_STATUS, -1);
@@ -103,6 +102,7 @@ public class IMSQLManager extends SQLManager {
         } finally {
             contentValues.clear();
         }
+        return iMMessage;
     }
 
 
@@ -113,10 +113,10 @@ public class IMSQLManager extends SQLManager {
      * @param iMMessage
      * @return
      */
-    private static IMMessage update(Context context, IMMessage iMMessage) {
+    private static void update(Context context, IMMessage iMMessage) {
 
         Log.i(Utils.KF5_TAG, "更新消息");
-        if (iMMessage == null) return null;
+        if (iMMessage == null) return;
         ContentValues contentValues = new ContentValues();
         try {
             contentValues.put(DataBaseColumn.CHAT_ID, iMMessage.getChatId());
@@ -125,8 +125,8 @@ public class IMSQLManager extends SQLManager {
             contentValues.put(DataBaseColumn.MESSAGE, iMMessage.getMessage());
             contentValues.put(DataBaseColumn.CREATED_DATE, iMMessage.getCreated());
             contentValues.put(DataBaseColumn.MESSAGE_ID, iMMessage.getId());
-            contentValues.put(DataBaseColumn.IS_COM, iMMessage.isCom() ? 0 : 1);
             contentValues.put(DataBaseColumn.MARK, iMMessage.getTimeStamp());
+            contentValues.put(DataBaseColumn.ROLE, iMMessage.getRole());
             switch (iMMessage.getStatus()) {
                 case FAILED:
                     contentValues.put(DataBaseColumn.SEND_STATUS, -1);
@@ -152,7 +152,6 @@ public class IMSQLManager extends SQLManager {
         } finally {
             contentValues.clear();
         }
-        return null;
     }
 
 
@@ -386,8 +385,8 @@ public class IMSQLManager extends SQLManager {
                 iMMessage.setCreated(cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseColumn.CREATED_DATE)));
                 iMMessage.setMessage(cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.MESSAGE)));
                 iMMessage.setIsRead(cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseColumn.IS_READ)));
-                iMMessage.setCom(cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseColumn.IS_COM)) == 0);
                 iMMessage.setTimeStamp(cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.MARK)));
+                iMMessage.setRole(cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.ROLE)));
                 String type = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.MESSAGE_TYPE));
                 iMMessage.setType(type);
                 int status = cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseColumn.SEND_STATUS));
@@ -404,22 +403,11 @@ public class IMSQLManager extends SQLManager {
                 }
                 if (TextUtils.equals(Field.CHAT_UPLOAD, type)) {
                     Upload upload = new Upload();
-                    String fileType = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.FILE_TYPE));
-                    upload.setType(fileType);
+                    upload.setType(cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.FILE_TYPE)));
                     upload.setUrl(cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.FILE_URL)));
                     upload.setName(cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.FILE_NAME)));
                     upload.setLocalPath(cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.LOCAL_PATH)));
                     iMMessage.setUpload(upload);
-                    if (TextUtils.equals(Field.AMR, fileType))
-                        iMMessage.setMessageType(MessageType.VOICE);
-                    else if (Utils.isImage(fileType))
-                        iMMessage.setMessageType(MessageType.IMAGE);
-                    else
-                        iMMessage.setMessageType(MessageType.FILE);
-                } else if (TextUtils.equals(Field.CHAT_SYSTEM, type)) {
-                    iMMessage.setMessageType(MessageType.SYSTEM);
-                } else {
-                    iMMessage.setMessageType(MessageType.TEXT);
                 }
                 list.add(iMMessage);
                 cursor.moveToNext();

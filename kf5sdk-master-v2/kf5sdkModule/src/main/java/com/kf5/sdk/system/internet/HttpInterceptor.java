@@ -1,5 +1,6 @@
 package com.kf5.sdk.system.internet;
 
+import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5Engine.okhttp.Interceptor;
 import com.kf5Engine.okhttp.Request;
 import com.kf5Engine.okhttp.Response;
@@ -31,6 +32,7 @@ final class HttpInterceptor implements Interceptor {
 
 
     private static String encodeHeadInfo(String headInfo) {
+        LogUtil.printf("这里是需要设置的UserAgent" + headInfo);
         StringBuilder stringBuffer = new StringBuilder();
         for (int i = 0, length = headInfo.length(); i < length; i++) {
             char c = headInfo.charAt(i);

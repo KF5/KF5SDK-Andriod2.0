@@ -1,20 +1,13 @@
 package com.kf5.sdk.im.adapter;
 
-import android.graphics.Color;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kf5.sdk.R;
-import com.kf5.sdk.im.adapter.listener.MessageTextLongListener;
 import com.kf5.sdk.im.entity.IMMessage;
-import com.kf5.sdk.im.entity.Status;
 import com.kf5.sdk.im.widget.CircleImageView;
-import com.kf5.sdk.system.base.BaseContext;
-import com.kf5.sdk.system.utils.CustomTextView;
-import com.kf5.sdk.system.utils.ImageLoaderManager;
-import com.kf5.sdk.system.utils.Utils;
 
 /**
  * author:chosen
@@ -22,7 +15,7 @@ import com.kf5.sdk.system.utils.Utils;
  * email:812219713@qq.com
  */
 
-class AIMessageSendHolder extends BaseContext {
+class AIMessageSendHolder extends AbstractHolder {
 
     private TextView contentText;
 
@@ -48,41 +41,12 @@ class AIMessageSendHolder extends BaseContext {
     public void bindData(IMMessage message, int position, IMMessage previousMessage) {
 
         try {
-            ImageLoaderManager.getInstance(context).displayImage(R.drawable.kf5_end_user, headImg);
-            CustomTextView.setTextWithAIMessage(context, contentText, message.getMessage());
-            contentText.setOnLongClickListener(new MessageTextLongListener(context, message, position));
-            if (message.getStatus() == Status.SENDING) {
-                progressBar.setVisibility(View.VISIBLE);
-                failLayout.setBackgroundColor(Color.TRANSPARENT);
-            } else if (message.getStatus() == Status.SUCCESS) {
-                progressBar.setVisibility(View.GONE);
-                failLayout.setBackgroundColor(Color.TRANSPARENT);
-            } else if (message.getStatus() == Status.FAILED) {
-                progressBar.setVisibility(View.GONE);
-                failLayout.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.kf5_message_send_failed_img_drawable));
-//                failLayout.setOnClickListener(new MessageTextRecendListener(context, position));
-            }
-            if (position == 0) {
-                if (message.getCreated() < 1) {
-                    tvDate.setText(Utils.getAllTime(System.currentTimeMillis()));
-                } else {
-                    tvDate.setText(Utils.getAllTime(message.getCreated()));
-                }
-                tvDate.setVisibility(View.VISIBLE);
-            } else {
-                if (previousMessage != null && (message.getCreated() - previousMessage.getCreated()) > 2 * 60) {
-                    tvDate.setText(Utils.getAllTime(message.getCreated()));
-                    tvDate.setVisibility(View.VISIBLE);
-                } else {
-                    tvDate.setVisibility(View.GONE);
-                }
-            }
-
+            loadImage(headImg, R.drawable.kf5_end_user);
+            loadAIData(message, contentText, position);
+            dealMessageStatus(message, previousMessage, position, tvDate, progressBar, failLayout);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
 }

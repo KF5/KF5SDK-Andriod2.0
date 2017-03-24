@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.kf5.sdk.R;
 import com.kf5.sdk.system.base.BaseActivity;
-import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.entity.ParamsKey;
 import com.kf5.sdk.system.image.ImageSelectorActivity;
 import com.kf5.sdk.system.mvp.presenter.PresenterFactory;
 import com.kf5.sdk.system.mvp.presenter.PresenterLoader;
@@ -113,8 +113,8 @@ public class FeedBackActivity extends BaseActivity<TicketFeedBackPresenter, ITic
     @Override
     public Map<String, String> getDataMap() {
         Map<String, String> map = new ArrayMap<>();
-        map.put(Field.TITLE, SPUtils.getTicketTitle());
-        map.put(Field.CONTENT, mETContent.getText().toString());
+        map.put(ParamsKey.TITLE, SPUtils.getTicketTitle());
+        map.put(ParamsKey.CONTENT, mETContent.getText().toString());
         return map;
     }
 

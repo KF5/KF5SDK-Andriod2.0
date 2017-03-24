@@ -24,7 +24,7 @@ public class SQLManager {
 
     private void openDataBase(Context context) {
         if (dataBaseHelper == null)
-            dataBaseHelper = new DataBaseHelper(context, MD5Utils.GetMD5Code("kf5_chat_" + SPUtils.getUserId()) + ".db");
+            dataBaseHelper = new DataBaseHelper(context, MD5Utils.GetMD5Code("kf5_chat_" + SPUtils.getUserId()) + "v1.db");
         if (sqLiteDatabase == null)
             sqLiteDatabase = dataBaseHelper.getWritableDatabase();
     }

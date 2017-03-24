@@ -22,7 +22,7 @@ import com.kf5.sdk.im.adapter.MessageAdapter;
 import com.kf5.sdk.im.adapter.listener.VoicePlayListener;
 import com.kf5.sdk.im.db.IMSQLManager;
 import com.kf5.sdk.im.entity.IMMessage;
-import com.kf5.sdk.im.entity.IMMessageManager;
+import com.kf5.sdk.im.entity.IMMessageBuilder;
 import com.kf5.sdk.im.expression.utils.ExpressionCommonUtils;
 import com.kf5.sdk.im.keyboard.EmoticonsKeyBoard;
 import com.kf5.sdk.im.keyboard.utils.EmoticonsKeyboardUtils;
@@ -250,12 +250,13 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         map.put("appid", SPUtils.getAppid());
         map.put("platform", "Android");
         map.put("token", SPUtils.getUserToken());
-        map.put("version", "2.0");
+        map.put("version", "2.1");
         map.put("uuid", Utils.getUUID(mActivity));
         bundle.putString("query", com.kf5.sdk.im.utils.Utils.getMapAppend(map));
         bundle.putString("url", SPUtils.getChatUrl());
         presenter.initParams(bundle);
         presenter.connect();
+
     }
 
     /**
@@ -363,9 +364,9 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      * @param content
      */
     public void onSendTextMessage(String content) {
-        IMMessage message = IMMessageManager.buildSendTextMessage(content);
+        IMMessage message = IMMessageBuilder.buildSendTextMessage(content);
         presenter.sendTextMessage(message);
-        refreshListAndNotifyData(IMMessageManager.addIMMessageToList(message));
+        refreshListAndNotifyData(IMMessageBuilder.addIMMessageToList(message));
     }
 
 
@@ -375,9 +376,9 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      * @param content
      */
     public void onSendAITextMessage(String content) {
-        IMMessage message = IMMessageManager.buildSendAIMessage(content);
+        IMMessage message = IMMessageBuilder.buildSendAIMessage(content);
         presenter.sendAIMessage(message);
-        refreshListAndNotifyData(IMMessageManager.addIMMessageToList(message));
+        refreshListAndNotifyData(IMMessageBuilder.addIMMessageToList(message));
     }
 
 
@@ -387,9 +388,9 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      * @param content
      */
     public void onSendQueueTextMessage(String content) {
-        IMMessage imMessage = IMMessageManager.buildSendTextMessage(content);
+        IMMessage imMessage = IMMessageBuilder.buildSendTextMessage(content);
         presenter.sendQueueMessage(imMessage);
-        refreshListAndNotifyData(IMMessageManager.addIMMessageToList(imMessage));
+        refreshListAndNotifyData(IMMessageBuilder.addIMMessageToList(imMessage));
     }
 
 
@@ -427,7 +428,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
 
                     @Override
                     public void onSuccess(List<File> fileList) {
-                        List<IMMessage> messageList = IMMessageManager.buildSendImageList(sourceFileList);
+                        List<IMMessage> messageList = IMMessageBuilder.buildSendImageList(sourceFileList);
                         refreshListAndNotifyData(messageList);
                         for (int i = 0; i < sourceFileList.size(); i++) {
                             presenter.sendImageMessage(messageList.get(i), fileList.get(i));
@@ -653,9 +654,9 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      * @param filePath
      */
     public void onSendVoiceMessage(String filePath) {
-        IMMessage message = IMMessageManager.buildSendVoiceMessage(filePath);
+        IMMessage message = IMMessageBuilder.buildSendVoiceMessage(filePath);
         presenter.sendVoiceMessage(message, new File(filePath));
-        refreshListAndNotifyData(IMMessageManager.addIMMessageToList(message));
+        refreshListAndNotifyData(IMMessageBuilder.addIMMessageToList(message));
     }
 
 }

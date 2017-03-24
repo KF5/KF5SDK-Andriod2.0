@@ -67,17 +67,7 @@ public class IMMessage {
     @SerializedName(COMPANY_ID)
     private int companyId;
 
-    private boolean isCoM; // 是否是接收消息
     private Status status; //发送状态
-    private MessageType messageType;
-
-    public MessageType getMessageType() {
-        return messageType;
-    }
-
-    public void setMessageType(MessageType messageType) {
-        this.messageType = messageType;
-    }
 
     public Status getStatus() {
         return status;
@@ -87,13 +77,6 @@ public class IMMessage {
         this.status = status;
     }
 
-    public boolean isCom() {
-        return isCoM;
-    }
-
-    public void setCom(boolean isCom) {
-        this.isCoM = isCom;
-    }
 
     public int getUploadId() {
         return uploadId;

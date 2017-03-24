@@ -17,6 +17,9 @@ public class DataBaseColumn {
     //消息类型
     public static final String MESSAGE_TYPE = "message_type";
 
+    //角色
+    public static final String ROLE = "role";
+
     //会话id
     public static final String CHAT_ID = "chat_id";
 
@@ -40,9 +43,6 @@ public class DataBaseColumn {
 
     //文件类型
     public static final String FILE_TYPE = "file_type";
-
-    //判断是接收消息或者是发送消息(发送消息=1,接收消息为0)
-    public static final String IS_COM = "is_com";
 
     //消息标记
     public static final String MARK = "mark";

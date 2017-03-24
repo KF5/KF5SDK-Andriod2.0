@@ -20,7 +20,7 @@ public class Utils {
             String ua = System.getProperty("http.agent");
             String packageName = softReference.get().getPackageName();
             PackageInfo info = softReference.get().getPackageManager().getPackageInfo(packageName, 0);
-            agent = ua + ", " + packageName + "/" + info.versionName;
+            agent = ua + ", " + packageName + "/" + info.versionName + "呵呵，这里是我在测试";
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();

@@ -30,6 +30,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     //    compile project(':kf5SdkFramework')
     compile 'com.google.code.gson:gson:2.7'
-//    compile 'com.alibaba:fastjson:1.2.18'
+    //    compile 'com.alibaba:fastjson:1.2.18'
     compile files('libs/com.kf5sdk.framework_v2-1.2.jar')
 }

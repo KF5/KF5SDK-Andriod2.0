@@ -1,4 +1,4 @@
-package com.kf5.sdk.system.listener;
+package com.kf5.sdk.im.adapter.clickspan;
 
 import android.graphics.Color;
 import android.text.Layout;
@@ -12,16 +12,15 @@ import android.widget.TextView;
 
 /**
  * author:chosen
- * date:2016/10/20 17:19
+ * date:2017/3/24 15:19
  * email:812219713@qq.com
  */
 
-public class RichLinkMovementMethod extends LinkMovementMethod {
+public class CustomLinkMovementMethod extends LinkMovementMethod {
 
     private long start = 0;
 
     private long end = 0;
-
 
     @Override
     public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
@@ -40,7 +39,7 @@ public class RichLinkMovementMethod extends LinkMovementMethod {
                 Layout layout = widget.getLayout();
                 int line = layout.getLineForVertical(y);
                 int off = layout.getOffsetForHorizontal(line, x);
-                URLSpanNoUnderline[] link = buffer.getSpans(off, off, URLSpanNoUnderline.class);
+                CustomClickSpan[] link = buffer.getSpans(off, off, CustomClickSpan.class);
                 if (link.length != 0) {
                     if (action == MotionEvent.ACTION_UP) {
                         end = System.currentTimeMillis();

@@ -14,7 +14,8 @@ import android.widget.Toast;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.kf5.sdk.R;
-import com.kf5.sdk.system.photoview.PhotoViewAttacher;
+import com.kf5.sdk.system.photoview.OnPhotoTapListener;
+import com.kf5.sdk.system.photoview.PhotoView;
 import com.kf5.sdk.system.utils.ImageLoaderManager;
 
 /**
@@ -27,11 +28,9 @@ public class ImageDetailFragment extends Fragment {
 
     private String mImageUrl;
 
-    private ImageView mImageView;
+    private PhotoView mImageView;
 
     private ProgressBar mProgressBar;
-
-    private PhotoViewAttacher mAttacher;
 
     private static final String URL = "url";
 
@@ -55,20 +54,15 @@ public class ImageDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.kf5_image_detail_fragment, null, false);
-        mImageView = (ImageView) mView.findViewById(R.id.kf5_image);
+        mView = inflater.inflate(R.layout.kf5_image_detail_fragment, container, false);
+        mImageView = (PhotoView) mView.findViewById(R.id.kf5_image);
         mProgressBar = (ProgressBar) mView.findViewById(R.id.kf5_loading);
-        mAttacher = new PhotoViewAttacher(mImageView);
-        mAttacher.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+        mImageView.setOnPhotoTapListener(new OnPhotoTapListener() {
             @Override
-            public void onPhotoTap(View view, float x, float y) {
-                if (getActivity() != null)
+            public void onPhotoTap(ImageView view, float x, float y) {
+                if (getActivity() != null) {
                     getActivity().finish();
-            }
-
-            @Override
-            public void onOutsidePhotoTap() {
-
+                }
             }
         });
         return mView;
@@ -96,8 +90,6 @@ public class ImageDetailFragment extends Fragment {
             public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
                 if (mProgressBar != null)
                     mProgressBar.setVisibility(View.GONE);
-                if (mAttacher != null)
-                    mAttacher.update();
                 return false;
             }
         });

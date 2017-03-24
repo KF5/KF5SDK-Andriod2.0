@@ -10,6 +10,8 @@ import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.entity.Upload;
 import com.kf5.sdk.im.ui.BaseChatActivity;
 import com.kf5.sdk.system.base.BaseClickListener;
+import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.utils.Utils;
 import com.kf5.sdk.system.widget.DialogBox;
 
 import java.io.File;
@@ -43,42 +45,42 @@ public class MessageResendListener extends BaseClickListener {
                             if (context instanceof BaseChatActivity) {
                                 if (mIMMessage != null) {
                                     BaseChatActivity chatActivity = (BaseChatActivity) context;
-                                    switch (mIMMessage.getMessageType()) {
-                                        case AI_MESSAGE: {
+                                    String type = mIMMessage.getType();
+                                    switch (type) {
+                                        case Field.AI_SEND: {
                                             IMSQLManager.deleteMessageByTimeStamp(context, mIMMessage.getTimeStamp());
                                             String content = mIMMessage.getMessage();
                                             chatActivity.removeMessage(mIMMessage);
                                             chatActivity.onSendAITextMessage(content);
                                         }
                                         break;
-                                        case TEXT: {
+                                        case Field.CHAT_MSG: {
                                             IMSQLManager.deleteMessageByTimeStamp(context, mIMMessage.getTimeStamp());
                                             String content = mIMMessage.getMessage();
                                             chatActivity.removeMessage(mIMMessage);
                                             chatActivity.onSendTextMessage(content);
                                         }
                                         break;
-                                        case IMAGE: {
-                                            IMSQLManager.deleteMessageByTimeStamp(context, mIMMessage.getTimeStamp());
+                                        case Field.CHAT_UPLOAD: {
                                             Upload upload = mIMMessage.getUpload();
                                             if (upload != null) {
-                                                String url = upload.getLocalPath();
-                                                if (!TextUtils.isEmpty(url)) {
-                                                    chatActivity.removeMessage(mIMMessage);
-                                                    chatActivity.onSendImageMessage(Collections.singletonList(new File(url)));
-                                                }
-                                            }
-                                        }
-
-                                        break;
-                                        case VOICE: {
-                                            IMSQLManager.deleteMessageByTimeStamp(context, mIMMessage.getTimeStamp());
-                                            Upload upload = mIMMessage.getUpload();
-                                            if (upload != null) {
-                                                String url = upload.getLocalPath();
-                                                if (!TextUtils.isEmpty(url)) {
-                                                    chatActivity.removeMessage(mIMMessage);
-                                                    chatActivity.onSendVoiceMessage(url);
+                                                String uploadType = upload.getType();
+                                                if (Utils.isImage(uploadType)) {
+                                                    //图片
+                                                    IMSQLManager.deleteMessageByTimeStamp(context, mIMMessage.getTimeStamp());
+                                                    String url = upload.getLocalPath();
+                                                    if (!TextUtils.isEmpty(url)) {
+                                                        chatActivity.removeMessage(mIMMessage);
+                                                        chatActivity.onSendImageMessage(Collections.singletonList(new File(url)));
+                                                    }
+                                                } else if (Utils.isAMR(uploadType)) {
+                                                    //语音
+                                                    IMSQLManager.deleteMessageByTimeStamp(context, mIMMessage.getTimeStamp());
+                                                    String url = upload.getLocalPath();
+                                                    if (!TextUtils.isEmpty(url)) {
+                                                        chatActivity.removeMessage(mIMMessage);
+                                                        chatActivity.onSendVoiceMessage(url);
+                                                    }
                                                 }
                                             }
                                         }

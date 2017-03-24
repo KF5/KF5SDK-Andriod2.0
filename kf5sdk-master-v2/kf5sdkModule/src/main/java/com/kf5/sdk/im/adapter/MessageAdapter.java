@@ -9,7 +9,10 @@ import android.view.ViewGroup;
 import com.kf5.sdk.R;
 import com.kf5.sdk.im.api.FileDownLoadCallBack;
 import com.kf5.sdk.im.entity.IMMessage;
+import com.kf5.sdk.im.entity.Upload;
 import com.kf5.sdk.system.base.CommonAdapter;
+import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,17 +26,19 @@ import java.util.List;
 public class MessageAdapter extends CommonAdapter<IMMessage> {
 
     private static final int MESSAGE_TYPE_RECEIVE_TXT = 0;
-    private static final int MESSAGE_TYPE_SENT_TXT = 1;
-    private static final int MESSAGE_TYPE_SENT_IMAGE = 2;
+    private static final int MESSAGE_TYPE_SEND_TXT = 1;
+    private static final int MESSAGE_TYPE_SEND_IMAGE = 2;
     private static final int MESSAGE_TYPE_RECEIVE_IMAGE = 3;
-    private static final int MESSAGE_TYPE_SENT_VOICE = 4;
+    private static final int MESSAGE_TYPE_SEND_VOICE = 4;
     private static final int MESSAGE_TYPE_RECEIVE_VOICE = 5;
-    private static final int MESSAGE_TYPE_SENT_FILE = 6;
+    private static final int MESSAGE_TYPE_SEND_FILE = 6;
     private static final int MESSAGE_TYPE_RECEIVE_FILE = 7;
     private static final int MESSAGE_TYPE_SYSTEM = 8;
     private static final int MESSAGE_TYPE_AI_MESSAGE_SEND = 9;
-    private static final int MESSAGE_TYPE_AI_MESSAGE_RECEIVER = 10;
+    private static final int MESSAGE_TYPE_AI_MESSAGE_RECEIVE = 10;
     private static final int MESSAGE_TYPE_QUEUE_WAITING = 11;
+    private static final int MESSAGE_TYPE_RECEIVE_CUSTOM = 12;
+    private static final int MESSAGE_TYPE_SEND_CUSTOM = 13;
     private List<String> listName = new ArrayList<>();
 
     public MessageAdapter(Context context, List<IMMessage> list) {
@@ -44,28 +49,68 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
     public int getItemViewType(int position) {
 
         IMMessage message = getItem(position);
-        switch (message.getMessageType()) {
-            case TEXT:
-                return message.isCom() ? MESSAGE_TYPE_RECEIVE_TXT : MESSAGE_TYPE_SENT_TXT;
-            case IMAGE:
-                return message.isCom() ? MESSAGE_TYPE_RECEIVE_IMAGE : MESSAGE_TYPE_SENT_IMAGE;
-            case VOICE:
-                return message.isCom() ? MESSAGE_TYPE_RECEIVE_VOICE : MESSAGE_TYPE_SENT_VOICE;
-            case FILE:
-                return message.isCom() ? MESSAGE_TYPE_RECEIVE_FILE : MESSAGE_TYPE_SENT_FILE;
-            case AI_MESSAGE:
-                return message.isCom() ? MESSAGE_TYPE_AI_MESSAGE_RECEIVER : MESSAGE_TYPE_AI_MESSAGE_SEND;
-            case QUEUE_WAITING:
-                return MESSAGE_TYPE_QUEUE_WAITING;
-            case SYSTEM:
-                return MESSAGE_TYPE_SYSTEM;
+        String role = message.getRole();
+        String type = message.getType();
+
+        if (TextUtils.equals(type, Field.CHAT_SYSTEM)) {
+            return MESSAGE_TYPE_SYSTEM;
+        } else if (TextUtils.equals(type, Field.QUEUE_WAITING)) {
+            return MESSAGE_TYPE_QUEUE_WAITING;
+        } else {
+            if (TextUtils.equals(Field.VISITOR, role)) {
+                switch (type) {
+                    case Field.CHAT_MSG:
+                        return MESSAGE_TYPE_SEND_TXT;
+                    case Field.CHAT_UPLOAD:
+                        Upload upload = message.getUpload();
+                        String uploadType = upload.getType();
+                        if (Utils.isImage(uploadType)) {
+                            //图片
+                            return MESSAGE_TYPE_SEND_IMAGE;
+                        } else if (Utils.isAMR(uploadType)) {
+                            //语音
+                            return MESSAGE_TYPE_SEND_VOICE;
+                        } else {
+                            //附件
+                            return MESSAGE_TYPE_SEND_FILE;
+                        }
+                    case Field.AI_SEND:
+                        return MESSAGE_TYPE_AI_MESSAGE_SEND;
+                    case Field.CHAT_CUSTOM:
+                        return MESSAGE_TYPE_SEND_CUSTOM;
+                }
+            } else if (TextUtils.equals(Field.AGENT, role)) {
+                switch (type) {
+                    case Field.CHAT_MSG:
+                        return MESSAGE_TYPE_RECEIVE_TXT;
+                    case Field.CHAT_UPLOAD:
+                        Upload upload = message.getUpload();
+                        String uploadType = upload.getType();
+                        if (Utils.isImage(uploadType)) {
+                            //图片
+                            return MESSAGE_TYPE_RECEIVE_IMAGE;
+                        } else if (Utils.isAMR(uploadType)) {
+                            //语音
+                            return MESSAGE_TYPE_RECEIVE_VOICE;
+                        } else {
+                            //附件
+                            return MESSAGE_TYPE_RECEIVE_FILE;
+                        }
+                    case Field.AI_RECEIVE:
+                        return MESSAGE_TYPE_AI_MESSAGE_RECEIVE;
+                    case Field.CHAT_CUSTOM:
+                        return MESSAGE_TYPE_RECEIVE_CUSTOM;
+                }
+            } else if (TextUtils.equals(Field.ROBOT, role)) {
+                return MESSAGE_TYPE_AI_MESSAGE_RECEIVE;
+            }
         }
         return -1;
     }
 
     @Override
     public int getViewTypeCount() {
-        return 12;
+        return 14;
     }
 
     @Override
@@ -76,21 +121,21 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
         switch (type) {
             case MESSAGE_TYPE_RECEIVE_TXT:
                 return messageWithTextReceive(position, convertView, parent, message);
-            case MESSAGE_TYPE_SENT_TXT:
+            case MESSAGE_TYPE_SEND_TXT:
                 return messageWithTextSend(position, convertView, parent, message);
             case MESSAGE_TYPE_RECEIVE_IMAGE:
                 return messageWithImageReceive(position, convertView, parent, message);
-            case MESSAGE_TYPE_SENT_IMAGE:
+            case MESSAGE_TYPE_SEND_IMAGE:
                 return messageWithImageSend(position, convertView, parent, message);
             case MESSAGE_TYPE_RECEIVE_FILE:
                 return messageWithFileReceive(position, convertView, parent, message);
-            case MESSAGE_TYPE_SENT_FILE:
+            case MESSAGE_TYPE_SEND_FILE:
                 return messageWithFileSend(position, convertView, parent, message);
             case MESSAGE_TYPE_RECEIVE_VOICE:
                 return messageWithVoiceReceive(position, convertView, parent, message);
-            case MESSAGE_TYPE_SENT_VOICE:
+            case MESSAGE_TYPE_SEND_VOICE:
                 return messageWithVoiceSend(position, convertView, parent, message);
-            case MESSAGE_TYPE_AI_MESSAGE_RECEIVER:
+            case MESSAGE_TYPE_AI_MESSAGE_RECEIVE:
                 return messageWithAIMessageReceive(position, convertView, parent, message);
             case MESSAGE_TYPE_AI_MESSAGE_SEND:
                 return messageWithAIMessageSend(position, convertView, parent, message);
@@ -98,10 +143,57 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
                 return getMessageViewWithSystem(position, convertView, parent, message);
             case MESSAGE_TYPE_QUEUE_WAITING:
                 return getMessageViewWithQueueWaiting(position, convertView, parent, message);
+            case MESSAGE_TYPE_RECEIVE_CUSTOM:
+                return getCustomReceiveView(position, convertView, parent, message);
+            case MESSAGE_TYPE_SEND_CUSTOM:
+                return getCustomSendView(position, convertView, parent, message);
             default:
                 return getDefaultView(position, convertView, parent);
         }
 
+    }
+
+
+    /**
+     * 富文本消息接收者
+     *
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
+    private View getCustomReceiveView(int position, View convertView, ViewGroup parent, IMMessage message) {
+
+        CustomReceiveHolder holder;
+        if (convertView == null) {
+            holder = new CustomReceiveHolder(convertView = inflateLayout(R.layout.kf5_message_item_with_custom_left, parent));
+        } else {
+            holder = (CustomReceiveHolder) convertView.getTag();
+        }
+        holder.bindData(message, position, getItem(position - 1));
+        return convertView;
+    }
+
+
+    /**
+     * 富文本消息发送者
+     *
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
+    private View getCustomSendView(int position, View convertView, ViewGroup parent, IMMessage message) {
+
+        CustomSendHolder holder;
+
+        if (convertView == null) {
+            holder = new CustomSendHolder(convertView = inflateLayout(R.layout.kf5_message_item_with_custom_right, parent));
+        } else {
+            holder = (CustomSendHolder) convertView.getTag();
+        }
+        holder.bindData(message, position, getItem(position - 1));
+        return convertView;
     }
 
     private View getDefaultView(int position, View convertView, ViewGroup parent) {
@@ -155,7 +247,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         FileSendHolder holder = null;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_text_right,parent);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_text_right, parent);
             holder = new FileSendHolder(convertView);
         } else {
             holder = (FileSendHolder) convertView.getTag();
@@ -179,7 +271,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         VoiceReceiveHolder holder = null;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_voice_left,parent);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_voice_left, parent);
             holder = new VoiceReceiveHolder(convertView);
         } else {
             holder = (VoiceReceiveHolder) convertView.getTag();
@@ -203,7 +295,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         VoiceSendHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_voice_right,parent);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_voice_right, parent);
             holder = new VoiceSendHolder(convertView);
         } else {
             holder = (VoiceSendHolder) convertView.getTag();
@@ -228,7 +320,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         final ImageReceiveHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_image_left,parent);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_image_left, parent);
             holder = new ImageReceiveHolder(convertView);
         } else {
             holder = (ImageReceiveHolder) convertView.getTag();
@@ -251,7 +343,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         final ImageSendHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_image_right,parent);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_image_right, parent);
             holder = new ImageSendHolder(convertView);
         } else {
             holder = (ImageSendHolder) convertView.getTag();
@@ -274,7 +366,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         TextReceiveHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_text_left,parent);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_text_left, parent);
             holder = new TextReceiveHolder(convertView);
         } else {
             holder = (TextReceiveHolder) convertView.getTag();
@@ -295,7 +387,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         AIMessageReceiveHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_text_left,parent);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_text_left, parent);
             holder = new AIMessageReceiveHolder(convertView);
         } else {
             holder = (AIMessageReceiveHolder) convertView.getTag();
@@ -315,7 +407,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         AIMessageSendHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_text_right,parent);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_text_right, parent);
             holder = new AIMessageSendHolder(convertView);
         } else {
             holder = (AIMessageSendHolder) convertView.getTag();
@@ -338,7 +430,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         TextSendHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_text_right,parent);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_text_right, parent);
             holder = new TextSendHolder(convertView);
         } else {
             holder = (TextSendHolder) convertView.getTag();
@@ -352,7 +444,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         SystemHolder holder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_system,parent);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_system, parent);
             holder = new SystemHolder(convertView);
         } else {
             holder = (SystemHolder) convertView.getTag();
@@ -365,7 +457,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
         QueueHolder queueHolder;
         if (convertView == null) {
-            convertView = inflateLayout(R.layout.kf5_message_item_with_queue,parent);
+            convertView = inflateLayout(R.layout.kf5_message_item_with_queue, parent);
             queueHolder = new QueueHolder(convertView);
         } else {
             queueHolder = (QueueHolder) convertView.getTag();

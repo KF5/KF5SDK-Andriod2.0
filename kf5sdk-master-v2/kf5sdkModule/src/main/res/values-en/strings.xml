@@ -133,4 +133,5 @@
     <string name="kf5_unsatisfied">Unsatisfied</string>
     <string name="kf5_reminder">Reminder</string>
     <string name="kf5_unknown_error">unknown error</string>
+    <string name="kf5_invite_video_chat">The agent invite you into the video conferencing</string>
 </resources>
