@@ -1,6 +1,8 @@
 package com.kf5.sdk.im.service.params;
 
 
+import com.kf5.sdk.system.utils.LogUtil;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,6 +63,17 @@ public class SocketParams {
 
     private static final String TIMESTAMP = "timestamp";
 
+    private static final String ID = "id";
+
+    private static final String AI_ANSWER = "ai_answer";
+
+    private static final String POST_MESSAGE = "post_message";
+
+    private static final String ROBOT = "robot";
+
+    private static final String CHAT_QUESTION = "chat.question";
+
+    private static final String DATA = "data";
 
     public static String getSettingParams() {
 
@@ -90,9 +103,9 @@ public class SocketParams {
             queryObj.put(FORCE, force);
             obj1.put(PARAMS, queryObj);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        LogUtil.printf(obj1.toString());
         return obj1.toString();
     }
 
@@ -103,7 +116,7 @@ public class SocketParams {
      * @param num
      * @return
      */
-    public static JSONObject getHistoryMessagesParams(int from_id, int num) {
+    public static String getHistoryMessagesParams(int from_id, int num) {
 
         JSONObject obj1 = new JSONObject();
         try {
@@ -122,7 +135,7 @@ public class SocketParams {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return obj1;
+        return obj1.toString();
     }
 
     /*
@@ -139,12 +152,10 @@ public class SocketParams {
             bodyObj.put(TIMESTAMP, timeStamp);
             jsonObject.put(PARAMS, bodyObj);
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return jsonObject.toString();
     }
-
 
     /**
      * 上传附件
@@ -201,6 +212,28 @@ public class SocketParams {
             JSONObject paramsObj = new JSONObject();
             paramsObj.put(MSG, msg);
             paramsObj.put(TIMESTAMP, tag);
+            jsonObject.put(PARAMS, paramsObj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
+    }
+
+
+    /**
+     * 机器人分词Action
+     *
+     * @param id
+     * @param timeStamp
+     * @return
+     */
+    public static String getAIAnswerParams(int id, String timeStamp) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(ACTION, AI_ANSWER);
+            JSONObject paramsObj = new JSONObject();
+            paramsObj.put(ID, id);
+            paramsObj.put(TIMESTAMP, timeStamp);
             jsonObject.put(PARAMS, paramsObj);
         } catch (JSONException e) {
             e.printStackTrace();

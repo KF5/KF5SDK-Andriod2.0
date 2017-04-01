@@ -18,9 +18,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kf5.sdk.R;
-import com.kf5.sdk.im.widget.AudioRecordButton;
 import com.kf5.sdk.im.keyboard.EmoticonsKeyBoard;
 import com.kf5.sdk.im.keyboard.utils.EmoticonsKeyboardUtils;
+import com.kf5.sdk.im.widget.AudioRecordButton;
 
 /**
  * author:chosen

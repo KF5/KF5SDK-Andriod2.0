@@ -4,12 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
 
-import com.kf5.sdk.system.entity.Field;
-import com.kf5.sdk.system.utils.SafeJson;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.Iterator;
 import java.util.Map;
 
@@ -64,36 +58,5 @@ public class Utils {
         return sb.toString();
     }
 
-    public static String dealAIMessage(String message) {
-        JSONObject jsonObject;
-        StringBuilder stringBuilder = new StringBuilder();
-        String content = null;
-        try {
-            jsonObject = SafeJson.parseObj(message);
-            content = SafeJson.safeGet(jsonObject, Field.CONTENT);
-            if (content.contains("{{") && content.contains("}}")) {
-                content = content.replaceAll("\\{\\{", "<a href=\"" + Field.GET_AGENT + "\">");
-                content = content.replaceAll("\\}\\}", "</a>");
-            }
-            stringBuilder.append(content);
-            JSONArray jsonArray = SafeJson.safeArray(jsonObject, Field.DOCUMENTS);
-            if (jsonArray != null) {
-                int size = jsonArray.length();
-                if (size > 0) {
-                    stringBuilder.append("<br/>");
-                }
-                for (int i = 0; i < size; i++) {
-                    stringBuilder.append("<a href=\"" + SafeJson.safeGet(jsonArray.getJSONObject(i), Field.POST_ID) + "\">"
-                            + SafeJson.safeGet(jsonArray.getJSONObject(i), Field.TITLE_TAG) + "</a>");
-                    if (i != size - 1) {
-                        stringBuilder.append("<br/>");
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return stringBuilder.toString();
-    }
 
 }

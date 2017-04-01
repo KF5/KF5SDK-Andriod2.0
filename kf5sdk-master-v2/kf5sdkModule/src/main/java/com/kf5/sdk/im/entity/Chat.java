@@ -24,6 +24,8 @@ public class Chat {
     private String welcomeMsg;
     @SerializedName("robot_enable")
     private boolean robotEnable;
+    @SerializedName("version")
+    private int version;
 
     private TimeOut timeout;
 
@@ -89,5 +91,13 @@ public class Chat {
 
     public void setRobotEnable(boolean robotEnable) {
         this.robotEnable = robotEnable;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 }

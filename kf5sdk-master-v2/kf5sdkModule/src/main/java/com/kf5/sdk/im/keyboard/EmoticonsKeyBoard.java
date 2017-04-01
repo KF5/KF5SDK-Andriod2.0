@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.kf5.sdk.R;
 import com.kf5.sdk.im.keyboard.adapter.PageSetAdapter;
+import com.kf5.sdk.im.keyboard.api.AnimationEndListener;
 import com.kf5.sdk.im.keyboard.data.PageSetEntity;
 import com.kf5.sdk.im.keyboard.utils.EmoticonsKeyboardUtils;
 import com.kf5.sdk.im.keyboard.widgets.AIView;
@@ -27,6 +28,7 @@ import com.kf5.sdk.im.keyboard.widgets.FuncLayout;
 import com.kf5.sdk.im.keyboard.widgets.IMView;
 import com.kf5.sdk.im.keyboard.widgets.QueueView;
 import com.kf5.sdk.im.widget.AudioRecordButton;
+import com.kf5.sdk.system.utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -116,15 +118,22 @@ public class EmoticonsKeyBoard extends AutoHeightLayout implements EmoticonsFunc
     /**
      * 将IM的状态从排队转为正常聊天状态
      */
-    public void showQueueViewToIMView() {
-        mQueueLayout.startQueueToImAnim(mIMLayout);
+    public void showQueueViewToIMView(AnimationEndListener listener) {
+        mQueueLayout.startQueueToImAnim(mIMLayout, listener);
     }
 
     /**
      * 显示机器人View
      */
     public void showAIView() {
-        mAILayout.showAIViewWithAnim();
+        mAILayout.showAIViewWithAnim(mIMLayout);
+    }
+
+    /**
+     * 显示QueueView
+     */
+    public void showQueueView() {
+        mQueueLayout.showQueueViewWithAnim(mIMLayout);
     }
 
     /**
@@ -134,12 +143,6 @@ public class EmoticonsKeyBoard extends AutoHeightLayout implements EmoticonsFunc
         mIMLayout.showIMViewWithAnim();
     }
 
-    /**
-     * 显示QueueView
-     */
-    public void showQueueView() {
-        mQueueLayout.showQueueViewWithAnim();
-    }
 
 
     public void setAdapter(PageSetAdapter pageSetAdapter) {

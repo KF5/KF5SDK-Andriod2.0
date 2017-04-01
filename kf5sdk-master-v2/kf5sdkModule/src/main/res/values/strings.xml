@@ -38,7 +38,7 @@
     <string name="kf5_article_category">文档分区</string>
     <string name="kf5_article_section">文档分类</string>
     <string name="kf5_article_list">文档列表</string>
-    <string name="kf5_content_not_null">搜索内容不能为空</string>
+    <string name="kf5_content_not_null">内容不能为空</string>
 
 
     <!--工单模块-->
@@ -128,4 +128,5 @@
     <string name="kf5_reminder">温馨提示</string>
     <string name="kf5_unknown_error">未知错误</string>
     <string name="kf5_invite_video_chat">客服邀请您进行视频聊天</string>
+    <string name="kf5_robot_found_answers">为您找到以下内容:</string>
 </resources>

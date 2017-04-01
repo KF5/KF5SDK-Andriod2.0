@@ -105,6 +105,26 @@ public class IMMessageBuilder {
         return buildCommonIMMessage(content, Field.AI_SEND, Field.VISITOR, Status.SENDING);
     }
 
+
+    /**
+     * 接收的机器人消息实体
+     *
+     * @param content
+     * @param timeStamp
+     * @return
+     */
+    public static IMMessage buildReceiveAIMessage(String content, String timeStamp) {
+        IMMessage aiMessage = new IMMessage();
+        aiMessage.setRole(Field.ROBOT);
+        aiMessage.setType(Field.AI_RECEIVE);
+        aiMessage.setStatus(Status.SUCCESS);
+        aiMessage.setCreated(System.currentTimeMillis() / 1000);
+        aiMessage.setMessage(content);
+        aiMessage.setTimeStamp(timeStamp);
+        aiMessage.setType(Field.CHAT_MSG);
+        return aiMessage;
+    }
+
     /**
      * 接收的文本消息实体
      *

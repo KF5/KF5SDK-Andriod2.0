@@ -51,7 +51,6 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
         IMMessage message = getItem(position);
         String role = message.getRole();
         String type = message.getType();
-
         if (TextUtils.equals(type, Field.CHAT_SYSTEM)) {
             return MESSAGE_TYPE_SYSTEM;
         } else if (TextUtils.equals(type, Field.QUEUE_WAITING)) {

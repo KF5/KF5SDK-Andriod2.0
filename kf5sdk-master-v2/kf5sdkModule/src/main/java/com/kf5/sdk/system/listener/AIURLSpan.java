@@ -28,11 +28,17 @@ public class AIURLSpan extends ClickableSpan {
 
     private String url;
 
+    private String type;
+
+    private String clickText;
+
     private Context context;
 
-    public AIURLSpan(String id, Context context) {
+    public AIURLSpan(String id, String type, String clickText, Context context) {
         this.url = id;
         this.context = context;
+        this.type = type;
+        this.clickText = clickText;
     }
 
     @Override
@@ -79,9 +85,17 @@ public class AIURLSpan extends ClickableSpan {
                             }
                         }).show();
             } else {
-                Intent intent = new Intent(context, HelpCenterTypeDetailsActivity.class);
-                intent.putExtra(Field.ID, Integer.parseInt(url));
-                context.startActivity(intent);
+                if (TextUtils.equals(Field.QUESTION, type)) {
+                    if (context instanceof BaseChatActivity) {
+                        BaseChatActivity chatActivity = (BaseChatActivity) context;
+                        chatActivity.onSendAITextMessage(clickText, Integer.parseInt(url));
+                    }
+                } else if (TextUtils.equals(Field.DOCUMENT, type)) {
+                    Intent intent = new Intent(context, HelpCenterTypeDetailsActivity.class);
+                    intent.putExtra(Field.ID, Integer.parseInt(url));
+                    context.startActivity(intent);
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();

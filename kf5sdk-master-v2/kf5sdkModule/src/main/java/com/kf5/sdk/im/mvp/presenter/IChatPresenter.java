@@ -44,13 +44,5 @@ public interface IChatPresenter {
      */
     void disconnectIPC();
 
-    /**
-     * 发送IM指令
-     *
-     * @param requestCode
-     * @param params
-     */
-    void sendSCAction(int requestCode, String params);
-
 
 }

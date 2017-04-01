@@ -18,6 +18,8 @@ import com.kf5.sdk.im.adapter.clickspan.CustomLinkMovementMethod;
 import com.kf5.sdk.im.entity.CustomField;
 import com.kf5.sdk.im.expression.bean.EmojiDisplay;
 import com.kf5.sdk.im.keyboard.utils.EmoticonsKeyboardUtils;
+import com.kf5.sdk.im.utils.MessageUtils;
+import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.listener.AIMessageMovementMethod;
 import com.kf5.sdk.system.listener.AIURLSpan;
 import com.kf5.sdk.system.listener.RichLinkMovementMethod;
@@ -89,11 +91,12 @@ public class CustomTextView {
      * @param text
      */
     public static void setTextWithAIMessage(Context context, TextView textView, String text) {
-        textView.setText(Html.fromHtml(filterHtmlTag(text)));
-        dealAILink(textView);
+        textView.setText(Html.fromHtml(filterHtmlTag(MessageUtils.dealAIMessage(text))));
+        String type = SafeJson.safeGet(SafeJson.parseObj(text), Field.TYPE);
+        dealAILink(textView, type);
         Linkify.addLinks(textView, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
         textView.setMovementMethod(new AIMessageMovementMethod());
-        dealAILink(textView);
+        dealAILink(textView, type);
     }
 
     /**
@@ -101,7 +104,7 @@ public class CustomTextView {
      *
      * @param textView
      */
-    private static void dealAILink(TextView textView) {
+    private static void dealAILink(TextView textView, String type) {
         CharSequence charSequence = textView.getText();
         if (charSequence instanceof Spannable) {
             textView.setText("");
@@ -110,7 +113,8 @@ public class CustomTextView {
             for (URLSpan span : spans) {
                 int start = s.getSpanStart(span);
                 int end = s.getSpanEnd(span);
-                AIURLSpan myURLSpan = new AIURLSpan(span.getURL(), textView.getContext());
+                String clickContent = s.subSequence(start, end).toString();
+                AIURLSpan myURLSpan = new AIURLSpan(span.getURL(), type, clickContent, textView.getContext());
                 s.setSpan(myURLSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             textView.append(s);

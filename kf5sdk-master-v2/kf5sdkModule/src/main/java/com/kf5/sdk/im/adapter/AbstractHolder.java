@@ -207,6 +207,7 @@ abstract class AbstractHolder {
                     return false;
                 }
 
+
                 @Override
                 public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
                     File file = new File(FilePath.IMAGES_PATH + MD5Utils.GetMD5Code(url) + "." + upload.getType());

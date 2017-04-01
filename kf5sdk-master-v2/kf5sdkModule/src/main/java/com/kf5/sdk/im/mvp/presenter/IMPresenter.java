@@ -57,19 +57,6 @@ import java.util.TimerTask;
 
 public class IMPresenter extends BasePresenter<IIMView> implements IChatPresenter {
 
-    /**
-     * 初始化标识
-     */
-    private static final int INIT_IM = 0x01;
-
-    /**
-     * 收取Message监听
-     */
-    private static final int ON_MESSAGE = 0x02;
-
-    private static final int SEND_TEXT_MESSAGE = 0x03;
-
-    public static final int SET_METADATA = 0x04;
 
     public static final int RESULT_OK = 0;
 
@@ -174,53 +161,26 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
     }
 
     /**
-     * 发送IM指令
-     *
-     * @param params
+     * 获取IM信息
      */
-    @Override
-    public void sendSCAction(final int requestCode, final String params) {
+    public void getIMInfo() {
         try {
+            final String params = SocketParams.getSettingParams();
+            LogUtil.printf("初始化个人信息参数" + params);
             mMessageManager.sendEventMessage(params, new IPCCallBack.Stub() {
                 @Override
                 public void onResult(int code, String result) throws RemoteException {
-                    LogUtil.printf(params + "=====" + result);
-                    if (code == 0) {
-                        JSONObject jsonObject = SafeJson.parseObj(result);
-                        switch (requestCode) {
-                            case INIT_IM:
-                                Chat chat = GsonManager.getInstance().buildChat(jsonObject.toString());
-                                getMvpView().onChatStatus(chat);
-                                if (chat != null) {
-                                    TimeOut timeOut = chat.getTimeout();
-                                    if (timeOut != null) {
-                                        timeOutEnable = timeOut.isEnable();
-                                        timeOutMsg = timeOut.getMsg();
-                                        timeOutSeconds = timeOut.getSeconds();
-                                    }
-                                }
-                                break;
-                            case ON_MESSAGE:
-                                try {
-                                    JSONArray jsonArray = SafeJson.safeArray(jsonObject, Field.HISTORY);
-                                    if (jsonArray != null) {
-                                        List<IMMessage> list = GsonManager.getInstance().getIMMessageList(jsonArray.toString());
-                                        for (IMMessage imMessage : list) {
-                                            imMessage.setStatus(Status.SUCCESS);
-                                        }
-                                        getMvpView().onReceiveMessageList(insertMessageToDB(list));
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                break;
-                            case SET_METADATA:
-                                break;
+                    LogUtil.printf("初始化个人信息状态值" + code + "=====返回值====" + result);
+                    JSONObject jsonObject = SafeJson.parseObj(result);
+                    Chat chat = GsonManager.getInstance().buildChat(jsonObject.toString());
+                    getMvpView().onChatStatus(chat);
+                    if (chat != null) {
+                        TimeOut timeOut = chat.getTimeout();
+                        if (timeOut != null) {
+                            timeOutEnable = timeOut.isEnable();
+                            timeOutMsg = timeOut.getMsg();
+                            timeOutSeconds = timeOut.getSeconds();
                         }
-
-                    } else {
-
-
                     }
                 }
             });
@@ -230,17 +190,32 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
     }
 
     /**
-     * 获取IM信息
-     */
-    public void getIMInfo() {
-        sendSCAction(IMPresenter.INIT_IM, SocketParams.getSettingParams());
-    }
-
-    /**
      * 同步消息
      */
     public void synchronizationMessages() {
-        sendSCAction(ON_MESSAGE, SocketParams.getHistoryMessagesParams(IMSQLManager.getLastMessageId(getMvpView().getContext()), 0).toString());
+        try {
+            final String params = SocketParams.getHistoryMessagesParams(IMSQLManager.getLastMessageId(getMvpView().getContext()), 0);
+            LogUtil.printf("同步消息参数" + params);
+            mMessageManager.sendEventMessage(params, new IPCCallBack.Stub() {
+                @Override
+                public void onResult(int code, String result) throws RemoteException {
+                    LogUtil.printf("同步消息状态值" + code + "=====返回值====" + result);
+                    if (code == RESULT_OK) {
+                        JSONObject jsonObject = SafeJson.parseObj(result);
+                        JSONArray jsonArray = SafeJson.safeArray(jsonObject, Field.HISTORY);
+                        if (jsonArray != null) {
+                            List<IMMessage> list = GsonManager.getInstance().getIMMessageList(jsonArray.toString());
+                            for (IMMessage imMessage : list) {
+                                imMessage.setStatus(Status.SUCCESS);
+                            }
+                            getMvpView().onReceiveMessageList(insertMessageToDB(list));
+                        }
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -250,7 +225,17 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      * @param jsonArray
      */
     public void setMetadata(JSONArray jsonArray) {
-        sendSCAction(SET_METADATA, SocketParams.getMetadataParams(jsonArray));
+        try {
+            final String params = SocketParams.getMetadataParams(jsonArray);
+            mMessageManager.sendEventMessage(params, new IPCCallBack.Stub() {
+                @Override
+                public void onResult(int code, String result) throws RemoteException {
+                    LogUtil.printf("设置用户自定义内容的参数" + params + "状态值" + code + "返回值" + result);
+                }
+            });
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -277,8 +262,25 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      *
      * @param message
      */
-    public void sendTextMessage(IMMessage message) {
-        sendMessage(SocketParams.getSendMessagesParams(message.getMessage(), message.getTimeStamp()), message, true);
+    public void sendTextMessage(final IMMessage message) {
+        try {
+            insertMessageToDB(Collections.singletonList(message));
+            addTimerTask(message, THIRTY_SECONDS);
+            final String params = SocketParams.getSendMessagesParams(message.getMessage(), message.getTimeStamp());
+            LogUtil.printf("原版发送文本消息参数" + params);
+            mMessageManager.sendEventMessage(params, new IPCCallBack.Stub() {
+                @Override
+                public void onResult(int code, String result) throws RemoteException {
+                    LogUtil.printf("原版发送文本消息状态码" + code + "返回值" + result);
+                    if (code == RESULT_OK) {
+                        addAgentReplyTimerTask();
+                    }
+                    dealSendMessageResult(message, code, result);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -290,58 +292,13 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
         try {
             insertMessageToDB(Collections.singletonList(message));
             addTimerTask(message, THIRTY_SECONDS);
-            mMessageManager.sendEventMessage(SocketParams.getAIMessageParams(message.getMessage(), message.getTimeStamp()), new IPCCallBack.Stub() {
+            final String params = SocketParams.getAIMessageParams(message.getMessage(), message.getTimeStamp());
+            mMessageManager.sendEventMessage(params, new IPCCallBack.Stub() {
                 @Override
                 public void onResult(int code, String result) throws RemoteException {
-                    Log.i(Utils.KF5_TAG, "收到机器人消息" + result);
-                    try {
-                        String timeStamp = message.getTimeStamp();
-                        removeTimerTask(timeStamp);
-                        if (code == 0) {
-                            message.setStatus(Status.SUCCESS);
-                            updateMessageByTimeStamp(message, timeStamp);
-                            JSONObject jsonObject = SafeJson.parseObj(result);
-                            IMMessage aiMessage = new IMMessage();
-                            aiMessage.setRole(Field.ROBOT);
-                            aiMessage.setType(Field.AI_RECEIVE);
-                            aiMessage.setStatus(Status.SUCCESS);
-                            aiMessage.setCreated(System.currentTimeMillis() / 1000);
-                            aiMessage.setMessage(com.kf5.sdk.im.utils.Utils.dealAIMessage(result));
-                            aiMessage.setTimeStamp(SafeJson.safeGet(jsonObject, Field.TIMESTAMP));
-                            aiMessage.setType(Field.CHAT_MSG);
-                            getMvpView().onReceiveMessageList(Collections.singletonList(aiMessage));
-
-                            IMMessage dbMessage = new IMMessage();
-                            dbMessage.setType(Field.AI_RECEIVE);
-                            dbMessage.setRole(Field.ROBOT);
-                            dbMessage.setStatus(Status.SUCCESS);
-                            dbMessage.setCreated(aiMessage.getCreated());
-                            dbMessage.setTimeStamp(aiMessage.getTimeStamp());
-                            StringBuilder stringBuilder = new StringBuilder();
-                            stringBuilder.append(SafeJson.safeGet(jsonObject, Field.CONTENT));
-                            JSONArray jsonArray = SafeJson.safeArray(jsonObject, Field.DOCUMENTS);
-                            if (jsonArray != null) {
-                                int size = jsonArray.length();
-                                if (size > 0)
-                                    stringBuilder.append("<br/>");
-                                for (int i = 0; i < size; i++) {
-                                    JSONObject itemObj = jsonArray.getJSONObject(i);
-                                    stringBuilder.append(itemObj.getString(Field.TITLE_TAG));
-                                    if (i != size - 1) {
-                                        stringBuilder.append("<br/>");
-                                    }
-                                }
-                                dbMessage.setMessage(stringBuilder.toString());
-                                insertMessageToDB(Collections.singletonList(dbMessage));
-                            }
-                        } else {
-                            message.setStatus(Status.FAILED);
-                            updateMessageByTimeStamp(message, timeStamp);
-                        }
-                        getMvpView().onSendMessageResult();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    LogUtil.printf("机器人消息参数" + params + "状态码" + code + "返回值" + result);
+                    JSONObject jsonObject = SafeJson.parseObj(result);
+                    dealMessageResult(message, code, SafeJson.safeGet(jsonObject, Field.TIMESTAMP), result);
                 }
             });
         } catch (Exception e) {
@@ -351,12 +308,63 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
 
 
     /**
+     * 发送分词消息
+     *
+     * @param message
+     * @param id
+     */
+    public void sendAIAnswerMessage(final IMMessage message, int id) {
+        try {
+            insertMessageToDB(Collections.singletonList(message));
+            addTimerTask(message, THIRTY_SECONDS);
+            final String params = SocketParams.getAIAnswerParams(id, message.getTimeStamp());
+            LogUtil.printf("老版机器人分词消息参数" + params);
+            mMessageManager.sendEventMessage(params, new IPCCallBack.Stub() {
+                @Override
+                public void onResult(int code, String result) throws RemoteException {
+                    LogUtil.printf("老版机器人分词消息状态码" + code + "返回值" + result);
+                    JSONObject jsonObject = SafeJson.parseObj(result);
+                    dealMessageResult(message, code, SafeJson.safeGet(jsonObject, Field.TIMESTAMP), SafeJson.safeGet(jsonObject, Field.ANSWER));
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 处理机器人消息返回值
+     *
+     * @param imMessage
+     * @param code
+     * @param resultTimeStamp
+     * @param message
+     */
+    private void dealMessageResult(IMMessage imMessage, int code, String resultTimeStamp, String message) {
+
+        String timeStamp = imMessage.getTimeStamp();
+        removeTimerTask(timeStamp);
+        if (code == 0) {
+            imMessage.setStatus(Status.SUCCESS);
+            updateMessageByTimeStamp(imMessage, timeStamp);
+            IMMessage aiMessage = IMMessageBuilder.buildReceiveAIMessage(message, resultTimeStamp);
+            getMvpView().onReceiveMessageList(Collections.singletonList(aiMessage));
+            insertMessageToDB(Collections.singletonList(aiMessage));
+        } else {
+            imMessage.setStatus(Status.FAILED);
+            updateMessageByTimeStamp(imMessage, timeStamp);
+        }
+        getMvpView().onSendMessageResult();
+    }
+
+
+    /**
      * Queue状态发送的临时消息
      *
      * @param message
      */
     public void sendQueueMessage(final IMMessage message) {
-//        sendMessage(SocketParams.getQueueMessageParams(message.getMessage()), message, false);
         addTimerTask(message, THIRTY_SECONDS);
         try {
             mMessageManager.sendEventMessage(SocketParams.getQueueMessageParams(message.getMessage()), new IPCCallBack.Stub() {
@@ -503,29 +511,16 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
         if (!TextUtils.isEmpty(token)) {
             try {
                 addTimerTask(message, THIRTY_SECONDS);
-                String params = SocketParams.getUploadParams(token, message.getTimeStamp());
-                LogUtil.printf("附件Params" + params);
+                final String params = SocketParams.getUploadParams(token, message.getTimeStamp());
+                LogUtil.printf("老版发送附件参数" + params);
                 mMessageManager.sendEventMessage(params, new IPCCallBack.Stub() {
                     @Override
                     public void onResult(int code, String result) throws RemoteException {
-                        LogUtil.printf(code + "==============" + result);
-                        String timeStamp = message.getTimeStamp();
-                        removeTimerTask(timeStamp);
-                        if (code == 0) {
+                        LogUtil.printf("旧版发送附件消息状态码" + code + "返回值" + result);
+                        if (code == RESULT_OK) {
                             addAgentReplyTimerTask();
-                            message.setStatus(Status.SUCCESS);
-                            JSONObject jsonObject = SafeJson.parseObj(result);
-                            JSONObject messageObj = SafeJson.safeObject(jsonObject, Field.MESSAGE);
-                            message.setChatId(SafeJson.safeInt(messageObj, Field.CHAT_ID));
-                            message.setId(SafeJson.safeInt(messageObj, Field.ID));
-                            message.setTimeStamp(SafeJson.safeGet(messageObj, Field.TIMESTAMP));
-                            message.setCreated(SafeJson.safeInt(messageObj, Field.CREATED));
-                        } else {
-                            message.setStatus(Status.FAILED);
                         }
-                        LogUtil.printf("时间戳" + message.getTimeStamp() + "====" + timeStamp);
-                        updateMessageByTimeStamp(message, timeStamp);
-                        getMvpView().onSendMessageResult();
+                        dealSendMessageResult(message, code, result);
                     }
                 });
             } catch (RemoteException e) {
@@ -554,7 +549,6 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
         if (showToast)
             getMvpView().showError(code, msg);
     }
-
 
     /**
      * 添加计时器
@@ -696,50 +690,6 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                     else
                         content = getMvpView().getContext().getString(R.string.kf5_rating_failed);
                     getMvpView().onReceiveMessageList(IMMessageBuilder.addIMMessageToList(IMMessageBuilder.buildSystemMessage(content)));
-                }
-            });
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 异步发送指令common接口
-     *
-     * @param params
-     * @param message
-     */
-    private void sendMessage(String params, final IMMessage message, final boolean saveToDB) {
-        try {
-            if (saveToDB)
-                insertMessageToDB(Collections.singletonList(message));
-            addTimerTask(message, THIRTY_SECONDS);
-            LogUtil.printf("发送消息的参数" + params);
-            mMessageManager.sendEventMessage(params, new IPCCallBack.Stub() {
-                @Override
-                public void onResult(int code, String result) throws RemoteException {
-                    LogUtil.printf(code + "==============" + result);
-                    String timeStamp = message.getTimeStamp();
-                    removeTimerTask(timeStamp);
-                    if (code == 0) {
-                        addAgentReplyTimerTask();
-                        message.setStatus(Status.SUCCESS);
-                        if (saveToDB) {
-                            JSONObject jsonObject = SafeJson.parseObj(result);
-                            JSONObject messageObj = SafeJson.safeObject(jsonObject, Field.MESSAGE);
-                            message.setChatId(SafeJson.safeInt(messageObj, Field.CHAT_ID));
-                            message.setId(SafeJson.safeInt(messageObj, Field.ID));
-                            message.setTimeStamp(SafeJson.safeGet(messageObj, Field.TIMESTAMP));
-                            message.setCreated(SafeJson.safeInt(messageObj, Field.CREATED));
-                            updateMessageByTimeStamp(message, timeStamp);
-                            LogUtil.printf("时间戳" + message.getTimeStamp() + "====" + timeStamp);
-                        }
-                    } else {
-                        message.setStatus(Status.FAILED);
-                        if (saveToDB)
-                            updateMessageByTimeStamp(message, timeStamp);
-                    }
-                    getMvpView().onSendMessageResult();
                 }
             });
         } catch (RemoteException e) {
@@ -962,4 +912,25 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
         }
     }
 
+
+    private void dealSendMessageResult(IMMessage message, int code, String result) {
+        removeTimerTask(message.getTimeStamp());
+        if (code == RESULT_OK) {
+            JSONObject jsonObject = SafeJson.parseObj(result);
+            JSONObject msgObj = SafeJson.safeObject(jsonObject, Field.MESSAGE);
+            if (msgObj != null) {
+                message.setStatus(Status.SUCCESS);
+                message.setId(SafeJson.safeInt(msgObj, Field.ID));
+                message.setCreated(SafeJson.safeLong(msgObj, Field.CREATED));
+                message.setTimeStamp(SafeJson.safeGet(msgObj, Field.TIMESTAMP));
+                message.setChatId(SafeJson.safeInt(msgObj, Field.CHAT_ID));
+            } else {
+                message.setStatus(Status.FAILED);
+            }
+        } else {
+            message.setStatus(Status.FAILED);
+        }
+        updateMessageByTimeStamp(message, message.getTimeStamp());
+        getMvpView().onSendMessageResult();
+    }
 }

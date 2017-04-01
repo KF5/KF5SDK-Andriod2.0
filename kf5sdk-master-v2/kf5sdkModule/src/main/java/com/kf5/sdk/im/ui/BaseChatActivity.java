@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,7 +109,6 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
     protected String agentIds;
 
     protected int force;
-
 
     @Override
     public Loader<IMPresenter> onCreateLoader(int id, Bundle args) {
@@ -250,7 +250,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         map.put("appid", SPUtils.getAppid());
         map.put("platform", "Android");
         map.put("token", SPUtils.getUserToken());
-        map.put("version", "2.1");
+        map.put("version", "2.2");
         map.put("uuid", Utils.getUUID(mActivity));
         bundle.putString("query", com.kf5.sdk.im.utils.Utils.getMapAppend(map));
         bundle.putString("url", SPUtils.getChatUrl());
@@ -381,6 +381,25 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         refreshListAndNotifyData(IMMessageBuilder.addIMMessageToList(message));
     }
 
+    /**
+     * 发送机器人分词消息
+     *
+     * @param content
+     * @param id
+     */
+    public void onSendAITextMessage(String content, int id) {
+        IMMessage message;
+        //如果同客服聊天，直接发送文本消息
+        if (isAgentOnline) {
+            message = IMMessageBuilder.buildSendTextMessage(content);
+            presenter.sendTextMessage(message);
+        } else {
+            //否则发送分词消息
+            message = IMMessageBuilder.buildSendAIMessage(content);
+            presenter.sendAIAnswerMessage(message, id);
+        }
+        refreshListAndNotifyData(IMMessageBuilder.addIMMessageToList(message));
+    }
 
     /**
      * 排队的queue消息
@@ -481,8 +500,12 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
             onSendQueueTextMessage(mEditTextQueue.getText().toString());
             mEditTextQueue.setText("");
         } else if (id == R.id.kf5_ai_textview_send_message) {
-            onSendAITextMessage(mEditTextAI.getText().toString());
-            mEditTextAI.setText("");
+            if (!TextUtils.isEmpty(mEditTextAI.getText())) {
+                onSendAITextMessage(mEditTextAI.getText().toString());
+                mEditTextAI.setText("");
+            } else {
+                showToast(getString(R.string.kf5_content_not_null));
+            }
         } else if (id == R.id.kf5_ai_to_agent_btn) {
             aiToGetAgents();
         }
@@ -646,7 +669,6 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         }
         return false;
     }
-
 
     /**
      * 发送语音文件

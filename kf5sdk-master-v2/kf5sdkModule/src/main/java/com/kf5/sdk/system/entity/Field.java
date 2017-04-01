@@ -17,6 +17,14 @@ public class Field {
 
     public static final String DOCUMENTS = "documents";
 
+    public static final String DOCUMENT = "document";
+
+    public static final String QUESTION = "question";
+
+    public static final String QUESTIONS = "questions";
+
+    public static final String ANSWER = "answer";
+
     public static final String GET_AGENT = "get_agent";
 
     public static final String HISTORY = "history";
@@ -57,9 +65,13 @@ public class Field {
 
     public static final String CHAT_CUSTOM = "chat.custom";
 
+
+
     public static final String CHAT_URL = "chat_url";
 
     public static final String CHAT_MSG = "chat.msg";
+
+    public static final String CHAT_QUESTION = "chat.question";
 
 //    public static final String CHAT_AI = "chat.ai";
 

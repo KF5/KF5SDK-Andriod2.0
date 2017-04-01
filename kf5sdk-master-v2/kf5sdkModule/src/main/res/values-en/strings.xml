@@ -134,4 +134,5 @@
     <string name="kf5_reminder">Reminder</string>
     <string name="kf5_unknown_error">unknown error</string>
     <string name="kf5_invite_video_chat">The agent invite you into the video conferencing</string>
+    <string name="kf5_robot_found_answers">has found following answers for you:</string>
 </resources>
