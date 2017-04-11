@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -15,9 +16,9 @@ import android.widget.TextView;
 
 import com.kf5.sdk.R;
 import com.kf5.sdk.im.keyboard.adapter.PageSetAdapter;
-import com.kf5.sdk.im.keyboard.api.AnimationEndListener;
 import com.kf5.sdk.im.keyboard.data.PageSetEntity;
 import com.kf5.sdk.im.keyboard.utils.EmoticonsKeyboardUtils;
+import com.kf5.sdk.im.keyboard.utils.ViewUtils;
 import com.kf5.sdk.im.keyboard.widgets.AIView;
 import com.kf5.sdk.im.keyboard.widgets.AutoHeightLayout;
 import com.kf5.sdk.im.keyboard.widgets.EmoticonsEditText;
@@ -28,7 +29,6 @@ import com.kf5.sdk.im.keyboard.widgets.FuncLayout;
 import com.kf5.sdk.im.keyboard.widgets.IMView;
 import com.kf5.sdk.im.keyboard.widgets.QueueView;
 import com.kf5.sdk.im.widget.AudioRecordButton;
-import com.kf5.sdk.system.utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -109,40 +109,30 @@ public class EmoticonsKeyBoard extends AutoHeightLayout implements EmoticonsFunc
     }
 
     /**
-     * 将IM的状态从同机器人对话转为排队
-     */
-    public void showAIViewToQueueView() {
-        mAILayout.startAIToQueueAnim(mQueueLayout);
-    }
-
-    /**
-     * 将IM的状态从排队转为正常聊天状态
-     */
-    public void showQueueViewToIMView(AnimationEndListener listener) {
-        mQueueLayout.startQueueToImAnim(mIMLayout, listener);
-    }
-
-    /**
      * 显示机器人View
      */
     public void showAIView() {
-        mAILayout.showAIViewWithAnim(mIMLayout);
+        ViewUtils.toggleTargetViewVisible(mAILayout, mIMLayout, mQueueLayout);
     }
 
     /**
      * 显示QueueView
      */
     public void showQueueView() {
-        mQueueLayout.showQueueViewWithAnim(mIMLayout);
+        ViewUtils.toggleTargetViewVisible(mQueueLayout, mIMLayout, mAILayout);
     }
 
     /**
      * 显示IMView
      */
     public void showIMView() {
-        mIMLayout.showIMViewWithAnim();
+        ViewUtils.toggleTargetViewVisible(mIMLayout, mAILayout, mQueueLayout);
+        String text = mQueueLayout.getEditText().getText().toString();
+        mIMLayout.toggleText(text);
+        if (!TextUtils.isEmpty(text)) {
+            mQueueLayout.getEditText().setText("");
+        }
     }
-
 
 
     public void setAdapter(PageSetAdapter pageSetAdapter) {

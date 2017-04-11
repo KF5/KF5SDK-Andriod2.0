@@ -464,7 +464,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      * 从机器人状态请求分配客服
      */
     public void aiToGetAgents() {
-        mXhsEmoticonsKeyBoard.showAIViewToQueueView();
+        mXhsEmoticonsKeyBoard.showQueueView();
         presenter.getAgents(agentIds, force);
     }
 
@@ -497,8 +497,12 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         } else if (id == R.id.kf5_right_text_view) {
             startActivity(new Intent(mActivity, LookFeedBackActivity.class));
         } else if (id == R.id.kf5_queue_send_message) {
-            onSendQueueTextMessage(mEditTextQueue.getText().toString());
-            mEditTextQueue.setText("");
+            if (!TextUtils.isEmpty(mEditTextQueue.getText())) {
+                onSendQueueTextMessage(mEditTextQueue.getText().toString());
+                mEditTextQueue.setText("");
+            } else {
+                showToast(getString(R.string.kf5_content_not_null));
+            }
         } else if (id == R.id.kf5_ai_textview_send_message) {
             if (!TextUtils.isEmpty(mEditTextAI.getText())) {
                 onSendAITextMessage(mEditTextAI.getText().toString());
@@ -577,6 +581,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      */
     @Override
     public void onFuncHide() {
+
     }
 
 

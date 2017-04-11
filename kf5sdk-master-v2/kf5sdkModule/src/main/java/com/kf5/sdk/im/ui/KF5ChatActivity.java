@@ -13,7 +13,6 @@ import com.kf5.sdk.im.entity.Chat;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.entity.IMMessageBuilder;
 import com.kf5.sdk.im.entity.Status;
-import com.kf5.sdk.im.keyboard.api.AnimationEndListener;
 import com.kf5.sdk.im.mvp.presenter.IMPresenter;
 import com.kf5.sdk.im.widget.RatingDialog;
 import com.kf5.sdk.system.entity.Field;
@@ -22,7 +21,6 @@ import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.SafeJson;
 import com.kf5.sdk.system.utils.Utils;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -203,7 +201,6 @@ public class KF5ChatActivity extends BaseChatActivity {
                         if (TextUtils.equals(Field.CHATTING, status)) {
                             isAgentOnline = true;
                             setTitleText(chat.getAgent().getDisplayName());
-//                    dealMessageData();
                             handleShareIntent();
                             mXhsEmoticonsKeyBoard.showIMView();
                             //如果状态为queue,则开始排队，同时接受push过来处于的排队位置
@@ -224,15 +221,13 @@ public class KF5ChatActivity extends BaseChatActivity {
                             } else {
                                 isAgentOnline = false;
                                 presenter.getAgents(agentIds, force);
-                                mXhsEmoticonsKeyBoard.showQueueView();
-//                        dealMessageData();
                                 //显示排队输入框
+                                mXhsEmoticonsKeyBoard.showQueueView();
                             }
                         }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    LogUtil.printf("这里好像有毛病了", e);
                 }
             }
         });
@@ -263,31 +258,9 @@ public class KF5ChatActivity extends BaseChatActivity {
             @Override
             public void run() {
                 try {
-                    if (code == OK) {
-                        JSONObject jsonObject = new JSONObject(message);
-                        int index = 0;
-                        if (jsonObject.has(Field.INDEX)) {
-                            index = SafeJson.safeInt(jsonObject, Field.INDEX);
-                        }
-//                        else {
-//                            index = -1;
-//                        }
-                        //处于排队中
-                        if (index >= 0) {
-                            setTitleContent(getString(R.string.kf5_queue_waiting));
-                            refreshListAndNotifyData(IMMessageBuilder.addIMMessageToList(IMMessageBuilder.buildSendQueueMessage(getString(R.string.kf5_update_queue_num, (index + 1)))));
-                        } else {
-                            setTitleContent(getString(R.string.kf5_no_agent_online));
-                            mXhsEmoticonsKeyBoard.showQueueViewToIMView(new AnimationEndListener() {
-                                @Override
-                                public void onAnimationEnd() {
-                                    showNoAgentOnlineReminderDialog();
-                                }
-                            });
-                            isAgentOnline = false;
-                        }
-                    }
-                } catch (JSONException e) {
+                    setTitleContent(getString(R.string.kf5_queue_waiting));
+                    refreshListAndNotifyData(IMMessageBuilder.addIMMessageToList(IMMessageBuilder.buildSendQueueMessage(getString(R.string.kf5_update_queue))));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -337,7 +310,8 @@ public class KF5ChatActivity extends BaseChatActivity {
                     isAgentOnline = true;
                     //排队成功
                     setTitleContent(agent.getDisplayName());
-                    mXhsEmoticonsKeyBoard.showQueueViewToIMView(null);
+                    LogUtil.printf("排队成功");
+                    mXhsEmoticonsKeyBoard.showIMView();
                     //其他操作
                 } else {
                     isAgentOnline = false;
@@ -393,7 +367,7 @@ public class KF5ChatActivity extends BaseChatActivity {
             @Override
             public void run() {
                 refreshData();
-                mEditTextQueue.setText(R.string.kf5_agent_handle_later_hint);
+                mEditTextQueue.setHint(R.string.kf5_agent_handle_later_hint);
                 if (mEditTextQueue.isEnabled())
                     mEditTextQueue.setEnabled(false);
                 if (mXhsEmoticonsKeyBoard.getQueueSendView().isEnabled())
@@ -436,12 +410,8 @@ public class KF5ChatActivity extends BaseChatActivity {
             @Override
             public void run() {
                 removeQueueItemView();
-                mXhsEmoticonsKeyBoard.showQueueViewToIMView(new AnimationEndListener() {
-                    @Override
-                    public void onAnimationEnd() {
-                        showNoAgentOnlineReminderDialog();
-                    }
-                });
+                mXhsEmoticonsKeyBoard.showIMView();
+                showNoAgentOnlineReminderDialog();
             }
         });
     }

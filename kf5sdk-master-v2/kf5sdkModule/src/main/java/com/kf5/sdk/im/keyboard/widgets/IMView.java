@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
@@ -78,6 +77,19 @@ public class IMView extends FrameLayout implements View.OnClickListener {
         init(context);
     }
 
+    /**
+     * 将排队临时消息设置到聊天ET中
+     *
+     * @param text
+     */
+    public void toggleText(String text) {
+        if (!TextUtils.isEmpty(text)) {
+            mETContent.setText(text);
+            mETContent.setSelection(text.length());
+            EmoticonsKeyboardUtils.openSoftKeyboard(mETContent);
+        }
+    }
+
     private void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.kf5_im_layout, this);
         mImageViewVoiceOrText = (ImageView) findViewById(R.id.kf5_btn_voice_or_text);
@@ -142,20 +154,6 @@ public class IMView extends FrameLayout implements View.OnClickListener {
             }
         });
     }
-
-    public void showIMViewWithAnim() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                if (!isShown())
-                    setVisibility(VISIBLE);
-                Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.kf5_anim_in_from_bottom);
-                animation.setFillAfter(true);
-                startAnimation(animation);
-            }
-        });
-    }
-
 
     /**
      * Called when a view has been clicked.
