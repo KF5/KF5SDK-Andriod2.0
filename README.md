@@ -2,21 +2,21 @@ KF5SDK帮助开发者快速完成开发，提供给开发者创建工单、查�
 
 v2.0版本的SDK较v1.0版本的sdk主要区别在于：基于Framework代码库开发，开源了UI和业务逻辑，开发者可以根据自己的需要任意定制不同风格的UI，使得SDK能更好与App无缝接入，当然开发者也可以使用SDK默认的UI以快速集成；v2.0版本对SDK的功能模块进行了分包，现已分成helpcenter、ticket、im、system四个包，system为其他三个包引用的一些必要文件、其他三个包helpcenter独立、im模块默认有入口进入到Ticket模块；如果开发者对部分功能暂无需求，可以关闭各自的入口，删掉不需要的功能包。
 
-##一、功能介绍
+## 一、功能介绍
 
-#####1、帮助中心
+##### 1、帮助中心
 
 帮助中心允许用户在SDK中根据权限查看和搜索您所注册的云客服平台上的知识库文档。
 
-#####2、创建工单
+##### 2、创建工单
 
 用户可以SDK中创建工单（反馈问题），反馈的问题您可以在您所注册的云客服平台的后台进行处理，用户可以通过推送或者工单列表中的红点提示方便知道创建的工单已被处理或者回复，用户也可以在SDK中回复工单。
 
-#####3、即时交谈
+##### 3、即时交谈
 
 用户可以通过SDK中的即时交谈功能与客服人员实时交流，目前支持发送语音、文字、图片，接收语音、文字、图片、附件以及满意度评价。
 
-##二、集成步骤
+## 二、集成步骤
 
 1、下载[KF5SDK-Android2.0](https://github.com/KF5/KF5SDK-Andriod2.0/archive/master.zip)的官方demo；注：v2.0版本的SDK基于AndroidStudio开发，集成步骤均指的是AndroidStudio的IDE，若您的IDE是Eclipse，请[联系我们](http://www.kf5.com/)。
 
@@ -35,19 +35,28 @@ v2.0版本的SDK较v1.0版本的sdk主要区别在于：基于Framework代码库
 
 3.SDK中Activity组件说明：HelpCenterActivity（文档分区）、HelpCenterTypeActivity（文档分类）、HelpCenterTypeChildActivity（文档列表）、HelpCenterTypeDetailsActivity（文档详情）、KF5ChatActivity（即时交谈）、FeedBackActivity（创建工单）、LookFeedBackActivity（工单列表）、FeedBackDetailsActivity（工单详情）、OrderAttributeActivity（工单属性）
 
-_4.SDK现在支持滑动后退，并且默认开启，关闭则在BaseSwipeBackActivity自由设置；开发者若需自定义Activity切换动画，在BaseActivity中设置即可。_
+4.工单反馈模块自定义字段添加方法请参考FeedBackActivity下getDataMap回调接口示例；IM模块用户自定义信息在KF5ChatActivity中scConnect回调接口调用IMPresenter里的setMetadata接口即可。
 
-5.日志查看，OkHttpManager中设置HttpLoggingInterceptor日志类型。
+_5.SDK现在支持滑动后退，并且默认开启，关闭则在BaseSwipeBackActivity自由设置；开发者若需自定义Activity切换动画，在BaseActivity中设置即可。_
 
-##四、SDK中lib文件夹下的framework概述  
+6.日志查看，OkHttpManager中设置HttpLoggingInterceptor日志类型。
+
+## 四、SDK中lib文件夹下的framework概述  
 该jar包主要包含了核心的工具类、http框架、socket框架以及SDK中必要的接口。
 
-##五、SDK的UI设置
+## 五、SDK的UI设置
   v2.0版SDK将业务逻辑开源，开发者可根据需求自定义UI，组件Activity与xml视图的关系可从SDK中Activity组件说明入手。
 
-##六、第三方库  
+## 六、第三方库  
  v2.0中依赖的第三方库有
  ```Java
 compile 'com.google.code.gson:gson:2.7'
 compile 'com.github.bumptech.glide:glide:3.7.0
+ ```
+## 七、关于混淆  
+ ```Java
+-keep class com.kf5.sdk.im.entity.**{*;}
+-keep class com.kf5.sdk.helpcenter.entity.**{*;}
+-keep class com.kf5.sdk.system.entity.**{*;}
+-keep class com.kf5.sdk.ticket.entity.**{*;}
  ```
