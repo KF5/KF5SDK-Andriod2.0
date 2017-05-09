@@ -159,7 +159,7 @@ public interface IIMView extends MvpView {
     /**
      * 更新排队的View组件状态
      */
-    void updateQueueView();
+    void updateQueueView(int resultCode);
 
 
     /**

@@ -58,7 +58,7 @@ public class ImageSelectorActivity extends FragmentActivity implements ImageSele
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image_selector);
+        setContentView(R.layout.kf5_activity_image_selector);
         getIntentAndInitFragment();
         mButton = (Button) findViewById(R.id.kf5_right_text_view);
         mButton.setOnClickListener(this);

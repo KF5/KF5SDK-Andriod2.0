@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:scaleType="fitXY"
-                app:maskSource="right"/>
+                app:kf5_mi_maskSource="kf5_mi_right"/>
         </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

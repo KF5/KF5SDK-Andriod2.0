@@ -130,4 +130,5 @@
     <string name="kf5_invite_video_chat">客服邀请您进行视频聊天</string>
     <string name="kf5_robot_found_answers">为您找到以下内容:</string>
     <string name="kf5_update_queue">您已进入排队;</string>
+    <string name="kf5_chat">聊天</string>
 </resources>

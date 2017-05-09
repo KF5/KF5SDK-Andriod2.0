@@ -364,19 +364,19 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      *
      * @param message
      */
-    public void sendQueueMessage(final IMMessage message) {
-        addTimerTask(message, THIRTY_SECONDS);
+    public void sendQueueMessage(final IMMessage message, final boolean temporaryMessageFirst, final String agentIds, final int force) {
         try {
-            mMessageManager.sendEventMessage(SocketParams.getQueueMessageParams(message.getMessage()), new IPCCallBack.Stub() {
+            addTimerTask(message, THIRTY_SECONDS);
+            insertMessageToDB(Collections.singletonList(message));
+            mMessageManager.sendEventMessage(SocketParams.getQueueMessageParams(message.getMessage(), message.getTimeStamp()), new IPCCallBack.Stub() {
                 @Override
                 public void onResult(int code, String result) throws RemoteException {
-                    removeTimerTask(message.getTimeStamp());
-                    if (code == RESULT_OK) {
-                        message.setStatus(Status.SUCCESS);
-                    } else {
-                        message.setStatus(Status.FAILED);
+                    LogUtil.printf("发送临时消息状态码" + code + "返回结果" + result);
+                    dealSendMessageResult(message, code, result);
+                    if (temporaryMessageFirst && code == RESULT_OK) {
+                        getAgents(agentIds, force);
                     }
-                    getMvpView().updateQueueView();
+                    getMvpView().updateQueueView(code);
                 }
             });
         } catch (RemoteException e) {
@@ -648,7 +648,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
         try {
             mMessageManager.sendEventMessage(SocketParams.getAgentsAssignParams(agentIdArray, force), new IPCCallBack.Stub() {
                 @Override
-                public void onResult(int code, String result) throws RemoteException {
+                public void onResult(final int code, final String result) throws RemoteException {
                     try {
                         JSONObject jsonObject = SafeJson.parseObj(result);
                         LogUtil.printf("收到了客服的信息" + jsonObject.toString() + "====" + code);
@@ -855,9 +855,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
             if (agentObj.has(Field.WELCOME_MSG)) {
                 String welComeMsg = SafeJson.safeGet(agentObj, Field.WELCOME_MSG);
                 if (!TextUtils.isEmpty(welComeMsg)) {
-                    List<IMMessage> list = new ArrayList<>();
-                    list.add(IMMessageBuilder.buildReceiveTextMessage(welComeMsg));
-                    getMvpView().onReceiveMessageList(list);
+                    getMvpView().onReceiveMessageList(Collections.singletonList(IMMessageBuilder.buildReceiveTextMessage(welComeMsg)));
                 }
             }
         }
@@ -922,7 +920,6 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                 message.setStatus(Status.SUCCESS);
                 message.setId(SafeJson.safeInt(msgObj, Field.ID));
                 message.setCreated(SafeJson.safeLong(msgObj, Field.CREATED));
-                message.setTimeStamp(SafeJson.safeGet(msgObj, Field.TIMESTAMP));
                 message.setChatId(SafeJson.safeInt(msgObj, Field.CHAT_ID));
             } else {
                 message.setStatus(Status.FAILED);

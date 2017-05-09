@@ -1,8 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context="${relativePackage}.${activityClass}">
+>
 
     <RelativeLayout
         android:id="@+id/kf5_top_layout"
@@ -20,7 +19,7 @@
             android:layout_centerVertical="true"
             android:contentDescription="@null"
             android:src="@drawable/kf5_back_img_bg"
-            android:visibility="visible" />
+            android:visibility="visible"/>
 
         <TextView
             android:id="@+id/kf5_right_text_view"
@@ -35,7 +34,7 @@
             android:padding="@dimen/kf5_dimen_4dp"
             android:text="@string/kf5_submit"
             android:textColor="@drawable/kf5_text_bg"
-            android:textSize="@dimen/kf5_text_xh_size" />
+            android:textSize="@dimen/kf5_text_xh_size"/>
 
         <TextView
             android:id="@+id/kf5_title"
@@ -44,7 +43,7 @@
             android:layout_centerInParent="true"
             android:text="@string/kf5_feedback"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/kf5_text_xxh_size" />
+            android:textSize="@dimen/kf5_text_xxh_size"/>
     </RelativeLayout>
 
     <View
@@ -52,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/kf5_top_layout"
-        android:background="@color/kf5_line_deliver_color" />
+        android:background="@color/kf5_line_deliver_color"/>
 
 
     <EditText
@@ -68,7 +67,7 @@
         android:padding="@dimen/kf5_dimen_16dp"
         android:textColor="@color/kf5_et_content_text_color"
         android:textColorHint="@color/kf5_et_hint_text_color"
-        android:textSize="@dimen/kf5_text_size_18" />
+        android:textSize="@dimen/kf5_text_size_18"/>
 
     <LinearLayout
         android:id="@+id/bottom_layout"
@@ -84,7 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@null"
-            android:src="@drawable/kf5_choice_img_source" />
+            android:src="@drawable/kf5_choice_img_source"/>
 
         <LinearLayout
             android:id="@+id/kf5_feed_back_image_layout"

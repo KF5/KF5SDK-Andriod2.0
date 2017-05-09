@@ -63,7 +63,7 @@ public class FeedBackActivity extends BaseActivity<TicketFeedBackPresenter, ITic
 
     @Override
     protected int getLayoutID() {
-        return R.layout.activity_feed_back;
+        return R.layout.kf5_activity_feed_back;
     }
 
 
@@ -115,6 +115,15 @@ public class FeedBackActivity extends BaseActivity<TicketFeedBackPresenter, ITic
         Map<String, String> map = new ArrayMap<>();
         map.put(ParamsKey.TITLE, SPUtils.getTicketTitle());
         map.put(ParamsKey.CONTENT, mETContent.getText().toString());
+
+//        JSONArray jsonArray = new JSONArray();
+//        JSONObject jsonObject2 = new JSONObject();
+//        jsonObject2.put(ParamsKey.NAME, "自定义字段的字段名");
+//        jsonObject2.put(ParamsKey.VALUE, "这里填写对应值");
+//        jsonArray.put(jsonObject2);
+//        map.put(ParamsKey.CUSTOM_FIELDS, jsonArray.toString());
+
+
         return map;
     }
 

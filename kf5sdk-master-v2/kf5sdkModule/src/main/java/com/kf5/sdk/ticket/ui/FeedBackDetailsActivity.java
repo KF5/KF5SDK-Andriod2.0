@@ -169,7 +169,7 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
 
     @Override
     protected int getLayoutID() {
-        return R.layout.activity_feed_back_details;
+        return R.layout.kf5_activity_feed_back_details;
     }
 
     @Override

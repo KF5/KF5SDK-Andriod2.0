@@ -103,7 +103,7 @@ public class HelpCenterTypeActivity extends BaseActivity<HelpCenterTypePresenter
 
     @Override
     protected int getLayoutID() {
-        return R.layout.activity_help_center;
+        return R.layout.kf5_activity_help_center;
     }
 
 

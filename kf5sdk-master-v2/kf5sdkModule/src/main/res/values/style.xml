@@ -17,12 +17,6 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <style name="ActivityAnim">
-        <item name="android:activityOpenEnterAnimation">@anim/kf5_activity_anim_in</item>
-        <item name="android:activityOpenExitAnimation">@anim/kf5_anim_stay</item>
-        <item name="android:activityCloseEnterAnimation">@anim/kf5_anim_stay</item>
-        <item name="android:activityCloseExitAnimation">@anim/kf5_activity_anim_in</item>
-    </style>
 
     <style name="KF5ActionSheetDialogStyle" parent="@android:style/Theme.Dialog">
         <!-- 背景透明 -->

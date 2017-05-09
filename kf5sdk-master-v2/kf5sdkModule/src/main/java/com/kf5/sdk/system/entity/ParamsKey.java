@@ -32,4 +32,6 @@ public class ParamsKey {
 
     public static final String TICKET_ID = "ticket_id";
 
+    public static final String VALUE = "value";
+
 }

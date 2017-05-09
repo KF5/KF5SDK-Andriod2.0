@@ -135,27 +135,27 @@ public class SwipeBackLayout extends FrameLayout {
     }
 
     public SwipeBackLayout(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.SwipeBackLayoutStyle);
+        this(context, attrs, R.attr.KF5SwipeBackLayoutStyle);
     }
 
     public SwipeBackLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs);
         mDragHelper = ViewDragHelper.create(this, new ViewDragCallback());
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SwipeBackLayout, defStyle,
-                R.style.SwipeBackLayout);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KF5SwipeBackLayout, defStyle,
+                R.style.KF5SwipeBackLayout);
 
-        int edgeSize = a.getDimensionPixelSize(R.styleable.SwipeBackLayout_edge_size, -1);
+        int edgeSize = a.getDimensionPixelSize(R.styleable.KF5SwipeBackLayout_kf5_sbl_edge_size, -1);
         if (edgeSize > 0)
             setEdgeSize(edgeSize);
-        int mode = EDGE_FLAGS[a.getInt(R.styleable.SwipeBackLayout_edge_flag, 0)];
+        int mode = EDGE_FLAGS[a.getInt(R.styleable.KF5SwipeBackLayout_kf5_sbl_edge_flag, 0)];
         setEdgeTrackingEnabled(mode);
 
-        int shadowLeft = a.getResourceId(R.styleable.SwipeBackLayout_shadow_left,
+        int shadowLeft = a.getResourceId(R.styleable.KF5SwipeBackLayout_kf5_sbl_shadow_left,
                 R.drawable.kf5_shadow_left);
-        int shadowRight = a.getResourceId(R.styleable.SwipeBackLayout_shadow_right,
+        int shadowRight = a.getResourceId(R.styleable.KF5SwipeBackLayout_kf5_sbl_shadow_right,
                 R.drawable.kf5_shadow_right);
-        int shadowBottom = a.getResourceId(R.styleable.SwipeBackLayout_shadow_bottom, R.drawable.kf5_shadow_bottom);
+        int shadowBottom = a.getResourceId(R.styleable.KF5SwipeBackLayout_kf5_sbl_shadow_bottom, R.drawable.kf5_shadow_bottom);
         setShadow(shadowLeft, EDGE_LEFT);
         setShadow(shadowRight, EDGE_RIGHT);
         setShadow(shadowBottom, EDGE_BOTTOM);

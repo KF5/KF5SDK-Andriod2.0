@@ -34,7 +34,7 @@
 
         <com.kf5.sdk.im.widget.MaskImage
             android:id="@+id/kf5_message_item_with_image_content_img"
-            app:maskSource="left"
+            app:kf5_mi_maskSource="kf5_mi_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/kf5_message_item_with_image_head_img"

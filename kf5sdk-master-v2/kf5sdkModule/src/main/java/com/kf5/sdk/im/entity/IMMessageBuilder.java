@@ -34,7 +34,7 @@ public class IMMessageBuilder {
      * @return
      */
     public static IMMessage buildSystemMessage(String content) {
-        return buildCommonIMMessage(content, Field.CHAT_SYSTEM, "", Status.SENDING);
+        return buildCommonIMMessage(content, Field.CHAT_SYSTEM, "", Status.SUCCESS);
     }
 
     /**
@@ -82,7 +82,7 @@ public class IMMessageBuilder {
      * @return
      */
     public static IMMessage buildSendQueueMessage(String content) {
-        return buildCommonIMMessage(content, Field.QUEUE_WAITING, "", Status.SENDING);
+        return buildCommonIMMessage(content, Field.QUEUE_WAITING, "", Status.SUCCESS);
     }
 
     /**
@@ -132,7 +132,7 @@ public class IMMessageBuilder {
      * @return
      */
     public static IMMessage buildReceiveTextMessage(String content) {
-        return buildCommonIMMessage(content, Field.CHAT_MSG, Field.AGENT, Status.SENDING);
+        return buildCommonIMMessage(content, Field.CHAT_MSG, Field.AGENT, Status.SUCCESS);
     }
 
 

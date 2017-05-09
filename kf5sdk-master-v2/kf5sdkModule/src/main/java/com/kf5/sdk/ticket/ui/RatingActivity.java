@@ -87,7 +87,7 @@ public class RatingActivity extends BaseActivity<RatingPresenter, IRatingView> i
 
     @Override
     protected int getLayoutID() {
-        return R.layout.activity_rating;
+        return R.layout.kf5_activity_rating;
     }
 
 

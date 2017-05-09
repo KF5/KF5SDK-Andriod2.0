@@ -29,7 +29,7 @@ public class CheckAdapter extends CommonAdapter<CheckItem> {
     public View getView(int position, View view, ViewGroup viewGroup) {
         ViewHolder holder;
         if (view == null) {
-            view = inflateLayout(R.layout.check_list_item, viewGroup);
+            view = inflateLayout(R.layout.kf5_check_list_item, viewGroup);
             holder = new ViewHolder();
             holder.mContent = (TextView) view.findViewById(R.id.kf5_check_item_tv);
             holder.mImage = (ImageView) view.findViewById(R.id.kf5_check_item_img);

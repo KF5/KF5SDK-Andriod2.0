@@ -34,7 +34,7 @@ public class OrderAttributeActivity extends BaseActivity<TicketAttributePresente
 
     @Override
     protected int getLayoutID() {
-        return R.layout.activity_order_attribute;
+        return R.layout.kf5_activity_order_attribute;
     }
 
     @Override

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.kf5.sdk.R;
 import com.kf5.sdk.im.keyboard.EmoticonsKeyBoard;
 import com.kf5.sdk.im.keyboard.utils.EmoticonsKeyboardUtils;
+import com.kf5.sdk.im.ui.KF5ChatActivity;
 import com.kf5.sdk.im.widget.AudioRecordButton;
 
 /**
@@ -121,36 +122,23 @@ public class IMView extends FrameLayout implements View.OnClickListener {
         mETContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                if (i1 < i2) {
+                    if (getContext() instanceof KF5ChatActivity) {
+                        KF5ChatActivity kf5ChatActivity = (KF5ChatActivity) getContext();
+                        if (!kf5ChatActivity.isAgentOnline) {
+                            kf5ChatActivity.getAgent();
+                        }
+                    }
+                }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!TextUtils.isEmpty(editable)) {
-                    if (!isChangeText) {
-                        isChangeText = true;
-                        ScaleAnimation animation = new ScaleAnimation(0, 1f, 0, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                        mTVSend.setAnimation(animation);
-                        animation.setDuration(200);
-                        animation.setFillAfter(false);
-                        animation.start();
-                        mTVSend.setVisibility(VISIBLE);
-                        mImageViewApps.setVisibility(GONE);
-                    }
-                } else {
-                    isChangeText = false;
-                    ScaleAnimation animation = new ScaleAnimation(0f, 1f, 0f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                    animation.setDuration(200);
-                    animation.setFillAfter(false);
-                    mImageViewApps.startAnimation(animation);
-                    mImageViewApps.setVisibility(VISIBLE);
-                    mTVSend.setVisibility(GONE);
-                }
+                changeSendBtnStatus(editable);
             }
         });
     }
@@ -164,53 +152,15 @@ public class IMView extends FrameLayout implements View.OnClickListener {
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.kf5_btn_voice_or_text) {
-            if (mLayoutInput.isShown()) {
-                RotateAnimation animation = new RotateAnimation(0, 90, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
-                animation.setDuration(200);
-                animation.setFillAfter(true);
-                animation.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                        mImageViewVoiceOrText.setImageResource(R.drawable.kf5_chat_by_text);
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        mLayoutInput.setVisibility(GONE);
-                        mButtonVoice.setVisibility(VISIBLE);
-                        if (mIMViewListener != null)
-                            mIMViewListener.onReset();
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-                mImageViewVoiceOrText.startAnimation(animation);
+            if (getContext() instanceof KF5ChatActivity) {
+                KF5ChatActivity kf5ChatActivity = (KF5ChatActivity) getContext();
+                if (!kf5ChatActivity.isAgentOnline) {
+                    kf5ChatActivity.getAgent();
+                } else {
+                    changeRecordImgStatus();
+                }
             } else {
-                RotateAnimation animation = new RotateAnimation(90, 0, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
-                animation.setDuration(200);
-                animation.setFillAfter(false);
-                animation.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                        mImageViewVoiceOrText.setImageResource(R.drawable.kf5_chat_by_voice);
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        mLayoutInput.setVisibility(VISIBLE);
-                        mButtonVoice.setVisibility(GONE);
-                        EmoticonsKeyboardUtils.openSoftKeyboard(mETContent);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-                mImageViewVoiceOrText.startAnimation(animation);
+                changeRecordImgStatus();
             }
         } else if (id == R.id.kf5_btn_emoji) {
             mLayoutInput.setVisibility(VISIBLE);
@@ -244,6 +194,84 @@ public class IMView extends FrameLayout implements View.OnClickListener {
             }
             if (mIMViewListener != null)
                 mIMViewListener.onToggleFuncView(EmoticonsKeyBoard.FUNC_TYPE_APPS);
+        }
+    }
+
+
+    /**
+     * 修改录音IMG的图片资源
+     */
+    private void changeRecordImgStatus() {
+        if (mLayoutInput.isShown()) {
+            RotateAnimation animation = new RotateAnimation(0, 90, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+            animation.setDuration(200);
+            animation.setFillAfter(true);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    mImageViewVoiceOrText.setImageResource(R.drawable.kf5_chat_by_text);
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mLayoutInput.setVisibility(GONE);
+                    mButtonVoice.setVisibility(VISIBLE);
+                    if (mIMViewListener != null)
+                        mIMViewListener.onReset();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            mImageViewVoiceOrText.startAnimation(animation);
+        } else {
+            RotateAnimation animation = new RotateAnimation(90, 0, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+            animation.setDuration(200);
+            animation.setFillAfter(false);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    mImageViewVoiceOrText.setImageResource(R.drawable.kf5_chat_by_voice);
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mLayoutInput.setVisibility(VISIBLE);
+                    mButtonVoice.setVisibility(GONE);
+                    EmoticonsKeyboardUtils.openSoftKeyboard(mETContent);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            mImageViewVoiceOrText.startAnimation(animation);
+        }
+    }
+
+    private void changeSendBtnStatus(Editable editable) {
+        if (!TextUtils.isEmpty(editable)) {
+            if (!isChangeText) {
+                isChangeText = true;
+                ScaleAnimation animation = new ScaleAnimation(0, 1f, 0, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                mTVSend.setAnimation(animation);
+                animation.setDuration(200);
+                animation.setFillAfter(false);
+                animation.start();
+                mTVSend.setVisibility(VISIBLE);
+                mImageViewApps.setVisibility(GONE);
+            }
+        } else {
+            isChangeText = false;
+            ScaleAnimation animation = new ScaleAnimation(0f, 1f, 0f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            animation.setDuration(200);
+            animation.setFillAfter(false);
+            mImageViewApps.startAnimation(animation);
+            mImageViewApps.setVisibility(VISIBLE);
+            mTVSend.setVisibility(GONE);
         }
     }
 

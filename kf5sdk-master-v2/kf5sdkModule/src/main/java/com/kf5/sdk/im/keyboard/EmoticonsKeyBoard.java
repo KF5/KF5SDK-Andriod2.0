@@ -112,6 +112,7 @@ public class EmoticonsKeyBoard extends AutoHeightLayout implements EmoticonsFunc
      * 显示机器人View
      */
     public void showAIView() {
+        reset();
         ViewUtils.toggleTargetViewVisible(mAILayout, mIMLayout, mQueueLayout);
     }
 
@@ -119,6 +120,7 @@ public class EmoticonsKeyBoard extends AutoHeightLayout implements EmoticonsFunc
      * 显示QueueView
      */
     public void showQueueView() {
+        reset();
         ViewUtils.toggleTargetViewVisible(mQueueLayout, mIMLayout, mAILayout);
     }
 

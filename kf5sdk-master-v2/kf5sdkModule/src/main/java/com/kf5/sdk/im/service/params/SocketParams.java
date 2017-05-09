@@ -245,16 +245,18 @@ public class SocketParams {
     /**
      * 排队状态时发送临时消息的指令
      *
-     * @param msg
+     * @param msg       消息内容
+     * @param timeStamp 时间戳
      * @return
      */
-    public static String getQueueMessageParams(String msg) {
+    public static String getQueueMessageParams(String msg, String timeStamp) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(ACTION, SEND_MESSAGE);
             JSONObject paramsObj = new JSONObject();
             paramsObj.put(TYPE, CHAT_MSG);
             paramsObj.put(MSG, msg);
+            paramsObj.put(TIMESTAMP, timeStamp);
             jsonObject.put(PARAMS, paramsObj);
         } catch (JSONException e) {
             e.printStackTrace();

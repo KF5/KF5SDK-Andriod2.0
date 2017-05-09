@@ -105,7 +105,7 @@ public class LookFeedBackActivity extends BaseActivity<TicketListPresenter, ITic
 
     @Override
     protected int getLayoutID() {
-        return R.layout.activity_look_feed_back;
+        return R.layout.kf5_activity_look_feed_back;
     }
 
     @Override

@@ -145,7 +145,6 @@ public class IMSQLManager extends SQLManager {
                 contentValues.put(DataBaseColumn.FILE_NAME, upload.getName());
                 contentValues.put(DataBaseColumn.LOCAL_PATH, upload.getLocalPath());
             }
-//            getInstance(context).openSqlDB().insert(DataBaseHelper.DB_TABLE, null, contentValues);
             getInstance(context).openSqlDB().update(DataBaseHelper.DB_TABLE, contentValues, DataBaseColumn.MARK + " = ?", new String[]{iMMessage.getTimeStamp()});
         } catch (Exception e) {
             e.printStackTrace();
@@ -398,7 +397,8 @@ public class IMSQLManager extends SQLManager {
                         iMMessage.setStatus(Status.SUCCESS);
                         break;
                     case 1:
-                        iMMessage.setStatus(Status.SENDING);
+//                        iMMessage.setStatus(Status.SENDING);
+                        iMMessage.setStatus(Status.FAILED);
                         break;
                 }
                 if (TextUtils.equals(Field.CHAT_UPLOAD, type)) {
@@ -531,14 +531,12 @@ public class IMSQLManager extends SQLManager {
 
     @Override
     protected void release() {
-        // TODO Auto-generated method stub
         super.release();
         instance = null;
     }
 
     public static void reset(Context context) {
         getInstance(context).release();
-
     }
 
 }

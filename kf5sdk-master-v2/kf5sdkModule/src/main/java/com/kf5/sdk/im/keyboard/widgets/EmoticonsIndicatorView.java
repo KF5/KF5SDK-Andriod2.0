@@ -34,10 +34,10 @@ public class EmoticonsIndicatorView extends LinearLayout {
         this.mContext = context;
         this.setOrientation(HORIZONTAL);
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
-                R.styleable.IndicatorView, 0, 0);
+                R.styleable.KF5IndicatorView, 0, 0);
         try {
-            mDrawableSelect = a.getDrawable(R.styleable.IndicatorView_select);
-            mDrawableNomal = a.getDrawable(R.styleable.IndicatorView_normal);
+            mDrawableSelect = a.getDrawable(R.styleable.KF5IndicatorView_kf5_iv_select);
+            mDrawableNomal = a.getDrawable(R.styleable.KF5IndicatorView_kf5_iv_normal);
         } finally {
             a.recycle();
         }

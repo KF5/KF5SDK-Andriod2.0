@@ -33,8 +33,8 @@ public class MaskImage extends ImageView {
     public MaskImage(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaskImage);
-        int source = typedArray.getInt(R.styleable.MaskImage_maskSource, -1);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.KF5MaskImage);
+        int source = typedArray.getInt(R.styleable.KF5MaskImage_kf5_mi_maskSource, -1);
         typedArray.recycle();
         if (source == 0) {
             mMaskSource = R.drawable.kf5_message_from_text_bg_nomal;
