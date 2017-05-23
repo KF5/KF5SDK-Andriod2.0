@@ -137,4 +137,8 @@
     <string name="kf5_robot_found_answers">has found following answers for you:</string>
     <string name="kf5_update_queue">Queueing to be served;</string>
     <string name="kf5_chat">Chat</string>
+    <string name="kf5_not_in_service_time">Not in the service time,leave a message instead</string>
+    <string name="kf5_queue_error_leave_msg">Queue failure,leave a message instead</string>
+    <string name="kf5_queue_too_long">Service is busy now,leave a message instead</string>
+    <string name="kf5_queue_error">Queue failure</string>
 </resources>

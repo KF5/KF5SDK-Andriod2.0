@@ -122,6 +122,7 @@ public class EmoticonsKeyBoard extends AutoHeightLayout implements EmoticonsFunc
     public void showQueueView() {
         reset();
         ViewUtils.toggleTargetViewVisible(mQueueLayout, mIMLayout, mAILayout);
+
     }
 
     /**

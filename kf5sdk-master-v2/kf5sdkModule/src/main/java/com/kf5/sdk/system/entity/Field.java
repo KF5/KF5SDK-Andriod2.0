@@ -73,6 +73,8 @@ public class Field {
 
     public static final String CHAT_QUESTION = "chat.question";
 
+    public static final String CHAT_DOCUMENT = "chat.document";
+
 //    public static final String CHAT_AI = "chat.ai";
 
     public static final String AMR = "amr";
@@ -217,5 +219,14 @@ public class Field {
 
     public static final String AGENT_ASSIGN_FAIL = "agent.assign.fail";
 
+    public static final String VISITOR_QUEUE_FAIL = "visitor.queue.fail";
+
     public static final String EVENT = "event";
+
+    public static final String IM_SERVICETIME = "im_servicetime";
+
+    public static final String IN_WORK_TIME = "in_work_time";
+
+    public static final String CAN_USE_ROBOT = "can_use_robot";
+
 }

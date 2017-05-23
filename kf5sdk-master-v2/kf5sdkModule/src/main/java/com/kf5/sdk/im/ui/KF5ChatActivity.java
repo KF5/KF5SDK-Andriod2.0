@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.kf5.sdk.R;
 import com.kf5.sdk.im.entity.Agent;
+import com.kf5.sdk.im.entity.AgentFailureType;
 import com.kf5.sdk.im.entity.Chat;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.entity.IMMessageBuilder;
@@ -23,6 +24,7 @@ import com.kf5.sdk.system.utils.SafeJson;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -57,6 +59,8 @@ public class KF5ChatActivity extends BaseChatActivity {
     public void scConnect() {
         hideLoading();
         presenter.getIMInfo();
+        //设置用户自定义属性
+//        presenter.setMetadata();
     }
 
     /**
@@ -193,8 +197,7 @@ public class KF5ChatActivity extends BaseChatActivity {
                 try {
                     if (chat != null) {
                         String status = chat.getStatus();
-                        robotEnable = chat.isRobotEnable();
-                        robotName = chat.getRobotName();
+                        initRobotData(chat);
                         setTitleContent(getString(R.string.kf5_allocating));
                         //由于可能重连,同时removeQueueItemView
                         removeQueueItemView();
@@ -203,11 +206,10 @@ public class KF5ChatActivity extends BaseChatActivity {
                         if (TextUtils.equals(Field.CHATTING, status)) {
                             isAgentOnline = true;
                             setTitleText(chat.getAgent().getDisplayName());
-//                            handleShareIntent();
                             mXhsEmoticonsKeyBoard.showIMView();
                             //如果状态为queue,则开始排队，同时接受push过来处于的排队位置
                         } else if (TextUtils.equals(Field.QUEUE, status)) {
-                            presenter.getAgents(agentIds, force);
+                            getAgent();
                             mXhsEmoticonsKeyBoard.showQueueView();
                             isAgentOnline = false;
                             if (IMCacheUtils.temporaryMessageWasSent(mActivity))
@@ -216,18 +218,18 @@ public class KF5ChatActivity extends BaseChatActivity {
                         } else if (TextUtils.equals(Field.NONE, status)) {
                             isAgentOnline = false;
                             //如果机器人可用，则开启机器人对话
-                            if (chat.isRobotEnable()) {
-                                setTitleContent(chat.getRobotName());
+                            if (robotEnable) {
+                                setTitleContent(robotName);
                                 //显示机器人编辑区域并显示欢迎语
                                 mXhsEmoticonsKeyBoard.showAIView();
                             } else {
+                                //显示排队输入框
+                                mXhsEmoticonsKeyBoard.showQueueView();
                                 if (!IMCacheUtils.temporaryMessageFirst(mActivity)) {
-                                    presenter.getAgents(agentIds, force);
+                                    getAgent();
                                 } else {
                                     setTitleContent(getString(R.string.kf5_chat));
                                 }
-                                //显示排队输入框
-                                mXhsEmoticonsKeyBoard.showQueueView();
                             }
                         }
                         if (!TextUtils.equals(Field.QUEUE, status)) {
@@ -365,7 +367,7 @@ public class KF5ChatActivity extends BaseChatActivity {
                     } else {
                         isAgentOnline = false;
                         setTitleContent(getString(R.string.kf5_no_agent_online));
-                        toggleNoAgentOnline();
+                        toggleNoAgentOnline(AgentFailureType.NO_AGENT_ONLINE);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -419,27 +421,28 @@ public class KF5ChatActivity extends BaseChatActivity {
     }
 
     /**
-     * 显示聊天组件
+     * 分配客服失败
      */
     @Override
-    public void showIMView() {
+    public void getAgentFailure(final AgentFailureType failureType) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                toggleNoAgentOnline();
+                toggleNoAgentOnline(failureType);
             }
         });
     }
 
-    private void toggleNoAgentOnline() {
+    private void toggleNoAgentOnline(AgentFailureType failureType) {
         removeQueueItemView();
         setQueueWidgetsEnable();
+        setTitleContent(getString(R.string.kf5_chat));
         if (IMCacheUtils.temporaryMessageFirst(mActivity)) {
             mXhsEmoticonsKeyBoard.showQueueView();
         } else {
             mXhsEmoticonsKeyBoard.showIMView();
         }
-        showNoAgentOnlineReminderDialog();
+        showNoAgentOnlineReminderDialog(failureType);
     }
 
 
@@ -491,13 +494,17 @@ public class KF5ChatActivity extends BaseChatActivity {
         }
     }
 
+    /**
+     * 移除排队消息
+     */
     private void removeQueueItemView() {
+        List<IMMessage> queueList = new ArrayList<>();
         for (IMMessage imMessage : mIMMessageList) {
             if (TextUtils.equals(Field.QUEUE_WAITING, imMessage.getType())) {
-                mIMMessageList.remove(imMessage);
-                break;
+                queueList.add(imMessage);
             }
         }
+        mIMMessageList.removeAll(queueList);
         refreshData();
     }
 
@@ -564,7 +571,7 @@ public class KF5ChatActivity extends BaseChatActivity {
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if (!TextUtils.isEmpty(s.toString().trim())) {
                         mEditTextQueue.removeTextChangedListener(this);
-                        presenter.getAgents(agentIds, force);
+                        getAgent();
                     }
                 }
 
@@ -575,4 +582,14 @@ public class KF5ChatActivity extends BaseChatActivity {
             });
     }
 
+
+    /**
+     * 初始化机器人属性
+     *
+     * @param chat
+     */
+    private void initRobotData(Chat chat) {
+        robotEnable = inWorkTime ? chat.isRobotEnable() : canUseRobot && chat.isRobotEnable();
+        robotName = chat.getRobotName();
+    }
 }

@@ -148,7 +148,7 @@ abstract class AbstractHolder {
      * @param position
      */
     protected final void loadAIData(IMMessage message, TextView contentText, int position) {
-        CustomTextView.setTextWithAIMessage(context, contentText, message.getMessage());
+        CustomTextView.setTextWithAIMessage(contentText, message.getMessage(), message.getType());
         contentText.setOnLongClickListener(new MessageTextLongListener(context, message, position));
     }
 

@@ -22,6 +22,7 @@ import com.kf5.sdk.R;
 import com.kf5.sdk.im.adapter.MessageAdapter;
 import com.kf5.sdk.im.adapter.listener.VoicePlayListener;
 import com.kf5.sdk.im.db.IMSQLManager;
+import com.kf5.sdk.im.entity.AgentFailureType;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.entity.IMMessageBuilder;
 import com.kf5.sdk.im.expression.utils.ExpressionCommonUtils;
@@ -83,8 +84,6 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
 
     private TextView mTextViewTitle;
 
-    protected static final int OK = IMPresenter.RESULT_OK;
-
     protected RatingDialog mRatingDialog;
 
     private ImageCompressManager mImageCompressManager;
@@ -111,9 +110,15 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
 
     protected int force;
 
-    protected boolean robotEnable;
+    public static boolean robotEnable;
 
     protected String robotName;
+
+    protected boolean canUseRobot;
+
+    protected boolean inWorkTime = true;
+
+    private DialogBox mDialogBox;
 
 
     @Override
@@ -193,6 +198,11 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
                     }
                     agentIds = SafeJson.safeGet(jsonObject, Field.AGENT_IDS);
                     force = SafeJson.safeInt(jsonObject, Field.FORCE);
+                    if (SafeJson.isContainKey(jsonObject, Field.IM_SERVICETIME)) {
+                        JSONObject serviceTimeObj = SafeJson.safeObject(jsonObject, Field.IM_SERVICETIME);
+                        inWorkTime = SafeJson.safeBoolean(serviceTimeObj, Field.IN_WORK_TIME);
+                        canUseRobot = SafeJson.safeBoolean(serviceTimeObj, Field.CAN_USE_ROBOT);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     hideLoading();
@@ -254,7 +264,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         map.put("appid", SPUtils.getAppid());
         map.put("platform", "Android");
         map.put("token", SPUtils.getUserToken());
-        map.put("version", "2.2");
+        map.put("version", "2.4");
         map.put("uuid", Utils.getUUID(mActivity));
         bundle.putString("query", com.kf5.sdk.im.utils.Utils.getMapAppend(map));
         bundle.putString("url", SPUtils.getChatUrl());
@@ -412,7 +422,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      */
     public void onSendQueueTextMessage(String content) {
         IMMessage imMessage = IMMessageBuilder.buildSendTextMessage(content);
-        presenter.sendQueueMessage(imMessage, IMCacheUtils.temporaryMessageFirst(mActivity), agentIds, force);
+        presenter.sendQueueMessage(imMessage, IMCacheUtils.temporaryMessageFirst(mActivity));
         refreshListAndNotifyData(IMMessageBuilder.addIMMessageToList(imMessage));
     }
 
@@ -420,17 +430,39 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
     /**
      * 显示客服不在线对话框
      */
-    protected void showNoAgentOnlineReminderDialog() {
-        new DialogBox(mActivity)
-                .setMessage(getString(R.string.kf5_no_agent_online_leaving_message))
+    protected void showNoAgentOnlineReminderDialog(AgentFailureType failureType) {
+        if (mDialogBox != null && mDialogBox.isShowing()) {
+            mDialogBox.dismiss();
+        }
+        if (robotEnable) {
+            setTitleText(robotName);
+            mXhsEmoticonsKeyBoard.showAIView();
+        }
+        mDialogBox = new DialogBox(mActivity)
                 .setLeftButton(getString(R.string.kf5_cancel), null)
+                .setCancelAble(false)
                 .setRightButton(getString(R.string.kf5_leave_message), new DialogBox.onClickListener() {
                     @Override
                     public void onClick(DialogBox dialog) {
                         dialog.dismiss();
                         startActivity(new Intent(mActivity, FeedBackActivity.class));
                     }
-                }).show();
+                });
+        switch (failureType) {
+            case NO_AGENT_ONLINE:
+                mDialogBox.setMessage(getString(R.string.kf5_no_agent_online_leaving_message));
+                break;
+            case NOT_IN_SERVICE_TIME:
+                mDialogBox.setMessage(getString(R.string.kf5_not_in_service_time));
+                break;
+            case WAITING_IN_QUEUE_FAILURE:
+                mDialogBox.setMessage(getString(R.string.kf5_queue_error_leave_msg));
+                break;
+            case QUEUE_TOO_LONG:
+                mDialogBox.setMessage(getString(R.string.kf5_queue_too_long));
+                break;
+        }
+        mDialogBox.show();
     }
 
 
@@ -469,7 +501,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      */
     public void aiToGetAgents() {
         mXhsEmoticonsKeyBoard.showQueueView();
-        presenter.getAgents(agentIds, force);
+        getAgent();
     }
 
 
@@ -477,7 +509,11 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      * 分配客服
      */
     public void getAgent() {
-        presenter.getAgents(agentIds, force);
+        if (inWorkTime) {
+            presenter.getAgents(agentIds, force);
+        } else {
+            getAgentFailure(AgentFailureType.NOT_IN_SERVICE_TIME);
+        }
     }
 
 

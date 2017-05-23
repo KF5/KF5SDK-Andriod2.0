@@ -131,4 +131,8 @@
     <string name="kf5_robot_found_answers">为您找到以下内容:</string>
     <string name="kf5_update_queue">您已进入排队;</string>
     <string name="kf5_chat">聊天</string>
+    <string name="kf5_not_in_service_time">不在服务时间，请提交留言。</string>
+    <string name="kf5_queue_error_leave_msg">排队失败，请提交留言。</string>
+    <string name="kf5_queue_too_long">当前服务高峰，请提交留言。</string>
+    <string name="kf5_queue_error">排队失败</string>
 </resources>
