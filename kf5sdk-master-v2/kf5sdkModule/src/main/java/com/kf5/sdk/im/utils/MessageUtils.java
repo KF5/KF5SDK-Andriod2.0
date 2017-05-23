@@ -28,8 +28,8 @@ public class MessageUtils {
         try {
 
             StringBuilder stringBuilder = new StringBuilder();
+            new JSONObject(message);
             JSONObject jsonObject = SafeJson.parseObj(message);
-
             String content = SafeJson.safeGet(jsonObject, Field.CONTENT);
             if (content.contains("{{") && content.contains("}}")) {
                 content = content.replaceAll("\\{\\{", "<a href=\"" + Field.GET_AGENT + "\">");
@@ -46,7 +46,29 @@ public class MessageUtils {
             return stringBuilder.toString();
         } catch (Exception e) {
             e.printStackTrace();
-            return message;
+            try {
+                JSONArray jsonArray = new JSONArray(message);
+                StringBuilder sb = new StringBuilder();
+                sb.append("已为您找到以下内容：")
+                        .append("<br/>");
+                int size = jsonArray.length();
+                for (int i = 0; i < size; i++) {
+                    JSONObject itemObj = jsonArray.getJSONObject(i);
+                    sb.append("● ")
+                            .append("<a href=\"")
+                            .append(SafeJson.safeGet(itemObj, Field.ID))
+                            .append("\">")
+                            .append(SafeJson.safeGet(itemObj, Field.TITLE_TAG))
+                            .append("</a>");
+                    if (i != size - 1) {
+                        sb.append("<br/>");
+                    }
+                }
+                return sb.toString();
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+                return message;
+            }
         }
     }
 
@@ -66,7 +88,12 @@ public class MessageUtils {
                 stringBuilder.append("<br/>");
             }
             for (int i = 0; i < size; i++) {
-                stringBuilder.append("<a href=\"").append(SafeJson.safeGet(jsonArray.getJSONObject(i), Field.POST_ID)).append("\">").append(SafeJson.safeGet(jsonArray.getJSONObject(i), Field.TITLE_TAG)).append("</a>");
+                stringBuilder.append("●")
+                        .append("<a href=\"")
+                        .append(SafeJson.safeGet(jsonArray.getJSONObject(i), Field.POST_ID))
+                        .append("\">")
+                        .append(SafeJson.safeGet(jsonArray.getJSONObject(i), Field.TITLE_TAG))
+                        .append("</a>");
                 if (i != size - 1) {
                     stringBuilder.append("<br/>");
                 }
@@ -90,7 +117,7 @@ public class MessageUtils {
                 stringBuilder.append("<br/>");
             }
             for (int i = 0; i < size; i++) {
-                stringBuilder.append("<a href=\"").append(SafeJson.safeGet(jsonArray.getJSONObject(i), Field.ID)).append("\">").append(SafeJson.safeGet(jsonArray.getJSONObject(i), Field.TITLE_TAG)).append("</a>");
+                stringBuilder.append("●").append("<a href=\"").append(SafeJson.safeGet(jsonArray.getJSONObject(i), Field.ID)).append("\">").append(SafeJson.safeGet(jsonArray.getJSONObject(i), Field.TITLE_TAG)).append("</a>");
                 if (i != size - 1) {
                     stringBuilder.append("<br/>");
                 }

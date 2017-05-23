@@ -6,6 +6,6 @@ package com.kf5.sdk.im.entity;
  * email:812219713@qq.com
  */
 
-public enum  MessageType {
-    TEXT,IMAGE,VOICE,FILE,SYSTEM,AI_MESSAGE,QUEUE_WAITING
+public enum MessageType {
+    TEXT, IMAGE, VOICE, FILE, SYSTEM, AI_MESSAGE, QUEUE_WAITING
 }

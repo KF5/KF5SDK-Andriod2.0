@@ -44,5 +44,4 @@ public interface IChatPresenter {
      */
     void disconnectIPC();
 
-
 }

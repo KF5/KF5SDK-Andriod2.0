@@ -22,7 +22,9 @@ v2.0版本的SDK较v1.0版本的sdk主要区别在于：基于Framework代码库
 
 2、将demo里的kf5sdkModule导入到您的工程中，然后添加依赖，具体导入步骤请自行查阅相关资料，并将manifest.xml文件里的关于各种权限以及组件声明拷贝到工程的manifest.xml文件下，若有相同权限可以直接过滤掉。
 
-3、初始化必要信息：`[SPUtils.saveHelpAddress(String helpAddress)],[SPUtils.saveAppID(String appID)];`
+3、在Application下调用`KF5SDKInitializer.init(context)`全局初始化接口。
+
+4、初始化必要信息：`[SPUtils.saveHelpAddress(String helpAddress)],[SPUtils.saveAppID(String appID)];`
 
 注：helpAddress即您所注册的kf5平台地址，如：demo.kf5.com；appid为验证是否是您平台的唯一标示，[查看与创建移动SDK APP](https://support.kf5.com/hc/kb/article/199665/),这俩接口需要在对SDK其他操作之前调用。
 
@@ -59,4 +61,18 @@ compile 'com.github.bumptech.glide:glide:3.7.0
 -keep class com.kf5.sdk.helpcenter.entity.**{*;}
 -keep class com.kf5.sdk.system.entity.**{*;}
 -keep class com.kf5.sdk.ticket.entity.**{*;}
+-keep class com.kf5.sdk.im.expression.**{*;}
+#glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+#gson
+-keep class com.google.gson.** {*;}
+-keep class com.google.**{*;}
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.stream.** { *; }
+-keep class com.google.gson.examples.android.model.** { *; }
+
  ```

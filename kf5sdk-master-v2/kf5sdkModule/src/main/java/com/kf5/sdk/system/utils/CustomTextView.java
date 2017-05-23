@@ -19,7 +19,6 @@ import com.kf5.sdk.im.entity.CustomField;
 import com.kf5.sdk.im.expression.bean.EmojiDisplay;
 import com.kf5.sdk.im.keyboard.utils.EmoticonsKeyboardUtils;
 import com.kf5.sdk.im.utils.MessageUtils;
-import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.listener.AIMessageMovementMethod;
 import com.kf5.sdk.system.listener.AIURLSpan;
 import com.kf5.sdk.system.listener.RichLinkMovementMethod;
@@ -86,13 +85,11 @@ public class CustomTextView {
     /**
      * 解析机器人搜索到文档的内容
      *
-     * @param context
      * @param textView
      * @param text
      */
-    public static void setTextWithAIMessage(Context context, TextView textView, String text) {
+    public static void setTextWithAIMessage(TextView textView, String text ,String type) {
         textView.setText(Html.fromHtml(filterHtmlTag(MessageUtils.dealAIMessage(text))));
-        String type = SafeJson.safeGet(SafeJson.parseObj(text), Field.TYPE);
         dealAILink(textView, type);
         Linkify.addLinks(textView, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
         textView.setMovementMethod(new AIMessageMovementMethod());

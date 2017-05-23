@@ -17,6 +17,7 @@ import com.kf5.im.aidl.MessageManager;
 import com.kf5.sdk.R;
 import com.kf5.sdk.im.db.IMSQLManager;
 import com.kf5.sdk.im.entity.Agent;
+import com.kf5.sdk.im.entity.AgentFailureType;
 import com.kf5.sdk.im.entity.Chat;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.entity.IMMessageBuilder;
@@ -28,6 +29,7 @@ import com.kf5.sdk.im.mvp.view.IIMView;
 import com.kf5.sdk.im.service.MessageService;
 import com.kf5.sdk.im.service.MessageServiceStub;
 import com.kf5.sdk.im.service.params.SocketParams;
+import com.kf5.sdk.im.ui.BaseChatActivity;
 import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.mvp.presenter.BasePresenter;
 import com.kf5.sdk.system.mvp.usecase.BaseUseCase;
@@ -298,7 +300,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                 public void onResult(int code, String result) throws RemoteException {
                     LogUtil.printf("机器人消息参数" + params + "状态码" + code + "返回值" + result);
                     JSONObject jsonObject = SafeJson.parseObj(result);
-                    dealMessageResult(message, code, SafeJson.safeGet(jsonObject, Field.TIMESTAMP), result);
+                    dealMessageResult(message, code, SafeJson.safeGet(jsonObject, Field.TIMESTAMP), result, SafeJson.safeGet(jsonObject, Field.TYPE));
                 }
             });
         } catch (Exception e) {
@@ -324,7 +326,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                 public void onResult(int code, String result) throws RemoteException {
                     LogUtil.printf("老版机器人分词消息状态码" + code + "返回值" + result);
                     JSONObject jsonObject = SafeJson.parseObj(result);
-                    dealMessageResult(message, code, SafeJson.safeGet(jsonObject, Field.TIMESTAMP), SafeJson.safeGet(jsonObject, Field.ANSWER));
+                    dealMessageResult(message, code, SafeJson.safeGet(jsonObject, Field.TIMESTAMP), SafeJson.safeGet(jsonObject, Field.ANSWER), "");
                 }
             });
         } catch (Exception e) {
@@ -341,7 +343,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      * @param resultTimeStamp
      * @param message
      */
-    private void dealMessageResult(IMMessage imMessage, int code, String resultTimeStamp, String message) {
+    private void dealMessageResult(IMMessage imMessage, int code, String resultTimeStamp, String message, String type) {
 
         String timeStamp = imMessage.getTimeStamp();
         removeTimerTask(timeStamp);
@@ -349,6 +351,11 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
             imMessage.setStatus(Status.SUCCESS);
             updateMessageByTimeStamp(imMessage, timeStamp);
             IMMessage aiMessage = IMMessageBuilder.buildReceiveAIMessage(message, resultTimeStamp);
+            if (TextUtils.equals(Field.DOCUMENT, type)) {
+                aiMessage.setType(Field.CHAT_DOCUMENT);
+            } else if (TextUtils.equals(Field.QUESTION, type)) {
+                aiMessage.setType(Field.CHAT_QUESTION);
+            }
             getMvpView().onReceiveMessageList(Collections.singletonList(aiMessage));
             insertMessageToDB(Collections.singletonList(aiMessage));
         } else {
@@ -364,7 +371,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      *
      * @param message
      */
-    public void sendQueueMessage(final IMMessage message, final boolean temporaryMessageFirst, final String agentIds, final int force) {
+    public void sendQueueMessage(final IMMessage message, final boolean temporaryMessageFirst) {
         try {
             addTimerTask(message, THIRTY_SECONDS);
             insertMessageToDB(Collections.singletonList(message));
@@ -373,10 +380,13 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                 public void onResult(int code, String result) throws RemoteException {
                     LogUtil.printf("发送临时消息状态码" + code + "返回结果" + result);
                     dealSendMessageResult(message, code, result);
-                    if (temporaryMessageFirst && code == RESULT_OK) {
-                        getAgents(agentIds, force);
-                    }
                     getMvpView().updateQueueView(code);
+                    if (temporaryMessageFirst && code == RESULT_OK) {
+                        if (getMvpView().getContext() instanceof BaseChatActivity) {
+                            BaseChatActivity chatActivity = (BaseChatActivity) getMvpView().getContext();
+                            chatActivity.getAgent();
+                        }
+                    }
                 }
             });
         } catch (RemoteException e) {
@@ -646,6 +656,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      */
     public void getAgents(String agentIdArray, int force) {
         try {
+
             mMessageManager.sendEventMessage(SocketParams.getAgentsAssignParams(agentIdArray, force), new IPCCallBack.Stub() {
                 @Override
                 public void onResult(final int code, final String result) throws RemoteException {
@@ -659,7 +670,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                             } else {
                                 getMvpView().setTitleContent(message);
                             }
-                            getMvpView().showIMView();
+                            getMvpView().getAgentFailure(AgentFailureType.NO_AGENT_ONLINE);
                         } else {
                             getMvpView().onGetAgentResult(code, result);
                         }
@@ -903,9 +914,23 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
     private void dealForceAgentAssignFailure(JSONObject jsonObject) throws JSONException {
         if (jsonObject != null && jsonObject.has(Field.EVENT)) {
             String event = jsonObject.getString(Field.EVENT);
+            String error = jsonObject.has("error") ? jsonObject.getString("error") : "";
             if (TextUtils.equals(Field.AGENT_ASSIGN_FAIL, event)) {
-                getMvpView().setTitleContent(getMvpView().getContext().getString(R.string.kf5_no_agent_online));
-                getMvpView().showIMView();
+                if (TextUtils.equals("no setting", error) || TextUtils.equals("create chat failed", error)) {
+                    getMvpView().setTitleContent(getMvpView().getContext().getString(R.string.kf5_queue_error));
+                    getMvpView().getAgentFailure(AgentFailureType.WAITING_IN_QUEUE_FAILURE);
+                } else if (jsonObject.has("no assignable agent")) {
+                    getMvpView().setTitleContent(getMvpView().getContext().getString(R.string.kf5_no_agent_online));
+                    getMvpView().getAgentFailure(AgentFailureType.NO_AGENT_ONLINE);
+                }
+            } else if (TextUtils.equals(Field.VISITOR_QUEUE_FAIL, event)) {
+                if (TextUtils.equals("toolong", error)) {
+                    getMvpView().setTitleContent(getMvpView().getContext().getString(R.string.kf5_chat));
+                    getMvpView().getAgentFailure(AgentFailureType.QUEUE_TOO_LONG);
+                } else if (TextUtils.equals("offline", error)) {
+                    getMvpView().setTitleContent(getMvpView().getContext().getString(R.string.kf5_no_agent_online));
+                    getMvpView().getAgentFailure(AgentFailureType.NO_AGENT_ONLINE);
+                }
             }
         }
     }

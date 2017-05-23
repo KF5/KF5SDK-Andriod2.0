@@ -16,19 +16,19 @@ class SystemHolder extends AbstractHolder {
 
     private TextView textView;
 
-    private TextView tvDate;
+//    private TextView tvDate;
 
     SystemHolder(View convertView) {
         super(convertView.getContext());
         textView = (TextView) convertView.findViewById(R.id.kf5_message_item_system);
-        tvDate = (TextView) convertView.findViewById(R.id.kf5_tvDate);
+//        tvDate = (TextView) convertView.findViewById(R.id.kf5_tvDate);
         convertView.setTag(this);
     }
 
     public void bindData(IMMessage message, int position, IMMessage previousMessage) {
         try {
             textView.setText(message.getMessage());
-            dealDate(position, tvDate, message, previousMessage);
+//            dealDate(position, tvDate, message, previousMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }

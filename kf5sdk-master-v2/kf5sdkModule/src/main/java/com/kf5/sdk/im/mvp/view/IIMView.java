@@ -3,6 +3,7 @@ package com.kf5.sdk.im.mvp.view;
 import android.content.Context;
 
 import com.kf5.sdk.im.entity.Agent;
+import com.kf5.sdk.im.entity.AgentFailureType;
 import com.kf5.sdk.im.entity.Chat;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.system.mvp.view.MvpView;
@@ -171,8 +172,8 @@ public interface IIMView extends MvpView {
 
 
     /**
-     * 显示聊天组件
+     * 分配客服失败
      */
-    void showIMView();
+    void getAgentFailure(AgentFailureType failureType);
 
 }

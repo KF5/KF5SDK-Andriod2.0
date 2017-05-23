@@ -15,6 +15,7 @@ import com.kf5.sdk.helpcenter.ui.HelpCenterTypeDetailsActivity;
 import com.kf5.sdk.im.ui.BaseChatActivity;
 import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.utils.CustomTextView;
+import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.Utils;
 import com.kf5.sdk.system.widget.DialogBox;
 
@@ -51,6 +52,7 @@ public class AIURLSpan extends ClickableSpan {
     @Override
     public void onClick(View widget) {
         try {
+            LogUtil.printf("这里点击效果" + type);
             if (TextUtils.equals(Field.GET_AGENT, url)) {
                 if (context instanceof BaseChatActivity) {
                     BaseChatActivity chatActivity = (BaseChatActivity) context;
@@ -85,17 +87,16 @@ public class AIURLSpan extends ClickableSpan {
                             }
                         }).show();
             } else {
-                if (TextUtils.equals(Field.QUESTION, type)) {
+                if (TextUtils.equals(Field.CHAT_QUESTION, type)) {
                     if (context instanceof BaseChatActivity) {
                         BaseChatActivity chatActivity = (BaseChatActivity) context;
                         chatActivity.onSendAITextMessage(clickText, Integer.parseInt(url));
                     }
-                } else if (TextUtils.equals(Field.DOCUMENT, type)) {
+                } else if (TextUtils.equals(Field.CHAT_DOCUMENT, type)) {
                     Intent intent = new Intent(context, HelpCenterTypeDetailsActivity.class);
                     intent.putExtra(Field.ID, Integer.parseInt(url));
                     context.startActivity(intent);
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();

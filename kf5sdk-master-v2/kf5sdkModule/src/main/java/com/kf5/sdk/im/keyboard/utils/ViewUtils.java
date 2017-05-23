@@ -20,13 +20,12 @@ public class ViewUtils {
 
         if (viewList != null) {
             for (View view : viewList) {
-                if (view.isShown()) {
+                if (view != null && view.getVisibility() != View.GONE) {
                     view.setVisibility(View.GONE);
                 }
             }
         }
-
-        if (targetView != null && !targetView.isShown()) {
+        if (targetView != null && targetView.getVisibility() != View.VISIBLE) {
             targetView.setVisibility(View.VISIBLE);
         }
     }
