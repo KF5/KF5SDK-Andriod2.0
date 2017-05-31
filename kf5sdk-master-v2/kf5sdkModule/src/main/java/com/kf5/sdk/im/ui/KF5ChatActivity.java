@@ -60,7 +60,21 @@ public class KF5ChatActivity extends BaseChatActivity {
         hideLoading();
         presenter.getIMInfo();
         //设置用户自定义属性
-//        presenter.setMetadata();
+//        try {
+//            //每一个JsonObj里必须成对包含name与value，前者是对应的名称，后者是name对应的值；相当于将map的键值拆分了，注意name与value要写正确。
+//            JSONArray jsonArray = new JSONArray();
+//            JSONObject jsonObject = new JSONObject();
+//            jsonObject.put("name", "这里填写用户自定义信息的名称，例如：平台");
+//            jsonObject.put("value", "这里填写上面这个名称对应的值，例如：Android系统");
+//            jsonArray.put(jsonObject);
+//            jsonObject = new JSONObject();
+//            jsonObject.put("name", "这里填写用户自定义信息的名称，例如：手机号");
+//            jsonObject.put("value", "这里填写上面这个名称对应的值，例如：123456897");
+//            jsonArray.put(jsonObject);
+//            presenter.setMetadata(jsonArray);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**
@@ -98,7 +112,6 @@ public class KF5ChatActivity extends BaseChatActivity {
      */
     @Override
     public void scDisConnect(String disConnectMsg) {
-
     }
 
     /**
@@ -374,8 +387,8 @@ public class KF5ChatActivity extends BaseChatActivity {
                 }
             }
         });
-
     }
+
 
     /**
      * 更新排队的View组件状态

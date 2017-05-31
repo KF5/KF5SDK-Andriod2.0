@@ -120,7 +120,6 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
 
     private DialogBox mDialogBox;
 
-
     @Override
     public Loader<IMPresenter> onCreateLoader(int id, Bundle args) {
         return new PresenterLoader<>(this, new PresenterFactory<IMPresenter>() {
@@ -131,28 +130,6 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         });
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        try {
-            mXhsEmoticonsKeyBoard.reset();
-            VoicePlayListener.getInstance().onPause();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        try {
-            ImageLoaderManager.getInstance(mActivity).clearMemory();
-            VoicePlayListener.getInstance().onDestroy();
-            mXhsEmoticonsKeyBoard.getAudioRecordButton().releaseResource();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected int getLayoutID() {
@@ -176,56 +153,87 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
     @Override
     public void onLoadFinished(Loader<IMPresenter> loader, IMPresenter data) {
         super.onLoadFinished(loader, data);
-
         showDialog = true;
         showLoading(null);
         dbMessageCount = presenter.getDBMessageCount();
+        refreshListAndNotifyData(presenter.getLastMessages(dbMessageCount));
         KF5SystemAPI.getInstance().systemInit(new HttpRequestCallBack() {
             @Override
-            public void onSuccess(String result) {
-                try {
-                    JSONObject jsonObject = new JSONObject(result);
-                    if (jsonObject.has(Field.CHAT_URL)) {
-                        String url = jsonObject.getString(Field.CHAT_URL);
-                        SPUtils.saveChatUrl(url);
-                        presenter.connectIPC();
-                    } else if (jsonObject.has(Field.MESSAGE)) {
-                        hideLoading();
-                        showToast(jsonObject.getString(Field.MESSAGE));
-                    } else {
-                        hideLoading();
-                        showToast(getString(R.string.kf5_unknown_error));
+            public void onSuccess(final String result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JSONObject jsonObject = new JSONObject(result);
+                            if (jsonObject.has(Field.CHAT_URL)) {
+                                String url = jsonObject.getString(Field.CHAT_URL);
+                                SPUtils.saveChatUrl(url);
+                                presenter.connectIPC();
+                            } else if (jsonObject.has(Field.MESSAGE)) {
+                                hideLoading();
+                                showToast(jsonObject.getString(Field.MESSAGE));
+                            } else {
+                                hideLoading();
+                                showToast(getString(R.string.kf5_unknown_error));
+                            }
+                            agentIds = SafeJson.safeGet(jsonObject, Field.AGENT_IDS);
+                            force = SafeJson.safeInt(jsonObject, Field.FORCE);
+                            if (SafeJson.isContainKey(jsonObject, Field.IM_SERVICETIME)) {
+                                JSONObject serviceTimeObj = SafeJson.safeObject(jsonObject, Field.IM_SERVICETIME);
+                                inWorkTime = SafeJson.safeBoolean(serviceTimeObj, Field.IN_WORK_TIME);
+                                canUseRobot = SafeJson.safeBoolean(serviceTimeObj, Field.CAN_USE_ROBOT);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideLoading();
+                            showToast(e.getMessage());
+                        }
                     }
-                    agentIds = SafeJson.safeGet(jsonObject, Field.AGENT_IDS);
-                    force = SafeJson.safeInt(jsonObject, Field.FORCE);
-                    if (SafeJson.isContainKey(jsonObject, Field.IM_SERVICETIME)) {
-                        JSONObject serviceTimeObj = SafeJson.safeObject(jsonObject, Field.IM_SERVICETIME);
-                        inWorkTime = SafeJson.safeBoolean(serviceTimeObj, Field.IN_WORK_TIME);
-                        canUseRobot = SafeJson.safeBoolean(serviceTimeObj, Field.CAN_USE_ROBOT);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    hideLoading();
-                    showToast(e.getMessage());
-                }
+                });
             }
 
             @Override
-            public void onFailure(String result) {
-                hideLoading();
-                showToast(result);
+            public void onFailure(final String result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        hideLoading();
+                        showToast(result);
+                    }
+                });
             }
         });
     }
 
     @Override
-    public void finish() {
-        super.finish();
+    protected void onResume() {
+        super.onResume();
+        if (!TextUtils.isEmpty(SPUtils.getChatUrl()) && presenter != null) {
+            presenter.connectIPC();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         try {
-            if (presenter.isConnected())
-                presenter.disconnect();
+            mXhsEmoticonsKeyBoard.reset();
+            VoicePlayListener.getInstance().onPause();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+            presenter.disconnect();
             presenter.disconnectIPC();
             IMSQLManager.reset(mActivity);
+            ImageLoaderManager.getInstance(mActivity).clearMemory();
+            VoicePlayListener.getInstance().onDestroy();
+            mXhsEmoticonsKeyBoard.getAudioRecordButton().releaseResource();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -257,8 +265,6 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
     }
 
     private void bindConnect() {
-
-        refreshListAndNotifyData(presenter.getLastMessages(dbMessageCount));
         Bundle bundle = new Bundle();
         Map<String, String> map = new ArrayMap<>();
         map.put("appid", SPUtils.getAppid());
