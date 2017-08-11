@@ -257,6 +257,7 @@ public class FeedBackActivity extends BaseActivity<TicketFeedBackPresenter, ITic
      */
     private void dealSelectImage() {
 
+
         if (mFiles.size() < 6) {
             new ActionSheetDialog(mActivity)
                     .builder()

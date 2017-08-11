@@ -8,7 +8,6 @@ import com.kf5.sdk.R;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.widget.CircleImageView;
 import com.kf5.sdk.im.widget.MaskImage;
-import com.kf5.sdk.system.utils.ImageLoaderManager;
 
 /**
  * author:chosen
@@ -36,8 +35,9 @@ class ImageReceiveHolder extends AbstractHolder {
 
         try {
             loadImageData(position, message, maskImage);
-            loadImage(imageView, R.drawable.kf5_agent);
-            ImageLoaderManager.getInstance(context).displayImage(R.drawable.kf5_agent, imageView);
+
+//            loadImage(imageView, R.drawable.kf5_agent);
+            loadHeadImg(imageView,message.getUserId(),R.drawable.kf5_agent);
             dealDate(position, tvDate, message, previousMessage);
         } catch (Exception e) {
             e.printStackTrace();

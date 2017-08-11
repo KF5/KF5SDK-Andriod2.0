@@ -67,6 +67,7 @@ public class IMMessage {
     @SerializedName(COMPANY_ID)
     private int companyId;
 
+
     private Status status; //发送状态
 
     public Status getStatus() {

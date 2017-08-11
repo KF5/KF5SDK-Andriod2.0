@@ -61,8 +61,8 @@
         <item>不满意</item>
         <item>不太满意</item>
         <item>一般</item>
+        <item>基本满意</item>
         <item>满意</item>
-        <item>非常满意</item>
     </string-array>
 
     <!--权限相关-->

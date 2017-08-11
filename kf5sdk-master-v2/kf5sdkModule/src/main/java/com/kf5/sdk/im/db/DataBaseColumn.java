@@ -49,4 +49,9 @@ public class DataBaseColumn {
 
     //附件本地路径
     public static final String LOCAL_PATH = "local_path";
+
+
+    public static final String USER_ID = "user_id";
+
+    public static final String NAME = "name";
 }

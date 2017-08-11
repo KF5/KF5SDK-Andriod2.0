@@ -32,7 +32,8 @@ class FileReceiveHolder extends AbstractHolder {
 
     public void bindData(IMMessage message, int position, IMMessage previousMessage) {
         try {
-            loadImage(imageView, R.drawable.kf5_agent);
+//            loadImage(imageView, R.drawable.kf5_agent);
+             loadHeadImg(imageView,message.getUserId(),R.drawable.kf5_agent);
             loadFileData(message, tvFileName, null, null);
             dealDate(position, tvDate, message, previousMessage);
         } catch (Exception e) {

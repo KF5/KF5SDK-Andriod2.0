@@ -32,7 +32,8 @@ class AIMessageReceiveHolder extends AbstractHolder {
     public void bindData(IMMessage message, int position, IMMessage previousMessage) {
 
         try {
-            loadImage(headImg, R.drawable.kf5_agent);
+//            loadImage(headImg, R.drawable.kf5_agent);
+            loadHeadImg(headImg,message.getUserId(),R.drawable.kf5_agent);
             loadAIData(message, contentText, position);
             dealDate(position, tvDate, message, previousMessage);
         } catch (Exception e) {

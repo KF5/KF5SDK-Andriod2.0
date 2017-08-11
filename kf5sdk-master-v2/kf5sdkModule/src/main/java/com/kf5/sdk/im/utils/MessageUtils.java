@@ -26,7 +26,6 @@ public class MessageUtils {
     public static String dealAIMessage(String message) {
 
         try {
-
             StringBuilder stringBuilder = new StringBuilder();
             new JSONObject(message);
             JSONObject jsonObject = SafeJson.parseObj(message);

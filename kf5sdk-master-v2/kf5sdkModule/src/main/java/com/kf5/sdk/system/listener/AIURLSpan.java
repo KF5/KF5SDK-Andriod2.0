@@ -15,7 +15,6 @@ import com.kf5.sdk.helpcenter.ui.HelpCenterTypeDetailsActivity;
 import com.kf5.sdk.im.ui.BaseChatActivity;
 import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.utils.CustomTextView;
-import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.Utils;
 import com.kf5.sdk.system.widget.DialogBox;
 
@@ -52,7 +51,6 @@ public class AIURLSpan extends ClickableSpan {
     @Override
     public void onClick(View widget) {
         try {
-            LogUtil.printf("这里点击效果" + type);
             if (TextUtils.equals(Field.GET_AGENT, url)) {
                 if (context instanceof BaseChatActivity) {
                     BaseChatActivity chatActivity = (BaseChatActivity) context;

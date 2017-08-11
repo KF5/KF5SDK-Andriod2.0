@@ -276,7 +276,6 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         bundle.putString("url", SPUtils.getChatUrl());
         presenter.initParams(bundle);
         presenter.connect();
-
     }
 
     /**
@@ -573,11 +572,9 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
     @Override
     public void onScrollStateChanged(AbsListView absListView, int scrollState) {
         switch (scrollState) {
-            case SCROLL_STATE_FLING:
-                Glide.with(mActivity).pauseRequests();
-                break;
             case SCROLL_STATE_IDLE:
                 try {
+                    Glide.with(mActivity).resumeRequests();
                     if (mListView.getFirstVisiblePosition() == 0) {
                         getMessageFromDBTime++;
                         View itemView = mListView.getChildAt(0);
@@ -604,9 +601,9 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
                 break;
             case SCROLL_STATE_TOUCH_SCROLL:
                 mXhsEmoticonsKeyBoard.reset();
+                Glide.with(mActivity).pauseRequests();
                 break;
             default:
-                Glide.with(mActivity).resumeRequests();
                 break;
         }
     }

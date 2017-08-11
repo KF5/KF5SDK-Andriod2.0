@@ -153,15 +153,20 @@ public class HelpCenterTypeDetailsActivity extends BaseActivity<HelpCenterDetail
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            Intent intent = new Intent();
-            Uri uri = Uri.parse(url);
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.setData(uri);
-            if (Utils.isIntentAvailable(mActivity, intent))
-                startActivity(intent);
-            else
-                showToast(getString(R.string.kf5_no_file_found_hint));
-            return true;
+            try {
+                Intent intent = new Intent();
+                Uri uri = Uri.parse(url);
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setData(uri);
+                if (Utils.isIntentAvailable(mActivity, intent))
+                    startActivity(intent);
+                else
+                    showToast(getString(R.string.kf5_no_file_found_hint));
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
         }
     }
 

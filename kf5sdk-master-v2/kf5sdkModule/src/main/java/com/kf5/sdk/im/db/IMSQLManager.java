@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.kf5.sdk.im.entity.Agent;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.entity.Status;
 import com.kf5.sdk.im.entity.Upload;
@@ -78,6 +79,8 @@ public class IMSQLManager extends SQLManager {
             contentValues.put(DataBaseColumn.MESSAGE_ID, iMMessage.getId());
             contentValues.put(DataBaseColumn.MARK, iMMessage.getTimeStamp());
             contentValues.put(DataBaseColumn.ROLE, iMMessage.getRole());
+            contentValues.put(DataBaseColumn.USER_ID, iMMessage.getUserId());
+            contentValues.put(DataBaseColumn.NAME, iMMessage.getName());
             switch (iMMessage.getStatus()) {
                 case FAILED:
                     contentValues.put(DataBaseColumn.SEND_STATUS, -1);
@@ -127,6 +130,8 @@ public class IMSQLManager extends SQLManager {
             contentValues.put(DataBaseColumn.MESSAGE_ID, iMMessage.getId());
             contentValues.put(DataBaseColumn.MARK, iMMessage.getTimeStamp());
             contentValues.put(DataBaseColumn.ROLE, iMMessage.getRole());
+            contentValues.put(DataBaseColumn.USER_ID, iMMessage.getUserId());
+            contentValues.put(DataBaseColumn.NAME, iMMessage.getName());
             switch (iMMessage.getStatus()) {
                 case FAILED:
                     contentValues.put(DataBaseColumn.SEND_STATUS, -1);
@@ -341,6 +346,8 @@ public class IMSQLManager extends SQLManager {
                     contentValues.put(DataBaseColumn.MESSAGE_ID, iMMessage.getId());
                     contentValues.put(DataBaseColumn.MARK, iMMessage.getTimeStamp());
                     contentValues.put(DataBaseColumn.CREATED_DATE, iMMessage.getCreated());
+                    contentValues.put(DataBaseColumn.NAME, iMMessage.getName());
+                    contentValues.put(DataBaseColumn.USER_ID, iMMessage.getUserId());
                     if (iMMessage.getUploadId() > 0) {
                         Upload upload = iMMessage.getUpload();
                         if (upload != null) {
@@ -386,6 +393,8 @@ public class IMSQLManager extends SQLManager {
                 iMMessage.setIsRead(cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseColumn.IS_READ)));
                 iMMessage.setTimeStamp(cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.MARK)));
                 iMMessage.setRole(cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.ROLE)));
+                iMMessage.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseColumn.USER_ID)));
+                iMMessage.setName(cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.NAME)));
                 String type = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.MESSAGE_TYPE));
                 iMMessage.setType(type);
                 int status = cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseColumn.SEND_STATUS));
@@ -526,6 +535,88 @@ public class IMSQLManager extends SQLManager {
         } catch (Exception e) {
         }
         return id;
+    }
+
+
+    /**
+     * 插入客服信息
+     *
+     * @param context
+     * @param agent
+     */
+    public static void insertAgentInfo(Context context, Agent agent) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(UserColumn.NAME, agent.getName());
+        contentValues.put(UserColumn.DISPLAY_NAME, agent.getDisplayName());
+        contentValues.put(UserColumn.USER_ID, agent.getId());
+        contentValues.put(UserColumn.PHOTO_URL, agent.getPhoto());
+        if (isContainThisObj(context, DataBaseHelper.DB_USER, UserColumn.USER_ID, agent.getId())) {
+            getInstance(context).openSqlDB().update(DataBaseHelper.DB_USER, contentValues, UserColumn.USER_ID + " = ?", new String[]{String.valueOf(agent.getId())});
+        } else {
+            getInstance(context).openSqlDB().insert(DataBaseHelper.DB_USER, null, contentValues);
+        }
+    }
+
+
+    /**
+     * 获取客服信息
+     *
+     * @param context
+     * @param user_id
+     * @return
+     */
+    public static Agent getAgent(Context context, int user_id) {
+        String sql = "SELECT * FROM " + DataBaseHelper.DB_USER + " WHERE " + UserColumn.USER_ID + " = ?";
+        Cursor cursor = getInstance(context).openSqlDB().rawQuery(sql, new String[]{String.valueOf(user_id)});
+        Agent agent = new Agent();
+        try {
+            int count = cursor.getCount();
+            if (count == 0 || !cursor.moveToFirst())
+                return agent;
+            agent.setId(cursor.getInt(cursor.getColumnIndexOrThrow(UserColumn.USER_ID)));
+            agent.setName(cursor.getString(cursor.getColumnIndexOrThrow(UserColumn.NAME)));
+            agent.setDisplayName(cursor.getString(cursor.getColumnIndexOrThrow(UserColumn.DISPLAY_NAME)));
+            agent.setPhoto(cursor.getString(cursor.getColumnIndexOrThrow(UserColumn.PHOTO_URL)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return agent;
+    }
+
+    /**
+     * 是否包含该id的信息
+     *
+     * @param context
+     * @param tableName
+     * @param custom_name
+     * @param id
+     * @return
+     */
+    private static boolean isContainThisObj(Context context, String tableName, String custom_name, int id) {
+
+        String sql = "SELECT * FROM " + tableName + " WHERE " + custom_name + "=" + id;
+        Cursor cursor = null;
+        try {
+            cursor = getInstance(context).openSqlDB().rawQuery(sql, null);
+            if (cursor == null)
+                return false;
+            int count = cursor.getCount();
+            if (count == 0 || !cursor.moveToFirst())
+                return false;
+            else
+                return true;
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return false;
     }
 
 

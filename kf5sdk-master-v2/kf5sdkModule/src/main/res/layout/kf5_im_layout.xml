@@ -3,6 +3,7 @@
                 android:id="@+id/kf5_im_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
                 android:orientation="horizontal"
                 android:paddingBottom="@dimen/kf5_dimen_6dp"
                 android:paddingTop="@dimen/kf5_dimen_6dp">

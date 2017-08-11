@@ -3,6 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@android:color/white"
+
               android:orientation="vertical">
     <include layout="@layout/kf5_spit_view_horizontal"/>
 

@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/kf5_message_to_with_text_bg"
                 android:gravity="start|center"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/holo_red_dark"
                 android:textColorLink="#b7ebff"
                 android:textSize="@dimen/kf5_text_size_16" />
         </LinearLayout>

@@ -175,6 +175,20 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                     LogUtil.printf("初始化个人信息状态值" + code + "=====返回值====" + result);
                     JSONObject jsonObject = SafeJson.parseObj(result);
                     Chat chat = GsonManager.getInstance().buildChat(jsonObject.toString());
+                    Context context = getMvpView().getContext();
+                    if (jsonObject.has(Field.CURRENT_AGENT)) {
+                        JSONObject agentObj = SafeJson.safeObject(jsonObject, Field.CURRENT_AGENT);
+                        Agent agent = GsonManager.getInstance().buildAgent(agentObj.toString());
+                        IMSQLManager.insertAgentInfo(context, agent);
+                    }
+                    String robotPhoto = SafeJson.safeGet(jsonObject, Field.ROBOT_PHOTO);
+                    String robotName = SafeJson.safeGet(jsonObject, Field.ROBOT_NAME);
+                    Agent robotAgent = new Agent();
+                    robotAgent.setId(0);
+                    robotAgent.setName(robotName);
+                    robotAgent.setDisplayName(robotName);
+                    robotAgent.setPhoto(robotPhoto);
+                    IMSQLManager.insertAgentInfo(context, robotAgent);
                     getMvpView().onChatStatus(chat);
                     if (chat != null) {
                         TimeOut timeOut = chat.getTimeout();
@@ -295,6 +309,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
             insertMessageToDB(Collections.singletonList(message));
             addTimerTask(message, THIRTY_SECONDS);
             final String params = SocketParams.getAIMessageParams(message.getMessage(), message.getTimeStamp());
+            LogUtil.printf("发送机器人消息" + params);
             mMessageManager.sendEventMessage(params, new IPCCallBack.Stub() {
                 @Override
                 public void onResult(int code, String result) throws RemoteException {
@@ -859,6 +874,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      */
     private boolean isChangeAgent(JSONObject agentObj) {
         Agent agent = GsonManager.getInstance().buildAgent(agentObj.toString());
+        IMSQLManager.insertAgentInfo(getMvpView().getContext(), agent);
         boolean hasAgent = agent != null && agent.getId() > 0;
         //会话进行时
         if (hasAgent) {
@@ -946,6 +962,9 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                 message.setId(SafeJson.safeInt(msgObj, Field.ID));
                 message.setCreated(SafeJson.safeLong(msgObj, Field.CREATED));
                 message.setChatId(SafeJson.safeInt(msgObj, Field.CHAT_ID));
+                message.setUserId(SafeJson.safeInt(msgObj, Field.USER_ID));
+                message.setName(SafeJson.safeGet(msgObj, Field.NAME));
+                message.setUserId(SafeJson.safeInt(msgObj,Field.USER_ID));
             } else {
                 message.setStatus(Status.FAILED);
             }

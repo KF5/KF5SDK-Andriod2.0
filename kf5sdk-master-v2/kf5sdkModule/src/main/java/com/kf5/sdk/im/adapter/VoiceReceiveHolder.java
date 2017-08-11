@@ -40,7 +40,8 @@ class VoiceReceiveHolder extends AbstractHolder {
 
         try {
             loadVoiceData(position, message, textViewLength, progressBar, downLoadList, callBack);
-            loadImage(headImg, R.drawable.kf5_agent);
+//            loadImage(headImg, R.drawable.kf5_agent);
+            loadHeadImg(headImg, message.getUserId(), R.drawable.kf5_agent);
             dealDate(position, tvDate, message, previousMessage);
         } catch (Exception e) {
             e.printStackTrace();

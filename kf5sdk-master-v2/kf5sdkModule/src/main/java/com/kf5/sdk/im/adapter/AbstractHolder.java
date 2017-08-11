@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.support.v4.util.ArrayMap;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.util.Linkify;
@@ -16,6 +17,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.kf5.sdk.R;
@@ -28,6 +31,7 @@ import com.kf5.sdk.im.adapter.listener.MessageResendListener;
 import com.kf5.sdk.im.adapter.listener.MessageTextLongListener;
 import com.kf5.sdk.im.api.FileDownLoadCallBack;
 import com.kf5.sdk.im.db.IMSQLManager;
+import com.kf5.sdk.im.entity.Agent;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.entity.Status;
 import com.kf5.sdk.im.entity.Upload;
@@ -42,6 +46,7 @@ import com.kf5.sdk.system.utils.Utils;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 /**
  * author:chosen
@@ -51,7 +56,11 @@ import java.util.List;
 
 abstract class AbstractHolder {
 
+    private Map<Integer, String> urlMap = new ArrayMap<>();
+
     protected Context context;
+
+    private static final String DRAWABLE_PATH = "drawable://";
 
     public AbstractHolder(Context context) {
         this.context = context;
@@ -231,6 +240,39 @@ abstract class AbstractHolder {
         ImageLoaderManager.getInstance(context).displayImage(path, imageView);
     }
 
+
+    protected final void loadHeadImg(final ImageView imageView, int userId, int resourceId) {
+        String url;
+        if (urlMap.containsKey(userId)) {
+            url = urlMap.get(userId);
+        } else {
+            Agent agent = IMSQLManager.getAgent(context, userId);
+            url = agent.getPhoto();
+        }
+        if (!TextUtils.isEmpty(url)) {
+            urlMap.put(userId, url);
+            Glide.with(context)
+                    .load(url)
+                    .thumbnail(0.1f)
+                    .placeholder(R.drawable.kf5_agent)
+                    .error(R.drawable.kf5_agent)
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            imageView.setImageDrawable(resource);
+                            return false;
+                        }
+                    })
+                    .into(imageView);
+        } else
+            loadImage(imageView, resourceId);
+
+    }
 
     /**
      * 处理消息的发送状态以及是否显示时间tip

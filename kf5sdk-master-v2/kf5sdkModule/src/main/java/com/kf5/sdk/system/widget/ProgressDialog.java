@@ -80,20 +80,28 @@ public class ProgressDialog extends Dialog implements DialogInterface.OnKeyListe
 
     @Override
     public void show() {
-        if (!isShowing()) {
-            super.show();
-            if (animationDrawable != null) {
-                animationDrawable.start();
+        try {
+            if (!isShowing()) {
+                super.show();
+                if (animationDrawable != null) {
+                    animationDrawable.start();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
 
     @Override
     public void dismiss() {
-        super.dismiss();
-        if (animationDrawable != null) {
-            animationDrawable.stop();
+        try {
+            super.dismiss();
+            if (animationDrawable != null) {
+                animationDrawable.stop();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

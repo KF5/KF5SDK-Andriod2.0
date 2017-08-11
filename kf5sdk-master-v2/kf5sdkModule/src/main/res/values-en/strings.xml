@@ -59,10 +59,10 @@
     <string name="kf5_rate">Rating</string>
     <string-array name="kf5_rating_status">
         <item>Bad</item>
-        <item>Soso</item>
+        <item>So so</item>
         <item>OK</item>
-        <item>Good</item>
-        <item>Great</item>
+        <item>Very good</item>
+        <item>Excellent</item>
     </string-array>
 
 

@@ -12,6 +12,7 @@ import com.kf5.sdk.system.base.CommonAdapter;
 import java.util.List;
 
 /**
+ * 
  * author:chosen
  * date:2016/10/19 10:50
  * email:812219713@qq.com

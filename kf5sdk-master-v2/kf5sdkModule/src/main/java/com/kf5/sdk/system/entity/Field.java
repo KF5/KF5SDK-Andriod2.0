@@ -65,7 +65,11 @@ public class Field {
 
     public static final String CHAT_CUSTOM = "chat.custom";
 
+    public static final String CURRENT_AGENT = "current_agent";
 
+    public static final String ROBOT_PHOTO = "robot_photo";
+
+    public static final String ROBOT_NAME = "robot_name";
 
     public static final String CHAT_URL = "chat_url";
 
@@ -176,6 +180,8 @@ public class Field {
     public static final String NEXT_PAGE = "next_page";
 
     public static final String CHAT_ID = "chat_id";
+
+    public static final String USER_ID = "user_id";
 
     public static final String TIMESTAMP = "timestamp";
 
