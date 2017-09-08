@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.kf5.sdk.helpcenter.ui.HelpCenterActivity;
 import com.kf5.sdk.im.api.IMAPI;
 import com.kf5.sdk.im.db.IMSQLManager;
+import com.kf5.sdk.im.entity.CardConstant;
 import com.kf5.sdk.im.ui.KF5ChatActivity;
 import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.internet.HttpRequestCallBack;
@@ -21,6 +22,8 @@ import com.kf5.sdk.ticket.ui.FeedBackActivity;
 import com.kf5.sdk.ticket.ui.LookFeedBackActivity;
 import com.kf5sdk.exam.LanguageActivity;
 import com.kf5sdk.exam.R;
+
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -109,7 +112,20 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
                 break;
             case R.id.tvIM:
-                startActivity(new Intent(getContext(), KF5ChatActivity.class));
+                try {
+                    //卡片消息实现实例
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put(CardConstant.LINK_URL, "www.baidu.com");
+                    jsonObject.put(CardConstant.TITLE, "京东平台卖家销售并发货的商品，由平台卖家提供发票和相应的售后服务。请您放心购买！注：因厂家会在没有任何提前通知的情况下更改产品包装、产地或者一些附件，本司不能确保客户收到的货物与商城图片、产地、附件说明完全一致。只能确保为原厂正货！并且保证与当时市场上同样主流新品一致。若本商城没有及时更新，请大家谅解！");
+                    jsonObject.put(CardConstant.IMG_URL, "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1504695965182&di=5b4e8b755cebd1abf17341215f89b5c6&imgtype=0&src=http%3A%2F%2Fimghr.heiguang.net%2F3%2F2014%2F0707%2F2014070753ba66264d67a2.jpg");
+                    jsonObject.put(CardConstant.PRICE, "123456");
+                    jsonObject.put(CardConstant.LINK_TITLE, "发送东西");
+                    Intent intent = new Intent(getContext(), KF5ChatActivity.class);
+                    intent.putExtra(KF5ChatActivity.CARD_MESSAGE_KEY, jsonObject.toString());
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.tvSetting:
                 startActivity(new Intent(getContext(), LanguageActivity.class));
