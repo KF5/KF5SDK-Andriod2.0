@@ -129,7 +129,7 @@ public class IMView extends FrameLayout implements View.OnClickListener {
                 if (i1 < i2) {
                     if (getContext() instanceof KF5ChatActivity) {
                         KF5ChatActivity kf5ChatActivity = (KF5ChatActivity) getContext();
-                        if (!kf5ChatActivity.isAgentOnline) {
+                        if (!kf5ChatActivity.imWidgetEnable()) {
                             kf5ChatActivity.getAgent();
                         }
                     }
@@ -154,7 +154,7 @@ public class IMView extends FrameLayout implements View.OnClickListener {
         if (id == R.id.kf5_btn_voice_or_text) {
             if (getContext() instanceof KF5ChatActivity) {
                 KF5ChatActivity kf5ChatActivity = (KF5ChatActivity) getContext();
-                if (!kf5ChatActivity.isAgentOnline) {
+                if (!kf5ChatActivity.imWidgetEnable()) {
                     kf5ChatActivity.getAgent();
                 } else {
                     changeRecordImgStatus();

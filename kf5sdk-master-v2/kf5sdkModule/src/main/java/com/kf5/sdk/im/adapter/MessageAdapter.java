@@ -39,6 +39,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
     private static final int MESSAGE_TYPE_QUEUE_WAITING = 11;
     private static final int MESSAGE_TYPE_RECEIVE_CUSTOM = 12;
     private static final int MESSAGE_TYPE_SEND_CUSTOM = 13;
+    private static final int MESSAGE_TYPE_CARD = 14;
     private List<String> listName = new ArrayList<>();
 
     public MessageAdapter(Context context, List<IMMessage> list) {
@@ -55,6 +56,8 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
             return MESSAGE_TYPE_SYSTEM;
         } else if (TextUtils.equals(type, Field.QUEUE_WAITING)) {
             return MESSAGE_TYPE_QUEUE_WAITING;
+        } else if (TextUtils.equals(type, Field.CHAT_CARD)) {
+            return MESSAGE_TYPE_CARD;
         } else {
             if (TextUtils.equals(Field.VISITOR, role)) {
                 switch (type) {
@@ -109,7 +112,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
     @Override
     public int getViewTypeCount() {
-        return 14;
+        return 15;
     }
 
     @Override
@@ -146,10 +149,34 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
                 return getCustomReceiveView(position, convertView, parent, message);
             case MESSAGE_TYPE_SEND_CUSTOM:
                 return getCustomSendView(position, convertView, parent, message);
+            case MESSAGE_TYPE_CARD:
+                return getCardMessageView(position, convertView, parent, message);
             default:
                 return getDefaultView(position, convertView, parent);
         }
 
+    }
+
+
+    /**
+     * 卡片消息
+     *
+     * @param position
+     * @param convertView
+     * @param parent
+     * @param message
+     * @return
+     */
+    private View getCardMessageView(int position, View convertView, ViewGroup parent, IMMessage message) {
+
+        CardHolder holder;
+        if (convertView == null) {
+            holder = new CardHolder(convertView = inflateLayout(R.layout.kf5_message_item_with_card, parent));
+        } else {
+            holder = (CardHolder) convertView.getTag();
+        }
+        holder.bindData(message, position, getItem(position - 1));
+        return convertView;
     }
 
 

@@ -57,14 +57,37 @@
     <string name="kf5_rating_text">Please rate our service:</string>
     <string name="kf5_rating_placeholder">Comment (Optional)</string>
     <string name="kf5_rate">Rating</string>
-    <string-array name="kf5_rating_status">
-        <item>Bad</item>
-        <item>So so</item>
-        <item>OK</item>
-        <item>Very good</item>
-        <item>Excellent</item>
+    <string name="kf5_rating_dissatisfied">Bad</string>
+    <string name="kf5_rating_not_satisfied">So so</string>
+    <string name="kf5_rating_so_so">OK</string>
+    <string name="kf5_rating_basic_satisfied">Very good</string>
+    <string name="kf5_rating_satisfied">Excellent</string>
+    <string-array name="kf5_rating_status_count_5">
+        <item>@string/kf5_rating_dissatisfied</item>
+        <item>@string/kf5_rating_not_satisfied</item>
+        <item>@string/kf5_rating_so_so</item>
+        <item>@string/kf5_rating_basic_satisfied</item>
+        <item>@string/kf5_rating_satisfied</item>
     </string-array>
 
+    <string-array name="kf5_rating_status_count_3">
+        <item>@string/kf5_rating_dissatisfied</item>
+        <item>@string/kf5_rating_so_so</item>
+        <item>@string/kf5_rating_satisfied</item>
+    </string-array>
+
+    <string-array name="kf5_rating_status_count_2">
+        <item>@string/kf5_rating_dissatisfied</item>
+        <item>@string/kf5_rating_satisfied</item>
+    </string-array>
+
+    <string-array name="kf5_im_rating_status">
+        <item>@string/kf5_rating_dissatisfied</item>
+        <item>@string/kf5_rating_satisfied</item>
+        <item>@string/kf5_rating_not_satisfied</item>
+        <item>@string/kf5_rating_so_so</item>
+        <item>@string/kf5_rating_basic_satisfied</item>
+    </string-array>
 
     <!--权限相关-->
     <string name="kf5_media_access_hint">Grant access to the photos/media and files on your device

@@ -74,7 +74,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
 
     protected EmoticonsKeyBoard mXhsEmoticonsKeyBoard;
 
-    private ListView mListView;
+    protected ListView mListView;
 
     private ImageView mImageView;
 
@@ -90,7 +90,9 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
 
     private TextView mTextViewRight;
 
-    protected EditText mEditTextAI, mEditTextQueue, mEditTextIM;
+    protected EditText mEditTextAI,
+    //            mEditTextQueue,
+    mEditTextIM;
 
     private static final String[] CAMERA_PERMISSION = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
 
@@ -104,7 +106,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
 
     private int getMessageFromDBTime = 1;
 
-    public boolean isAgentOnline = false;
+    protected boolean isAgentOnline = false;
 
     protected String agentIds;
 
@@ -119,6 +121,10 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
     protected boolean inWorkTime = true;
 
     private DialogBox mDialogBox;
+
+    protected int mRatingLevelCount;
+
+    protected boolean isInQueue = false;
 
     @Override
     public Loader<IMPresenter> onCreateLoader(int id, Bundle args) {
@@ -208,9 +214,9 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
     @Override
     protected void onResume() {
         super.onResume();
-        if (!TextUtils.isEmpty(SPUtils.getChatUrl()) && presenter != null) {
-            presenter.connectIPC();
-        }
+//        if (!TextUtils.isEmpty(SPUtils.getChatUrl()) && presenter != null) {
+//            presenter.connectIPC();
+//        }
     }
 
     @Override
@@ -228,15 +234,25 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
     protected void onStop() {
         super.onStop();
         try {
-            presenter.disconnect();
-            presenter.disconnectIPC();
-            IMSQLManager.reset(mActivity);
             ImageLoaderManager.getInstance(mActivity).clearMemory();
             VoicePlayListener.getInstance().onDestroy();
             mXhsEmoticonsKeyBoard.getAudioRecordButton().releaseResource();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void finish() {
+        try {
+            if (presenter.isConnected())
+                presenter.disconnect();
+            presenter.disconnectIPC();
+            IMSQLManager.reset(mActivity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        super.finish();
     }
 
     @Override
@@ -270,7 +286,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         map.put("appid", SPUtils.getAppid());
         map.put("platform", "Android");
         map.put("token", SPUtils.getUserToken());
-        map.put("version", "2.4");
+        map.put("version", "2.5");
         map.put("uuid", Utils.getUUID(mActivity));
         bundle.putString("query", com.kf5.sdk.im.utils.Utils.getMapAppend(map));
         bundle.putString("url", SPUtils.getChatUrl());
@@ -334,6 +350,21 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         presenter.sendCancelQueue();
     }
 
+
+    /**
+     * 卡片消息
+     *
+     * @param content
+     */
+    public void sendCardMessage(String content) {
+        if (mXhsEmoticonsKeyBoard.getAILayout().getVisibility() == View.VISIBLE) {
+            onSendAITextMessage(content);
+        } else if (mXhsEmoticonsKeyBoard.getIMLayout().getVisibility() == View.VISIBLE) {
+            onSendTextMessage(content);
+        }
+
+    }
+
     /**
      * 刷新数据
      *
@@ -368,12 +399,12 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         mXhsEmoticonsKeyBoard.addFuncView(appsView);
         mXhsEmoticonsKeyBoard.getAISendView().setOnClickListener(this);
         mXhsEmoticonsKeyBoard.getAIToAgentBtnView().setOnClickListener(this);
-        mXhsEmoticonsKeyBoard.getQueueSendView().setOnClickListener(this);
+//        mXhsEmoticonsKeyBoard.getQueueSendView().setOnClickListener(this);
         mXhsEmoticonsKeyBoard.getAudioRecordButton().setAudioFinishRecorderListener(this);
         mXhsEmoticonsKeyBoard.getAudioRecordButton().setOnLongClickListener(this);
         mEditTextAI = mXhsEmoticonsKeyBoard.getAiEditText();
         mEditTextIM = mXhsEmoticonsKeyBoard.getETChat();
-        mEditTextQueue = mXhsEmoticonsKeyBoard.getQueueEditText();
+//        mEditTextQueue = mXhsEmoticonsKeyBoard.getQueueEditText();
     }
 
 
@@ -505,7 +536,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      * 从机器人状态请求分配客服
      */
     public void aiToGetAgents() {
-        mXhsEmoticonsKeyBoard.showQueueView();
+//        mXhsEmoticonsKeyBoard.showQueueView();
         getAgent();
     }
 
@@ -526,7 +557,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
     public void onClick(View view) {
         int id = view.getId();
         if (id == mXhsEmoticonsKeyBoard.getBtnSend().getId()) {
-            if (isAgentOnline) {
+            if (imWidgetEnable()) {
                 onSendTextMessage(mEditTextIM.getText().toString());
                 mEditTextIM.setText("");
             } else getAgent();
@@ -534,13 +565,13 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
             finish();
         } else if (id == R.id.kf5_textview_choice_from_camera) {
             if (hasPermission(CAMERA_PERMISSION)) {
-                if (isAgentOnline)
+                if (imWidgetEnable())
                     takePictureFromCamera();
                 else getAgent();
             } else applyPermissions(CAMERA_STATE, METHOD_REQUEST_PERMISSION, CAMERA_PERMISSION);
         } else if (id == R.id.kf5_textview_choice_from_image) {
             if (hasPermission(WRITE_EXTERNAL_STORAGE_PERMISSION)) {
-                if (isAgentOnline) {
+                if (imWidgetEnable()) {
                     getPictureFromGallery(1);
                 } else {
                     getAgent();
@@ -549,15 +580,17 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
                 applyPermissions(WRITE_EXTERNAL_STORAGE, METHOD_REQUEST_PERMISSION, WRITE_EXTERNAL_STORAGE_PERMISSION);
         } else if (id == R.id.kf5_right_text_view) {
             startActivity(new Intent(mActivity, LookFeedBackActivity.class));
-        } else if (id == R.id.kf5_queue_send_message) {
-            if (!TextUtils.isEmpty(mEditTextQueue.getText())) {
-                String content = mEditTextQueue.getText().toString();
-                onSendQueueTextMessage(content);
-                mEditTextQueue.setText("");
-            } else {
-                showToast(getString(R.string.kf5_content_not_null));
-            }
-        } else if (id == R.id.kf5_ai_textview_send_message) {
+        }
+//        else if (id == R.id.kf5_queue_send_message) {
+//            if (!TextUtils.isEmpty(mEditTextQueue.getText())) {
+//                String content = mEditTextQueue.getText().toString();
+//                onSendQueueTextMessage(content);
+//                mEditTextQueue.setText("");
+//            } else {
+//                showToast(getString(R.string.kf5_content_not_null));
+//            }
+//        }
+        else if (id == R.id.kf5_ai_textview_send_message) {
             if (!TextUtils.isEmpty(mEditTextAI.getText())) {
                 onSendAITextMessage(mEditTextAI.getText().toString());
                 mEditTextAI.setText("");
@@ -712,7 +745,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         int id = v.getId();
         if (id == R.id.kf5_btn_voice) {
             if (hasPermission(VOICE_RECORDER_PERMISSION)) {
-                if (isAgentOnline) {
+                if (imWidgetEnable()) {
                     mXhsEmoticonsKeyBoard.getAudioRecordButton().prepareRecordAudio();
                     return true;
                 } else {
@@ -736,6 +769,15 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         IMMessage message = IMMessageBuilder.buildSendVoiceMessage(filePath);
         presenter.sendVoiceMessage(message, new File(filePath));
         refreshListAndNotifyData(IMMessageBuilder.addIMMessageToList(message));
+    }
+
+    /**
+     * im组件是否可用
+     *
+     * @return
+     */
+    public boolean imWidgetEnable() {
+        return isInQueue || isAgentOnline;
     }
 
 }

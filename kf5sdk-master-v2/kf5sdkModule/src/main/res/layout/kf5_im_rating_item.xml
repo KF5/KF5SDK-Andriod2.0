@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/kf5_im_rating_item_tv"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@drawable/kf5_messagebox_single_btn"
+          android:gravity="center"
+          android:padding="@dimen/kf5_dimen_12dp"
+          android:singleLine="true"
+          android:textColor="#ff0079ff"
+          android:textSize="16.0sp"/>

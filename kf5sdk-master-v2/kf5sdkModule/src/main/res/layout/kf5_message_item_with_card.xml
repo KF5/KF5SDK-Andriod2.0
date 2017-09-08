@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#f7f7f9"
+              android:orientation="vertical"
+              android:padding="@dimen/kf5_dimen_8dp">
+    <TextView
+        android:id="@+id/kf5_tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/kf5_dimen_8dp"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/kf5_text_size_14"/>
+
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/kf5_dimen_16dp"
+    >
+        <ImageView
+            android:id="@+id/kf5_message_item_product_img"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:layout_marginRight="@dimen/kf5_dimen_8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/kf5_empty_photo"
+        />
+
+        <TextView
+            android:id="@+id/kf5_message_item_product_product_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/kf5_message_item_product_img"
+            android:layout_toEndOf="@+id/kf5_message_item_product_img"
+            android:layout_toRightOf="@+id/kf5_message_item_product_img"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="asdasdasdasd"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/kf5_text_size_18"
+        />
+
+        <TextView
+            android:id="@+id/kf5_message_item_product_product_money"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/kf5_message_item_product_img"
+            android:layout_toEndOf="@+id/kf5_message_item_product_img"
+            android:layout_toRightOf="@+id/kf5_message_item_product_img"
+            android:singleLine="true"
+            android:textSize="@dimen/kf5_text_size_16"
+        />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/kf5_message_item_product_btn_send_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/kf5_dimen_16dp"
+        android:background="@drawable/kf5_send_card_message_btn_bg"
+        android:minWidth="120dp"
+        android:paddingLeft="@dimen/kf5_dimen_24dp"
+        android:paddingRight="@dimen/kf5_dimen_24dp"
+        android:singleLine="true"
+        android:text="发送链接"
+        android:textColor="@color/kf5_white"
+        android:textSize="@dimen/kf5_text_size_20"/>
+</LinearLayout>

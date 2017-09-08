@@ -57,14 +57,38 @@
     <string name="kf5_rating_text">请为我们的服务打分：</string>
     <string name="kf5_rating_placeholder">发表意见（选填）</string>
     <string name="kf5_rate">满意度评价</string>
-    <string-array name="kf5_rating_status">
-        <item>不满意</item>
-        <item>不太满意</item>
-        <item>一般</item>
-        <item>基本满意</item>
-        <item>满意</item>
+    <string name="kf5_rating_dissatisfied">不满意</string>
+    <string name="kf5_rating_not_satisfied">不太满意</string>
+    <string name="kf5_rating_so_so">一般</string>
+    <string name="kf5_rating_basic_satisfied">基本满意</string>
+    <string name="kf5_rating_satisfied">满意</string>
+
+    <string-array name="kf5_rating_status_count_5">
+        <item>@string/kf5_rating_dissatisfied</item>
+        <item>@string/kf5_rating_not_satisfied</item>
+        <item>@string/kf5_rating_so_so</item>
+        <item>@string/kf5_rating_basic_satisfied</item>
+        <item>@string/kf5_rating_satisfied</item>
     </string-array>
 
+    <string-array name="kf5_rating_status_count_3">
+        <item>@string/kf5_rating_dissatisfied</item>
+        <item>@string/kf5_rating_so_so</item>
+        <item>@string/kf5_rating_satisfied</item>
+    </string-array>
+
+    <string-array name="kf5_rating_status_count_2">
+        <item>@string/kf5_rating_dissatisfied</item>
+        <item>@string/kf5_rating_satisfied</item>
+    </string-array>
+
+    <string-array name="kf5_im_rating_status">
+        <item>@string/kf5_rating_dissatisfied</item>
+        <item>@string/kf5_rating_satisfied</item>
+        <item>@string/kf5_rating_not_satisfied</item>
+        <item>@string/kf5_rating_so_so</item>
+        <item>@string/kf5_rating_basic_satisfied</item>
+    </string-array>
     <!--权限相关-->
     <string name="kf5_media_access_hint">访问您设备上的照片、媒体内容和文件</string>
     <string name="kf5_access_recording">录制音频</string>

@@ -45,7 +45,7 @@ public class CustomTextView {
      * @param text
      * @param mask
      */
-    public static void stripUnderlines(Context context, TextView tv_content, String text, int mask) {
+    public static void stripUnderlines(final Context context, final TextView tv_content, String text, final int mask) {
 
         //至于dealData为什么要调用两次呢？我现在也muji，可能是第一次针对的是链接解析，第二次是html解析
         tv_content.setText(Html.fromHtml(filterHtmlTag(text)));
@@ -88,7 +88,7 @@ public class CustomTextView {
      * @param textView
      * @param text
      */
-    public static void setTextWithAIMessage(TextView textView, String text ,String type) {
+    public static void setTextWithAIMessage(TextView textView, String text, String type) {
         textView.setText(Html.fromHtml(filterHtmlTag(MessageUtils.dealAIMessage(text))));
         dealAILink(textView, type);
         Linkify.addLinks(textView, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);

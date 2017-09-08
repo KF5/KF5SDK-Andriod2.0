@@ -65,6 +65,8 @@ public class Field {
 
     public static final String CHAT_CUSTOM = "chat.custom";
 
+    public static final String CHAT_CARD = "chat.card";
+
     public static final String CURRENT_AGENT = "current_agent";
 
     public static final String ROBOT_PHOTO = "robot_photo";
@@ -196,6 +198,8 @@ public class Field {
     public static final String RATING_CONTENT = "rating_content";
 
     public static final String RATING_FLAG = "rating_flag";
+
+    public static final String RATE_LEVEL_COUNT = "rate_level_count";
 
     public static final String CREATED_AT = "created_at";
 

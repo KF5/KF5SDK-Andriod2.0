@@ -26,6 +26,7 @@ import com.kf5.sdk.ticket.receiver.RatingReceiver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +47,8 @@ public class RatingActivity extends BaseActivity<RatingPresenter, IRatingView> i
     private int mTicketId;
 
     private int mRatingStatus;
+
+    private int mRatingLevelCount;
 
     @Override
     public Loader<RatingPresenter> onCreateLoader(int id, Bundle args) {
@@ -79,7 +82,8 @@ public class RatingActivity extends BaseActivity<RatingPresenter, IRatingView> i
                     }
                     checkItem.setSelected(true);
                     mAdapter.notifyDataSetChanged();
-                    mRatingStatus = position + 1;
+                    List<String> defaultList = Arrays.asList(getResources().getStringArray(R.array.kf5_rating_status_count_5));
+                    mRatingStatus = defaultList.indexOf(checkItem.getContent()) + 1;
                 }
             }
         });
@@ -97,6 +101,10 @@ public class RatingActivity extends BaseActivity<RatingPresenter, IRatingView> i
         Intent intent = getIntent();
         String mRatingContent = intent.getStringExtra(Field.RATING_CONTENT);
         mRatingStatus = intent.getIntExtra(Field.RATING, 0);
+        mRatingLevelCount = intent.getIntExtra(Field.RATE_LEVEL_COUNT, 5);
+        if (mRatingLevelCount < 1) {
+            mRatingLevelCount = 5;
+        }
         if (mRatingStatus < 1 || mRatingStatus > 5) {
             mTVSubmit.setEnabled(false);
         }
@@ -106,10 +114,19 @@ public class RatingActivity extends BaseActivity<RatingPresenter, IRatingView> i
         }
 
         mDatas = new ArrayList<>();
-        List<String> mRatingList = Arrays.asList(getResources().getStringArray(R.array.kf5_rating_status));
+        List<String> mRatingList;
+        if (mRatingLevelCount == 2) {
+            mRatingList = Arrays.asList(getResources().getStringArray(R.array.kf5_rating_status_count_2));
+        } else if (mRatingLevelCount == 3) {
+            mRatingList = Arrays.asList(getResources().getStringArray(R.array.kf5_rating_status_count_3));
+        } else {
+            mRatingList = Arrays.asList(getResources().getStringArray(R.array.kf5_rating_status_count_5));
+        }
+        Collections.reverse(mRatingList);
+        List<String> defaultList = Arrays.asList(getResources().getStringArray(R.array.kf5_rating_status_count_5));
         for (int i = 0; i < mRatingList.size(); i++) {
             String content = mRatingList.get(i);
-            if (mRatingStatus == i + 1) {
+            if (mRatingStatus == defaultList.indexOf(content) + 1) {
                 mDatas.add(new CheckItem(content, true));
             } else {
                 mDatas.add(new CheckItem(content, false));

@@ -176,4 +176,9 @@ public interface IIMView extends MvpView {
      */
     void getAgentFailure(AgentFailureType failureType);
 
+
+    void onSyncMessageResult(int resultCode);
+
+    void setRatingLevelCount(int levelCount);
+
 }

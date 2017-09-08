@@ -27,6 +27,17 @@ public class IMMessageBuilder {
         return buildCommonIMMessage(content, Field.CHAT_MSG, Field.VISITOR, Status.SENDING);
     }
 
+
+    /**
+     * 卡片消息
+     *
+     * @param content
+     * @return
+     */
+    public static IMMessage buildCardMessage(String content) {
+        return buildCommonIMMessage(content, Field.CHAT_CARD, null, Status.SUCCESS);
+    }
+
     /**
      * 系统消息
      *

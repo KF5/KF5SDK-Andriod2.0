@@ -90,6 +90,8 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
 
     private String nickName;
 
+    private int mRatingLevelCount;
+
 
     @Override
     protected void initWidgets() {
@@ -204,10 +206,11 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
                             mHeaderView.setVisibility(View.VISIBLE);
                         }
                         if (requester.getRating() >= 1 && requester.getRating() <= 5) {
-                            List<String> mRatingList = Arrays.asList(getResources().getStringArray(R.array.kf5_rating_status));
+                            List<String> mRatingList = Arrays.asList(getResources().getStringArray(R.array.kf5_rating_status_count_5));
                             mHeaderContent.setText(mRatingList.get(requester.getRating() - 1));
                             mHeaderContent.setBackgroundResource(R.drawable.kf5_rating_status_bg);
                             mRatingStatus = requester.getRating();
+                            mRatingLevelCount = requester.getRateLevelCount();
                         }
                         mRatingContent = requester.getRatingContent();
                         nickName = commentList.get(0).getAuthorName();
@@ -370,6 +373,7 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
             intent.putExtra(Field.ID, getTicketId());
             intent.putExtra(Field.RATING, mRatingStatus);
             intent.putExtra(Field.RATING_CONTENT, mRatingContent);
+            intent.putExtra(Field.RATE_LEVEL_COUNT, 3);
             startActivity(intent);
         }
     }
@@ -378,7 +382,7 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
     public void ratingSuccess(int rating, String content) {
         if (rating >= 1 && rating <= 5) {
             mRatingStatus = rating;
-            List<String> mRatingList = Arrays.asList(getResources().getStringArray(R.array.kf5_rating_status));
+            List<String> mRatingList = Arrays.asList(getResources().getStringArray(R.array.kf5_rating_status_count_5));
             mHeaderContent.setText(mRatingList.get(mRatingStatus - 1));
             mHeaderContent.setBackgroundResource(R.drawable.kf5_rating_status_bg);
         }

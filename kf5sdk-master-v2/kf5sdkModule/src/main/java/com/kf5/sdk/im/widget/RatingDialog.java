@@ -5,9 +5,17 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.kf5.sdk.R;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * author:chosen
@@ -24,7 +32,11 @@ public class RatingDialog {
 
     private LayoutInflater inflater;
 
-    private TextView tvSatisfied, tvUnSatisfied, tvCancel, tvTitle;
+    private TextView
+//            tvSatisfied, tvUnSatisfied,
+            tvCancel, tvTitle;
+
+    private ListView mListView;
 
     public RatingDialog setListener(OnRatingItemClickListener listener) {
         this.listener = listener;
@@ -34,17 +46,40 @@ public class RatingDialog {
     private OnRatingItemClickListener listener;
 
 
-    public RatingDialog(Context context) {
+    public RatingDialog(Context context, int ratingLevelCount) {
         inflater = LayoutInflater.from(context);
         dialog = new Dialog(context, R.style.kf5messagebox_style);
         mainView = inflater.inflate(R.layout.kf5_rating_layout, null, false);
         tvCancel = (TextView) mainView.findViewById(R.id.kf5_rating_cancel);
-        tvCancel.setOnClickListener(new RatingItemClickListener(-1));
-        tvSatisfied = (TextView) mainView.findViewById(R.id.kf5_rating_satisfied);
-        tvSatisfied.setOnClickListener(new RatingItemClickListener(1));
-        tvUnSatisfied = (TextView) mainView.findViewById(R.id.kf5_rating_unsatisfied);
-        tvUnSatisfied.setOnClickListener(new RatingItemClickListener(0));
+        tvCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
         tvTitle = (TextView) mainView.findViewById(R.id.kf5_dialogText);
+        mListView = (ListView) mainView.findViewById(R.id.kf5_rating_list_view);
+        List<String> ratingList;
+        if (ratingLevelCount == 2) {
+            ratingList = Arrays.asList(context.getResources().getStringArray(R.array.kf5_rating_status_count_2));
+        } else if (ratingLevelCount == 3) {
+            ratingList = Arrays.asList(context.getResources().getStringArray(R.array.kf5_rating_status_count_3));
+        } else {
+            ratingList = Arrays.asList(context.getResources().getStringArray(R.array.kf5_rating_status_count_5));
+        }
+        Collections.reverse(ratingList);
+        final RatingItemAdapter adapter = new RatingItemAdapter(ratingList);
+        mListView.setAdapter(adapter);
+        final List<String> targetList = Arrays.asList(context.getResources().getStringArray(R.array.kf5_im_rating_status));
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String content = adapter.getItem(position);
+                if (listener != null) {
+                    listener.onRatingClick(RatingDialog.this, targetList.indexOf(content));
+                }
+            }
+        });
         dialog.setContentView(mainView);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
@@ -97,39 +132,50 @@ public class RatingDialog {
          * @param index  点击位置
          */
         void onRatingClick(RatingDialog dialog, int index);
-
     }
 
-    class RatingItemClickListener implements View.OnClickListener {
+    private class RatingItemAdapter extends BaseAdapter {
 
-        private int index;
+        private List<String> mList;
 
-        public RatingItemClickListener(int index) {
-            this.index = index;
+        public RatingItemAdapter(List<String> list) {
+            mList = list;
         }
 
         @Override
-        public void onClick(View v) {
+        public int getCount() {
+            return mList.size();
+        }
 
-            switch (index) {
-                case 1:
-                    //满意；
-                    if (listener != null)
-                        listener.onRatingClick(RatingDialog.this, 1);
-                    break;
-                case 0:
-                    //不满意
-                    if (listener != null)
-                        listener.onRatingClick(RatingDialog.this, 0);
-                    break;
-                case -1:
-                    //取消
-                    if (listener != null)
-                        listener.onRatingClick(RatingDialog.this, -1);
-                    break;
+        @Override
+        public String getItem(int position) {
+            return mList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder viewHolder = null;
+            if (convertView == null) {
+                convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.kf5_im_rating_item, parent, false);
+                viewHolder = new ViewHolder();
+                viewHolder.tvContent = (TextView) convertView.findViewById(R.id.kf5_im_rating_item_tv);
+                convertView.setTag(viewHolder);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
             }
 
+            viewHolder.tvContent.setText(getItem(position));
+
+            return convertView;
+        }
+
+        class ViewHolder {
+            TextView tvContent;
         }
     }
-
 }

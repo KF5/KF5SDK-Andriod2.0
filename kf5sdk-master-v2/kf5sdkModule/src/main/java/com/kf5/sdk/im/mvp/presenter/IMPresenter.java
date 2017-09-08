@@ -80,6 +80,8 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
 
     private Timer mTimer;
 
+    private int mRatingLevelCount = 2;
+
     public IMPresenter(IMCase imCase) {
         mIMCase = imCase;
     }
@@ -198,6 +200,14 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                             timeOutSeconds = timeOut.getSeconds();
                         }
                     }
+                    try {
+                        if (jsonObject.has(Field.RATE_LEVEL_COUNT)) {
+                            mRatingLevelCount = jsonObject.getInt(Field.RATE_LEVEL_COUNT);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    getMvpView().setRatingLevelCount(mRatingLevelCount);
                 }
             });
         } catch (Exception e) {
@@ -227,6 +237,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                             getMvpView().onReceiveMessageList(insertMessageToDB(list));
                         }
                     }
+                    getMvpView().onSyncMessageResult(code);
                 }
             });
         } catch (Exception e) {
@@ -964,7 +975,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                 message.setChatId(SafeJson.safeInt(msgObj, Field.CHAT_ID));
                 message.setUserId(SafeJson.safeInt(msgObj, Field.USER_ID));
                 message.setName(SafeJson.safeGet(msgObj, Field.NAME));
-                message.setUserId(SafeJson.safeInt(msgObj,Field.USER_ID));
+                message.setUserId(SafeJson.safeInt(msgObj, Field.USER_ID));
             } else {
                 message.setStatus(Status.FAILED);
             }

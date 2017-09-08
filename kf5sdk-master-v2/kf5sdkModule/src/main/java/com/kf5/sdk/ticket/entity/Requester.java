@@ -59,6 +59,16 @@ public class Requester implements Serializable {
     private String ratingContent;
     @SerializedName(Field.RATING_FLAG)
     private boolean ratingFlag;
+    @SerializedName(Field.RATE_LEVEL_COUNT)
+    private int rateLevelCount;
+
+    public int getRateLevelCount() {
+        return rateLevelCount;
+    }
+
+    public void setRateLevelCount(int rateLevelCount) {
+        this.rateLevelCount = rateLevelCount;
+    }
 
     public int getRating() {
         return rating;

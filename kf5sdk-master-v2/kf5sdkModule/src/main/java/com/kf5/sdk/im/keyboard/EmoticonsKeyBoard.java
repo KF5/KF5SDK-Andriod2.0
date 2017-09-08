@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -27,7 +26,6 @@ import com.kf5.sdk.im.keyboard.widgets.EmoticonsIndicatorView;
 import com.kf5.sdk.im.keyboard.widgets.EmoticonsToolBarView;
 import com.kf5.sdk.im.keyboard.widgets.FuncLayout;
 import com.kf5.sdk.im.keyboard.widgets.IMView;
-import com.kf5.sdk.im.keyboard.widgets.QueueView;
 import com.kf5.sdk.im.widget.AudioRecordButton;
 
 import java.util.ArrayList;
@@ -57,7 +55,7 @@ public class EmoticonsKeyBoard extends AutoHeightLayout implements EmoticonsFunc
 
     private boolean mDispatchKeyEventPreImeLock = false;
 
-    private QueueView mQueueLayout;
+//    private QueueView mQueueLayout;
 
     private AIView mAILayout;
 
@@ -80,7 +78,7 @@ public class EmoticonsKeyBoard extends AutoHeightLayout implements EmoticonsFunc
 
         mLayoutKVML = (FuncLayout) findViewById(R.id.kf5_ly_kvml);
         mAILayout = (AIView) findViewById(R.id.kf5_ai_layout);
-        mQueueLayout = (QueueView) findViewById(R.id.kf5_queue_layout);
+//        mQueueLayout = (QueueView) findViewById(R.id.kf5_queue_layout);
         mIMLayout = (IMView) findViewById(R.id.kf5_im_layout);
         mIMLayout.getETChat().setOnBackKeyClickListener(this);
         mIMLayout.setIMViewListener(this);
@@ -113,28 +111,30 @@ public class EmoticonsKeyBoard extends AutoHeightLayout implements EmoticonsFunc
      */
     public void showAIView() {
         reset();
-        ViewUtils.toggleTargetViewVisible(mAILayout, mIMLayout, mQueueLayout);
+//        ViewUtils.toggleTargetViewVisible(mAILayout, mIMLayout, mQueueLayout);
+        ViewUtils.toggleTargetViewVisible(mAILayout, mIMLayout);
     }
 
-    /**
-     * 显示QueueView
-     */
-    public void showQueueView() {
-        reset();
-        ViewUtils.toggleTargetViewVisible(mQueueLayout, mIMLayout, mAILayout);
-
-    }
+//    /**
+//     * 显示QueueView
+//     */
+//    public void showQueueView() {
+//        reset();
+//        ViewUtils.toggleTargetViewVisible(mQueueLayout, mIMLayout, mAILayout);
+//
+//    }
 
     /**
      * 显示IMView
      */
     public void showIMView() {
-        ViewUtils.toggleTargetViewVisible(mIMLayout, mAILayout, mQueueLayout);
-        String text = mQueueLayout.getEditText().getText().toString();
-        mIMLayout.toggleText(text);
-        if (!TextUtils.isEmpty(text)) {
-            mQueueLayout.getEditText().setText("");
-        }
+//        ViewUtils.toggleTargetViewVisible(mIMLayout, mAILayout, mQueueLayout);
+        ViewUtils.toggleTargetViewVisible(mIMLayout, mAILayout);
+//        String text = mQueueLayout.getEditText().getText().toString();
+//        mIMLayout.toggleText(text);
+//        if (!TextUtils.isEmpty(text)) {
+//            mQueueLayout.getEditText().setText("");
+//        }
     }
 
 
@@ -356,13 +356,24 @@ public class EmoticonsKeyBoard extends AutoHeightLayout implements EmoticonsFunc
         return mAILayout.getTextViewAIToAgent();
     }
 
-    public EditText getQueueEditText() {
-        return mQueueLayout.getEditText();
+//    public EditText getQueueEditText() {
+//        return mQueueLayout.getEditText();
+//    }
+//
+//    public TextView getQueueSendView() {
+//        return mQueueLayout.getTextViewSend();
+//    }
+
+
+    public AIView getAILayout() {
+        return mAILayout;
     }
 
-    public TextView getQueueSendView() {
-        return mQueueLayout.getTextViewSend();
+    public IMView getIMLayout() {
+        return mIMLayout;
     }
 
-
+//    public QueueView getQueueLayout() {
+//        return mQueueLayout;
+//    }
 }
