@@ -373,7 +373,7 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
             intent.putExtra(Field.ID, getTicketId());
             intent.putExtra(Field.RATING, mRatingStatus);
             intent.putExtra(Field.RATING_CONTENT, mRatingContent);
-            intent.putExtra(Field.RATE_LEVEL_COUNT, 3);
+            intent.putExtra(Field.RATE_LEVEL_COUNT, mRatingLevelCount);
             startActivity(intent);
         }
     }
