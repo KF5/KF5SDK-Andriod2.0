@@ -34,8 +34,8 @@ public class MessageAdapterItemClickListener implements View.OnClickListener {
         try {
             Upload upload = imMessage.getUpload();
             String url = upload.getUrl();
-            File localFile = new File(FilePath.SAVE_RECORDER + MD5Utils.GetMD5Code(url) + ".amr");
-            if (localFile.exists()) {
+            File urlCacheFile = TextUtils.isEmpty(url) ? null : new File(FilePath.SAVE_RECORDER + MD5Utils.GetMD5Code(url) + ".amr");
+            if (urlCacheFile != null && urlCacheFile.exists()) {
                 VoicePlayListener.getInstance().startPlay(localFile.getAbsolutePath());
             } else {
                 File file = new File(FilePath.SAVE_RECORDER + upload.getName());
