@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kf5.sdk.R;
+import com.kf5.sdk.helpcenter.entity.Attachment;
 import com.kf5.sdk.helpcenter.entity.Post;
 import com.kf5.sdk.helpcenter.mvp.presenter.HelpCenterDetailPresenter;
 import com.kf5.sdk.helpcenter.mvp.usecase.HelpUseCaseManager;
@@ -20,8 +21,10 @@ import com.kf5.sdk.system.base.BaseActivity;
 import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.mvp.presenter.PresenterFactory;
 import com.kf5.sdk.system.mvp.presenter.PresenterLoader;
+import com.kf5.sdk.system.utils.FileSizeUtil;
 import com.kf5.sdk.system.utils.Utils;
 
+import java.util.List;
 import java.util.TimerTask;
 
 public class HelpCenterTypeDetailsActivity extends BaseActivity<HelpCenterDetailPresenter, IHelpCenterDetailView> implements IHelpCenterDetailView, View.OnClickListener {
@@ -35,6 +38,7 @@ public class HelpCenterTypeDetailsActivity extends BaseActivity<HelpCenterDetail
 
     public final static String WEB_STYLE = "<style>* {font-size:18px;line-height:30px;} p {color:#6C6C6C;} a {color:#333333;} img {max-width:310px;} " +
             "pre {font-size:9pt;line-height:12pt;border:1px solid #ddd;border-left:5px solid #6CE26C;background:#f6f6f6;padding:5px;}</style>";
+
 
     @Override
     protected void initWidgets() {
@@ -72,11 +76,43 @@ public class HelpCenterTypeDetailsActivity extends BaseActivity<HelpCenterDetail
                 if (!body.trim().startsWith("<style>"))
                     body = WEB_STYLE + body;
                 body = body.replaceAll("(<img[^>]*?)\\s+width\\s*=\\s*\\S+", "$1");
-                body = body.replaceAll("(<img[^>]*?)\\s+height\\s*=\\s*\\S+", "$1");
+                body = body.replaceAll("(<img[^>]*?)\\s+height\\s=\\s*\\S+", "$1");
+                body += appendAttachmentHtml(post.getAttachments());
                 mWebView.loadDataWithBaseURL(null, body, "text/html", "utf-8", null);
                 mDate.setText(Utils.getAllTime(post.getCreatedAt()));
             }
         });
+    }
+
+    /**
+     * 格式化附件内容
+     *
+     * @param list
+     * @return
+     */
+    private String appendAttachmentHtml(List<Attachment> list) {
+        if (list != null && list.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < list.size(); i++) {
+                Attachment attachment = list.get(i);
+                String size;
+                try {
+                    size = FileSizeUtil.FormetFileSize(Long.parseLong(attachment.getSize()));
+                } catch (NumberFormatException e) {
+                    size = attachment.getSize() + "KB";
+                }
+                sb.append("<p>")
+                        .append("<a href=\"")
+                        .append(attachment.getContent_url())
+                        .append("\">")
+                        .append(attachment.getName())
+                        .append("</a>")
+                        .append(" •").append(size)
+                        .append("</p>");
+            }
+            return sb.toString();
+        }
+        return "";
     }
 
     @Override

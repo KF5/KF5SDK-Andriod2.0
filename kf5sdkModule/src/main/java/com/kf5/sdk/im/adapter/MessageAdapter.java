@@ -480,7 +480,6 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
     }
 
     private View getMessageViewWithQueueWaiting(int position, View convertView, ViewGroup parent, IMMessage message) {
-
         QueueHolder queueHolder;
         if (convertView == null) {
             convertView = inflateLayout(R.layout.kf5_message_item_with_queue, parent);

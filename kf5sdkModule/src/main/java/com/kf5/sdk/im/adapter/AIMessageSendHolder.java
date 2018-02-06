@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.kf5.sdk.R;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.widget.CircleImageView;
+import com.kf5.sdk.system.utils.LogUtil;
 
 /**
  * author:chosen
@@ -42,7 +43,8 @@ class AIMessageSendHolder extends AbstractHolder {
 
         try {
             loadImage(headImg, R.drawable.kf5_end_user);
-            loadAIData(message, contentText, position);
+//            loadAIData(message, contentText, position);
+            loadTextData(message, contentText, position);
             dealMessageStatus(message, previousMessage, position, tvDate, progressBar, failLayout);
         } catch (Exception e) {
             e.printStackTrace();

@@ -75,6 +75,7 @@ public class GsonManager {
             }
         }
         list.removeAll(targetList);
+        setSyncContent(list);
         return list;
     }
 
@@ -90,5 +91,40 @@ public class GsonManager {
             items.add(item);
         }
         return items;
+    }
+
+
+    private static void setSyncContent(List<IMMessage> list) {
+        for (IMMessage message : list) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put(Field.TIMESTAMP, message.getTimeStamp());
+                jsonObject.put(Field.ID, message.getId());
+                String type = message.getType();
+                if (TextUtils.equals(Field.CHAT_DOCUMENT, type)) {
+                    jsonObject.put(Field.CONTENT, "机器人客服为您找到以下内容：");
+                    jsonObject.put(Field.TYPE, Field.DOCUMENT);
+                    JSONArray jsonArray = new JSONArray(message.getMessage());
+                    jsonObject.put(Field.DOCUMENTS, jsonArray);
+                    message.setMessage(jsonObject.toString());
+                } else if (TextUtils.equals(Field.CHAT_QUESTION, type)) {
+                    jsonObject.put(Field.CONTENT, "机器人客服为您找到以下内容：");
+                    jsonObject.put(Field.TYPE, Field.QUESTION);
+                    JSONArray jsonArray = new JSONArray(message.getMessage());
+                    jsonObject.put(Field.QUESTIONS, jsonArray);
+                    message.setMessage(jsonObject.toString());
+                } else if (TextUtils.equals(Field.CHAT_ANSWER, type)) {
+                    jsonObject.put(Field.CONTENT, message.getMessage());
+                    jsonObject.put(Field.TYPE, Field.ANSWER);
+                    message.setMessage(jsonObject.toString());
+                } else if (TextUtils.equals(Field.CHAT_MSG, type) && TextUtils.equals(Field.ROBOT, message.getRole())) {
+                    jsonObject.put(Field.CONTENT, message.getMessage());
+                    jsonObject.put(Field.TYPE, Field.CHAT_MSG);
+                    message.setMessage(jsonObject.toString());
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

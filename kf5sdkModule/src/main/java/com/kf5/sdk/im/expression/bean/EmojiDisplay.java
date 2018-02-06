@@ -38,6 +38,7 @@ public class EmojiDisplay {
             } else {
                 emojiDisplayListener.onEmojiDisplay(context, spannable, emojiHex, fontSize, m.start(), m.end());
             }
+
         }
         return spannable;
     }

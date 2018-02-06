@@ -23,6 +23,8 @@ public class Field {
 
     public static final String QUESTIONS = "questions";
 
+    public static final String CHAT_ANSWER = "chat.answer";
+
     public static final String ANSWER = "answer";
 
     public static final String GET_AGENT = "get_agent";

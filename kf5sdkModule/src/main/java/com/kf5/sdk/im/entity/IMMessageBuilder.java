@@ -124,7 +124,7 @@ public class IMMessageBuilder {
      * @param timeStamp
      * @return
      */
-    public static IMMessage buildReceiveAIMessage(String content, String timeStamp) {
+    public static IMMessage buildReceiveAIMessage(String content, String timeStamp, int id) {
         IMMessage aiMessage = new IMMessage();
         aiMessage.setRole(Field.ROBOT);
         aiMessage.setType(Field.AI_RECEIVE);
@@ -133,6 +133,7 @@ public class IMMessageBuilder {
         aiMessage.setMessage(content);
         aiMessage.setTimeStamp(timeStamp);
         aiMessage.setType(Field.CHAT_MSG);
+        aiMessage.setId(id);
         return aiMessage;
     }
 

@@ -326,7 +326,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                 public void onResult(int code, String result) throws RemoteException {
                     LogUtil.printf("机器人消息参数" + params + "状态码" + code + "返回值" + result);
                     JSONObject jsonObject = SafeJson.parseObj(result);
-                    dealMessageResult(message, code, SafeJson.safeGet(jsonObject, Field.TIMESTAMP), result, SafeJson.safeGet(jsonObject, Field.TYPE));
+                    dealMessageResult(message, code, SafeJson.safeGet(jsonObject, Field.TIMESTAMP), result, SafeJson.safeGet(jsonObject, Field.TYPE), SafeJson.safeInt(jsonObject, Field.ID));
                 }
             });
         } catch (Exception e) {
@@ -352,7 +352,8 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                 public void onResult(int code, String result) throws RemoteException {
                     LogUtil.printf("老版机器人分词消息状态码" + code + "返回值" + result);
                     JSONObject jsonObject = SafeJson.parseObj(result);
-                    dealMessageResult(message, code, SafeJson.safeGet(jsonObject, Field.TIMESTAMP), SafeJson.safeGet(jsonObject, Field.ANSWER), "");
+                    dealMessageResult(message, code, SafeJson.safeGet(jsonObject, Field.TIMESTAMP), result, ""
+                            , SafeJson.safeInt(jsonObject, Field.ID));
                 }
             });
         } catch (Exception e) {
@@ -369,14 +370,14 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      * @param resultTimeStamp
      * @param message
      */
-    private void dealMessageResult(IMMessage imMessage, int code, String resultTimeStamp, String message, String type) {
+    private void dealMessageResult(IMMessage imMessage, int code, String resultTimeStamp, String message, String type, int id) {
 
         String timeStamp = imMessage.getTimeStamp();
         removeTimerTask(timeStamp);
         if (code == 0) {
             imMessage.setStatus(Status.SUCCESS);
             updateMessageByTimeStamp(imMessage, timeStamp);
-            IMMessage aiMessage = IMMessageBuilder.buildReceiveAIMessage(message, resultTimeStamp);
+            IMMessage aiMessage = IMMessageBuilder.buildReceiveAIMessage(message, resultTimeStamp, id);
             if (TextUtils.equals(Field.DOCUMENT, type)) {
                 aiMessage.setType(Field.CHAT_DOCUMENT);
             } else if (TextUtils.equals(Field.QUESTION, type)) {

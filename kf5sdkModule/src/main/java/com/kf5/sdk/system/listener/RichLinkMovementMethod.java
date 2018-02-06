@@ -10,6 +10,8 @@ import android.text.style.BackgroundColorSpan;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
+import static android.R.attr.action;
+
 /**
  * author:chosen
  * date:2016/10/20 17:19
@@ -27,7 +29,7 @@ public class RichLinkMovementMethod extends LinkMovementMethod {
     public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
 
         try {
-            int action = event.getAction();
+
             if (action == MotionEvent.ACTION_UP ||
                     action == MotionEvent.ACTION_DOWN ||
                     action == MotionEvent.ACTION_CANCEL) {

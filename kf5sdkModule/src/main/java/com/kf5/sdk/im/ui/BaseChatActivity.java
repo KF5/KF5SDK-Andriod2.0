@@ -313,7 +313,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         map.put("appid", SPUtils.getAppid());
         map.put("platform", "Android");
         map.put("token", SPUtils.getUserToken());
-        map.put("version", "2.5");
+        map.put("version", "2.6");
         map.put("uuid", Utils.getUUID(mActivity));
         bundle.putString("query", com.kf5.sdk.im.utils.Utils.getMapAppend(map));
         bundle.putString("url", SPUtils.getChatUrl());
@@ -566,6 +566,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      * 否则判断问题分配question_agents集合是否不为空同时enable，则弹出问题分配界面供用户选择需要咨询的客服组，否则直接分配客服，
      */
     public void aiToGetAgents() {
+        if (isAgentOnline) return;
         //按照优先级判断
         //首先判断受理客服组不为空，直接走分配逻辑
         if (!TextUtils.isEmpty(agentIds) && !TextUtils.equals("[]", agentIds)) {

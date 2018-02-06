@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.support.v4.util.ArrayMap;
 import android.text.Html;
 import android.text.TextUtils;
-import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,7 +27,6 @@ import com.kf5.sdk.im.adapter.listener.MessageFileLongClickListener;
 import com.kf5.sdk.im.adapter.listener.MessageImageListener;
 import com.kf5.sdk.im.adapter.listener.MessageImageLongListener;
 import com.kf5.sdk.im.adapter.listener.MessageResendListener;
-import com.kf5.sdk.im.adapter.listener.MessageTextLongListener;
 import com.kf5.sdk.im.api.FileDownLoadCallBack;
 import com.kf5.sdk.im.db.IMSQLManager;
 import com.kf5.sdk.im.entity.Agent;
@@ -36,13 +34,20 @@ import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.entity.Status;
 import com.kf5.sdk.im.entity.Upload;
 import com.kf5.sdk.im.utils.ImageUtils;
+import com.kf5.sdk.im.utils.MessageUtils;
+import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.internet.DownLoadManager;
 import com.kf5.sdk.system.utils.ByteArrayUtil;
 import com.kf5.sdk.system.utils.CustomTextView;
 import com.kf5.sdk.system.utils.FilePath;
 import com.kf5.sdk.system.utils.ImageLoaderManager;
 import com.kf5.sdk.system.utils.MD5Utils;
+import com.kf5.sdk.system.utils.SafeJson;
 import com.kf5.sdk.system.utils.Utils;
+import com.kf5.sdk.system.widget.DialogBox;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
@@ -144,9 +149,23 @@ abstract class AbstractHolder {
      * @param contentText
      * @param position
      */
-    protected final void loadTextData(IMMessage message, TextView contentText, int position) {
-        CustomTextView.stripUnderlines(context, contentText, message.getMessage(), Linkify.ALL);
-        contentText.setOnLongClickListener(new MessageTextLongListener(context, message, position));
+    protected final void loadTextData(final IMMessage message, TextView contentText, int position) {
+        CustomTextView.applyRichText(contentText, message.getMessage(), new CustomTextView.OnLongClickCallback() {
+            @Override
+            public boolean onLongClick(View view) {
+                new DialogBox(context).setMessage(context.getString(R.string.kf5_copy_text_hint))
+                        .setLeftButton(context.getString(R.string.kf5_cancel), null)
+                        .setRightButton(context.getString(R.string.kf5_copy), new DialogBox.onClickListener() {
+                            @Override
+                            public void onClick(DialogBox dialog) {
+                                dialog.dismiss();
+                                Utils.copyText(message.getMessage(), context);
+                                showToast(context.getString(R.string.kf5_copied));
+                            }
+                        }).show();
+                return true;
+            }
+        });
     }
 
     /**
@@ -156,9 +175,31 @@ abstract class AbstractHolder {
      * @param contentText
      * @param position
      */
-    protected final void loadAIData(IMMessage message, TextView contentText, int position) {
-        CustomTextView.setTextWithAIMessage(contentText, message.getMessage(), message.getType());
-        contentText.setOnLongClickListener(new MessageTextLongListener(context, message, position));
+    protected final void loadAIData(final IMMessage message, TextView contentText, int position) {
+        String text = MessageUtils.decodeAIMessage(message.getMessage());
+        CustomTextView.applyRichText(contentText, text, new CustomTextView.OnLongClickCallback() {
+            @Override
+            public boolean onLongClick(View view) {
+                new DialogBox(context).setMessage(context.getString(R.string.kf5_copy_text_hint))
+                        .setLeftButton(context.getString(R.string.kf5_cancel), null)
+                        .setRightButton(context.getString(R.string.kf5_copy), new DialogBox.onClickListener() {
+                            @Override
+                            public void onClick(DialogBox dialog) {
+                                dialog.dismiss();
+                                String copyMessage;
+                                try {
+                                    JSONObject jsonObject = new JSONObject(message.getMessage());
+                                    copyMessage = SafeJson.safeGet(jsonObject, Field.CONTENT);
+                                } catch (JSONException e) {
+                                    copyMessage = message.getMessage();
+                                }
+                                Utils.copyText(copyMessage, context);
+                                showToast(context.getString(R.string.kf5_copied));
+                            }
+                        }).show();
+                return true;
+            }
+        });
     }
 
     /**
