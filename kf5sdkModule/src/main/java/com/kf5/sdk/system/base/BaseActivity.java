@@ -25,7 +25,6 @@ import com.kf5.sdk.system.swipeback.BaseSwipeBackActivity;
 import com.kf5.sdk.system.utils.DialogHandler;
 import com.kf5.sdk.system.utils.FilePath;
 import com.kf5.sdk.system.utils.FileProviderUtil;
-import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.ToastUtil;
 
 import java.io.File;
@@ -123,8 +122,12 @@ public abstract class BaseActivity<P extends Presenter<V>, V extends MvpView> ex
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (!EasyPermissions.hasPermissions(mActivity, permissions))
+        if (!EasyPermissions.hasPermissions(mActivity, permissions)) {
             applyPermissions(requestCode, METHOD_TO_SETTING, permissions);
+        } else {
+            onActivityResult(requestCode, -1, new Intent());
+        }
+
     }
 
     @Override
@@ -205,7 +208,6 @@ public abstract class BaseActivity<P extends Presenter<V>, V extends MvpView> ex
     }
 
     private void applyPermissionsFromSetting(final int requestCode) {
-
         try {
             PackageManager packageManager = getPackageManager();
             ApplicationInfo applicationInfo = packageManager.getApplicationInfo(getPackageName(), 0);
@@ -248,7 +250,6 @@ public abstract class BaseActivity<P extends Presenter<V>, V extends MvpView> ex
     }
 
     /**
-     *
      * 相机
      */
     public void takePictureFromCamera() {
@@ -266,7 +267,6 @@ public abstract class BaseActivity<P extends Presenter<V>, V extends MvpView> ex
 //            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(picFile));
             intent.putExtra(MediaStore.Images.Media.ORIENTATION, 0);
             startActivityForResult(intent, CAMERA);
-            LogUtil.printf("开始拍照。。。。");
         } catch (Exception e) {
             e.printStackTrace();
         }

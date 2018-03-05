@@ -135,7 +135,7 @@
     <string name="kf5_rating_failed">评价失败</string>
     <string name="kf5_rating_successfully">感谢您的评价</string>
     <string name="kf5_confirm">确定</string>
-    <string name="kf5_get_auth_hint">是否进入设置界面授予%1$d必要权限？否则无法正常使用。</string>
+    <string name="kf5_get_auth_hint">是否进入设置界面授予%1$s必要权限？否则无法正常使用。</string>
     <string name="kf5_display_error_hint">显示错误</string>
     <string name="kf5_image_error">图片错误</string>
     <string name="kf5_send_email_hint">是否发送邮件?</string>

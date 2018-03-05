@@ -140,7 +140,7 @@
     <string name="kf5_rating_failed">Rating failed</string>
     <string name="kf5_rating_successfully">Thanks for your rating</string>
     <string name="kf5_confirm">Confirm</string>
-    <string name="kf5_get_auth_hint">Grant access to %1$d in setting page?</string>
+    <string name="kf5_get_auth_hint">Grant access to %1$s in setting page?</string>
     <string name="kf5_display_error_hint">Display error</string>
     <string name="kf5_image_error">Photo error</string>
     <string name="kf5_send_email_hint">Send email?</string>

@@ -727,10 +727,11 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         switch (requestCode) {
             case READ_PHONE_STATE_BY_CHAT_ACTIVITY:
                 //绑定连接
-                if (hasPermission(READ_PHONE_STATE_PERMISSION))
+                if (hasPermission(READ_PHONE_STATE_PERMISSION)) {
                     bindConnect();
-                else
+                } else {
                     finish();
+                }
                 break;
             case CAMERA_STATE:
                 if (hasPermission(CAMERA_PERMISSION))

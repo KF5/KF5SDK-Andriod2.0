@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/kf5_dimen_8dp"
-    android:paddingTop="@dimen/kf5_dimen_8dp" >
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/kf5_dimen_8dp"
+              android:paddingTop="@dimen/kf5_dimen_8dp">
 
     <TextView
         android:id="@+id/kf5_tvDate"
@@ -14,12 +14,12 @@
         android:layout_marginTop="@dimen/kf5_dimen_8dp"
         android:background="@drawable/kf5_message_item_with_date_bg"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/kf5_text_size_14" />
+        android:textSize="@dimen/kf5_text_size_14"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/kf5_dimen_16dp" >
+        android:layout_marginTop="@dimen/kf5_dimen_16dp">
 
         <com.kf5.sdk.im.widget.CircleImageView
             android:id="@+id/kf5_message_item_with_text_head_img"
@@ -29,7 +29,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginEnd="@dimen/kf5_dimen_8dp"
             android:layout_marginRight="@dimen/kf5_dimen_8dp"
-            android:contentDescription="@null" />
+            android:contentDescription="@null"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
             android:layout_marginStart="@dimen/kf5_dimen_32dp"
             android:layout_toLeftOf="@+id/kf5_message_item_with_text_head_img"
             android:layout_toStartOf="@+id/kf5_message_item_with_text_head_img"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <RelativeLayout
                 android:id="@+id/kf5_progress_layout"
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/kf5_dimen_4dp"
-                android:layout_marginRight="@dimen/kf5_dimen_4dp" >
+                android:layout_marginRight="@dimen/kf5_dimen_4dp">
 
                 <ProgressBar
                     android:id="@+id/kf5_progressbar"
@@ -57,7 +57,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
             </RelativeLayout>
 
             <TextView
@@ -66,9 +66,9 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/kf5_message_to_with_text_bg"
                 android:gravity="start|center"
-                android:textColor="@android:color/holo_red_dark"
+                android:textColor="@android:color/white"
                 android:textColorLink="#b7ebff"
-                android:textSize="@dimen/kf5_text_size_16" />
+                android:textSize="@dimen/kf5_text_size_16"/>
         </LinearLayout>
     </RelativeLayout>
 

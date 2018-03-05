@@ -81,5 +81,4 @@
         <item name="android:windowExitAnimation">@anim/kf5_pop_down_out</item>
     </style>
 
-
 </resources>

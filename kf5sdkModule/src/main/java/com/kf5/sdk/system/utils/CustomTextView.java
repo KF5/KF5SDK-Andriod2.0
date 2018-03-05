@@ -252,7 +252,6 @@ public class CustomTextView {
 
     // ****************************2018-1-31新增代码 修复部分机型机器人消息url无法正确匹配bug**************************
     public static void applyRichText(final TextView textView, String text, final OnLongClickCallback callback) {
-
         List<LinkEntity> list = dealRichList(textView, text);
         if (list.isEmpty()) {
             textView.setText(text);
@@ -418,14 +417,17 @@ public class CustomTextView {
 
 
     private static void addWebUrlLink(List<LinkEntity> list, String text) {
-        Pattern pattern = Patterns.WEB_URL;
+//        Pattern pattern = Patterns.WEB_URL;
+        Pattern pattern = Pattern.compile("([hH]ttp[s]{0,1})://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\-~!@#$%^&*+?:_/=<>.\',;]*)?");
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
             String common = matcher.group(0);
             int start = matcher.start();
             int end = matcher.end();
-            if (!isInBounds(list, start, end))
+            if (!isInBounds(list, start, end)) {
                 list.add(new LinkEntity(common, makeWebUrl(common), start, end, LinkType.URL));
+
+            }
         }
     }
 
