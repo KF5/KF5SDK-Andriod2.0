@@ -233,6 +233,8 @@ public class Field {
 
     public static final String VISITOR_QUEUE_FAIL = "visitor.queue.fail";
 
+    public static final String VISITOR_NOTIFY = "visitor.notify";
+
     public static final String EVENT = "event";
 
     public static final String IM_SERVICETIME = "im_servicetime";

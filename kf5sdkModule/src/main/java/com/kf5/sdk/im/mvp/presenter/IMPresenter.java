@@ -959,6 +959,19 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                     getMvpView().setTitleContent(getMvpView().getContext().getString(R.string.kf5_no_agent_online));
                     getMvpView().getAgentFailure(AgentFailureType.NO_AGENT_ONLINE);
                 }
+            } else if (TextUtils.equals(Field.VISITOR_NOTIFY, event)) {
+                if (jsonObject.has("value")) {
+                    JSONObject valueObj = jsonObject.getJSONObject("value");
+                    if (valueObj.has("data")) {
+                        JSONObject dataObj = valueObj.getJSONObject("data");
+                        if (dataObj.has("notify")) {
+                            String notifyData = dataObj.getString("notify");
+                            if (!TextUtils.isEmpty(notifyData)) {
+                                getMvpView().onReceiveMessageList(Collections.singletonList(IMMessageBuilder.buildSystemMessage(notifyData)));
+                            }
+                        }
+                    }
+                }
             }
         }
     }

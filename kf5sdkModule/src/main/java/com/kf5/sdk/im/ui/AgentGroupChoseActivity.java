@@ -31,7 +31,7 @@ public class AgentGroupChoseActivity extends BaseSwipeBackActivity {
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.kf5_activity_anim_in, R.anim.kf5_anim_stay);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_agent_group_chose);
+        setContentView(R.layout.kf5_activity_agent_group_chose);
         initWidgets();
     }
 

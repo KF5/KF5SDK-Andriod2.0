@@ -58,9 +58,9 @@
 
     <FrameLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="#eaf0f8"
-        android:padding="@dimen/kf5_dimen_8dp"
-        android:layout_height="wrap_content">
+        android:padding="@dimen/kf5_dimen_8dp">
 
         <LinearLayout
             android:layout_width="match_parent"

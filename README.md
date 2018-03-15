@@ -37,7 +37,7 @@ v2.0版本的SDK较v1.0版本的sdk主要区别在于：基于Framework代码库
 
 3.SDK中Activity组件说明：HelpCenterActivity（文档分区）、HelpCenterTypeActivity（文档分类）、HelpCenterTypeChildActivity（文档列表）、HelpCenterTypeDetailsActivity（文档详情）、KF5ChatActivity（即时交谈）、FeedBackActivity（创建工单）、LookFeedBackActivity（工单列表）、FeedBackDetailsActivity（工单详情）、OrderAttributeActivity（工单属性）
 
-4.工单反馈模块**工单自定义字段**添加方法请参考FeedBackActivity下getDataMap回调接口示例；IM模块**用户自定义信息**在KF5ChatActivity中scConnect回调接口调用IMPresenter里的setMetadata接口即可；IM模块**卡片消息**请参考demo中SettingsFragment实现逻辑；IM模块**未读消息数**请参考demo中SettingsFragment调用getUnReadMessageCount参数格式。
+4.工单反馈模块**自定义字段**添加方法请参考FeedBackActivity下getDataMap回调接口示例；IM模块**用户自定义信息**在KF5ChatActivity中scConnect回调接口调用IMPresenter里的setMetadata接口即可；IM模块**卡片消息**请参考demo中SettingsFragment实现逻辑。
 
 _5.SDK现在支持滑动后退，并且默认开启，关闭则在BaseSwipeBackActivity自由设置；开发者若需自定义Activity切换动画，在BaseActivity中设置即可。_
 

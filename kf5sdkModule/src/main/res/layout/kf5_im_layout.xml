@@ -41,8 +41,7 @@
         android:layout_toLeftOf="@+id/kf5_rl_multi_and_send"
         android:layout_toRightOf="@+id/kf5_btn_voice_or_text"
         android:background="@drawable/kf5_input_bg_gray"
-        android:orientation="horizontal"
-        android:paddingTop="5dp">
+        android:orientation="horizontal">
 
         <!--输入框-->
         <com.kf5.sdk.im.keyboard.widgets.EmoticonsEditText
@@ -65,6 +64,7 @@
             android:id="@+id/kf5_btn_emoji"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/kf5_dimen_6dp"
