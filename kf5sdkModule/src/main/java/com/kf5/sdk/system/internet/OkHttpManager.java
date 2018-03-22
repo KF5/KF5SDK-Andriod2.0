@@ -6,9 +6,6 @@ import com.kf5Engine.okhttp.logging.HttpLoggingInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
-
 /**
  * author:chosen
  * date:2016/10/14 16:48
@@ -37,14 +34,13 @@ class OkHttpManager {
                             .writeTimeout(20, TimeUnit.SECONDS)
                             .retryOnConnectionFailure(true)
                             .addNetworkInterceptor(new HttpInterceptor(SPUtils.getUserAgent()))
-                            .hostnameVerifier(new HostnameVerifier() {
-                                @Override
-                                public boolean verify(String hostname, SSLSession session) {
-                                    return true;
-                                }
-                            })
-                            .sslSocketFactory(TrustSSLContext.getSSLSocketFactory())
-
+//                            .hostnameVerifier(new HostnameVerifier() {
+//                                @Override
+//                                public boolean verify(String hostname, SSLSession session) {
+//                                    return true;
+//                                }
+//                            })
+//                            .sslSocketFactory(TrustSSLContext.getSSLSocketFactory())
                             .build();
                 }
             }

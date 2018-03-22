@@ -141,6 +141,9 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
 
     private SelectGroupReceiver mSelectGroupReceiver;
 
+    private JSONArray category_ids, forum_ids;
+
+
     @Override
     public Loader<IMPresenter> onCreateLoader(int id, Bundle args) {
         return new PresenterLoader<>(this, new PresenterFactory<IMPresenter>() {
@@ -212,6 +215,12 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
                                 if (optionsArray != null) {
                                     mAgentGroupItemList.addAll(GsonManager.getInstance().getSelectAgentGroupItemList(optionsArray));
                                 }
+                            }
+
+                            if (SafeJson.isContainKey(jsonObject, Field.ROBOT)) {
+                                JSONObject robotObj = SafeJson.safeObject(jsonObject, Field.ROBOT);
+                                category_ids = SafeJson.safeArray(robotObj, Field.CATEGORY_IDS);
+                                forum_ids = SafeJson.safeArray(robotObj, Field.FORUM_IDS);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -454,7 +463,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      */
     public void onSendAITextMessage(String content) {
         IMMessage message = IMMessageBuilder.buildSendAIMessage(content);
-        presenter.sendAIMessage(message);
+        presenter.sendAIMessage(message, category_ids, forum_ids);
         refreshListAndNotifyData(IMMessageBuilder.addIMMessageToList(message));
     }
 

@@ -205,13 +205,15 @@ public class SocketParams {
      * @param msg
      * @return
      */
-    public static String getAIMessageParams(String msg, String tag) {
+    public static String getAIMessageParams(String msg, String tag,JSONArray category_ids,JSONArray forum_ids) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(ACTION, AI_MESSAGE);
             JSONObject paramsObj = new JSONObject();
             paramsObj.put(MSG, msg);
             paramsObj.put(TIMESTAMP, tag);
+            paramsObj.put("question_category_ids",category_ids);
+            paramsObj.put("forum_category_ids",forum_ids);
             jsonObject.put(PARAMS, paramsObj);
         } catch (JSONException e) {
             e.printStackTrace();

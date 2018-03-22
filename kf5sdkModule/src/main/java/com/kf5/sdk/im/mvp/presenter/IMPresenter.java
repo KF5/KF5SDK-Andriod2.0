@@ -315,11 +315,11 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      *
      * @param message
      */
-    public void sendAIMessage(final IMMessage message) {
+    public void sendAIMessage(final IMMessage message, final JSONArray category_ids, final JSONArray forum_ids) {
         try {
             insertMessageToDB(Collections.singletonList(message));
             addTimerTask(message, THIRTY_SECONDS);
-            final String params = SocketParams.getAIMessageParams(message.getMessage(), message.getTimeStamp());
+            final String params = SocketParams.getAIMessageParams(message.getMessage(), message.getTimeStamp(), category_ids, forum_ids);
             LogUtil.printf("发送机器人消息" + params);
             mMessageManager.sendEventMessage(params, new IPCCallBack.Stub() {
                 @Override

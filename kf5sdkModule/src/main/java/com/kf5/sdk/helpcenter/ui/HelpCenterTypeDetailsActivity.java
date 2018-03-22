@@ -58,6 +58,11 @@ public class HelpCenterTypeDetailsActivity extends BaseActivity<HelpCenterDetail
         webSettings.setBuiltInZoomControls(false); //显示放大缩小 controler
         webSettings.setSupportZoom(false); //可以缩放
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        //漏洞防御
+        webSettings.setJavaScriptEnabled(false);
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(false);
+        //移除系统内部的默认内置接口
+        mWebView.removeJavascriptInterface("searchBoxJavaBridge_");
         mWebView.setWebViewClient(new MyWebViewClient());
     }
 

@@ -8,5 +8,5 @@ package com.kf5.sdk.system.config;
 
 public class Version {
 
-    public static final String VERSION_CODE = "2.6.3";
+    public static final String VERSION_CODE = "2.6.4";
 }

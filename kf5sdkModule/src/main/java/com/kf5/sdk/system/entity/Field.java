@@ -250,4 +250,8 @@ public class Field {
     public static final String ENABLED = "enabled";
 
     public static final String OPTIONS = "options";
+
+    public static final String CATEGORY_IDS = "category_ids";
+
+    public static final String FORUM_IDS = "forum_ids";
 }

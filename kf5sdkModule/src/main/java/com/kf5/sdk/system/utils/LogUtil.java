@@ -43,7 +43,8 @@ public class LogUtil {
                 }
             }
         } catch (Exception e1) {
-            e1.printStackTrace();
+           e1.printStackTrace();
+//            printf("这里好像有异常",e1);
         }
     }
 
