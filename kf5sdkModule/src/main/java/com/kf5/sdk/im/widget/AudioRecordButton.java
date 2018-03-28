@@ -57,8 +57,11 @@ public final class AudioRecordButton extends Button implements AudioManager.Audi
         mAudioManager.setOnAudioStageListener(this);
     }
 
-    public void prepareRecordAudio(){
+    public void prepareRecordAudio() {
         mReady = true;
+        if (mAudioManager.mListener == null) {
+            mAudioManager.setOnAudioStageListener(this);
+        }
         mAudioManager.prepareAudio();
     }
 
