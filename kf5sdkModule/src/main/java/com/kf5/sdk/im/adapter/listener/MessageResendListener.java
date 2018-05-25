@@ -77,9 +77,10 @@ public class MessageResendListener extends BaseClickListener {
                                                     //语音
                                                     IMSQLManager.deleteMessageByTimeStamp(context, mIMMessage.getTimeStamp());
                                                     String url = upload.getLocalPath();
+                                                    String token = mIMMessage.getMessage();
                                                     if (!TextUtils.isEmpty(url)) {
                                                         chatActivity.removeMessage(mIMMessage);
-                                                        chatActivity.onSendVoiceMessage(url);
+                                                        chatActivity.onSendVoiceMessage(url, token);
                                                     }
                                                 }
                                             }

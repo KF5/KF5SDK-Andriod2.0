@@ -444,43 +444,7 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      * @param file
      */
     public void sendImageMessage(final IMMessage imMessage, final File file) {
-
-        insertMessageToDB(Collections.singletonList(imMessage));
-        final IMCase.RequestCase requestValues = new IMCase.RequestCase(Collections.singletonList(file));
-        mIMCase.executeUseCase(requestValues);
-        mIMCase.setUseCaseCallBack(new BaseUseCase.UseCaseCallBack<IMCase.ResponseValue>() {
-            @Override
-            public void onSuccess(IMCase.ResponseValue response) {
-                try {
-                    deleteFile(Collections.singletonList(file));
-                    LogUtil.printf("上传图片的返回值" + response.result);
-                    JSONObject jsonObject = SafeJson.parseObj(response.result);
-                    if (jsonObject.has(Field.DATA)) {
-                        JSONObject dataObj = SafeJson.safeObject(jsonObject, Field.DATA);
-                        String token = SafeJson.safeGet(dataObj, Field.TOKEN);
-                        String url = SafeJson.safeGet(dataObj, Field.CONTENT_URL);
-                        Upload upload = imMessage.getUpload();
-                        upload.setUrl(url);
-                        dealUploadMessageResult(imMessage, token);
-                    } else {
-                        int resultCode = SafeJson.safeInt(jsonObject, Field.ERROR);
-                        String message = SafeJson.safeGet(jsonObject, Field.MESSAGE);
-                        resetUploadMessageStatusFailed(Collections.singletonList(imMessage), true, resultCode, message);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    resetUploadMessageStatusFailed(Collections.singletonList(imMessage), true, RESULT_ERROR, e.getMessage());
-                }
-            }
-
-            @Override
-            public void onError(String msg) {
-                LogUtil.printf("上传失败" + msg);
-                deleteFile(Collections.singletonList(file));
-                resetUploadMessageStatusFailed(Collections.singletonList(imMessage), true, RESULT_ERROR, msg);
-            }
-        });
-        mIMCase.run();
+        sendUploadMessage(imMessage, file);
     }
 
 
@@ -491,51 +455,67 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
      * @param voiceFile
      */
     public void sendVoiceMessage(final IMMessage imMessage, final File voiceFile) {
+        sendUploadMessage(imMessage, voiceFile);
+    }
 
+    /**
+     * 附件消息
+     *
+     * @param imMessage
+     * @param file
+     */
+    private void sendUploadMessage(final IMMessage imMessage, File file) {
         insertMessageToDB(Collections.singletonList(imMessage));
-        final IMCase.RequestCase requestValues = new IMCase.RequestCase(Collections.singletonList(voiceFile));
-        mIMCase.executeUseCase(requestValues);
-        mIMCase.setUseCaseCallBack(new BaseUseCase.UseCaseCallBack<IMCase.ResponseValue>() {
-            @Override
-            public void onSuccess(IMCase.ResponseValue response) {
-                try {
-                    LogUtil.printf("上传语音的返回值" + response.result);
-                    JSONObject jsonObject = SafeJson.parseObj(response.result);
-                    if (jsonObject != null) {
-                        if (jsonObject.has(Field.DATA)) {
-                            JSONObject dataObj = SafeJson.safeObject(jsonObject, Field.DATA);
-                            String token = SafeJson.safeGet(dataObj, Field.TOKEN);
-                            String url = SafeJson.safeGet(dataObj, Field.URL);
-                            Upload upload = imMessage.getUpload();
-                            upload.setUrl(url);
+        String token = imMessage.getMessage();
+        //如果令牌已经缓存，直接发送令牌与远程文件绑定
+        if (!TextUtils.isEmpty(token)) {
+            dealUploadMessageResult(imMessage, token);
+        } else {
+            //否则先上传附件，在绑定文件
+            final IMCase.RequestCase requestValues = new IMCase.RequestCase(Collections.singletonList(file));
+            mIMCase.executeUseCase(requestValues);
+            mIMCase.setUseCaseCallBack(new BaseUseCase.UseCaseCallBack<IMCase.ResponseValue>() {
+                @Override
+                public void onSuccess(IMCase.ResponseValue response) {
+                    try {
+                        LogUtil.printf("上传附件的返回值" + response.result);
+                        JSONObject jsonObject = SafeJson.parseObj(response.result);
+                        if (jsonObject != null) {
+                            if (jsonObject.has(Field.DATA)) {
+                                JSONObject dataObj = SafeJson.safeObject(jsonObject, Field.DATA);
+                                String token = SafeJson.safeGet(dataObj, Field.TOKEN);
+                                String url = SafeJson.safeGet(dataObj, Field.URL);
+                                Upload upload = imMessage.getUpload();
+                                upload.setUrl(url);
 //                            File newFile = new File(FilePath.SAVE_RECORDER, MD5Utils.GetMD5Code(url) + ".amr");
 //                            //noinspection ResultOfMethodCallIgnored
 //                            voiceFile.renameTo(newFile);
 //                            //noinspection ResultOfMethodCallIgnored
 //                            voiceFile.delete();
-                            dealUploadMessageResult(imMessage, token);
-                        } else {
-                            int resultCode = SafeJson.safeInt(jsonObject, Field.ERROR);
-                            String message = SafeJson.safeGet(jsonObject, Field.MESSAGE);
-                            resetUploadMessageStatusFailed(Collections.singletonList(imMessage), true, resultCode, message);
+                                IMSQLManager.updateRemoteUrlByTimestamp(getMvpView().getContext(), url, token, imMessage.getTimeStamp());
+                                dealUploadMessageResult(imMessage, token);
+                            } else {
+                                int resultCode = SafeJson.safeInt(jsonObject, Field.ERROR);
+                                String message = SafeJson.safeGet(jsonObject, Field.MESSAGE);
+                                resetUploadMessageStatusFailed(Collections.singletonList(imMessage), true, resultCode, message);
+                            }
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        resetUploadMessageStatusFailed(Collections.singletonList(imMessage), true, RESULT_ERROR, e.getMessage());
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    resetUploadMessageStatusFailed(Collections.singletonList(imMessage), true, RESULT_ERROR, e.getMessage());
                 }
-            }
 
-            @Override
-            public void onError(String msg) {
-                LogUtil.printf("上传失败" + msg);
-                deleteFile(Collections.singletonList(voiceFile));
-                resetUploadMessageStatusFailed(Collections.singletonList(imMessage), true, RESULT_ERROR, msg);
-            }
-        });
-        mIMCase.run();
+                @Override
+                public void onError(String msg) {
+                    LogUtil.printf("上传失败" + msg);
+//                deleteFile(Collections.singletonList(voiceFile));
+                    resetUploadMessageStatusFailed(Collections.singletonList(imMessage), true, RESULT_ERROR, msg);
+                }
+            });
+            mIMCase.run();
+        }
     }
-
 
     /**
      * 将附件属性发送到IM
@@ -990,6 +970,12 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
                 message.setUserId(SafeJson.safeInt(msgObj, Field.USER_ID));
                 message.setName(SafeJson.safeGet(msgObj, Field.NAME));
                 message.setUserId(SafeJson.safeInt(msgObj, Field.USER_ID));
+                Upload upload = message.getUpload();
+                JSONObject uploadObj = SafeJson.safeObject(msgObj, "Upload");
+                if (upload != null && uploadObj != null) {
+                    upload.setUrl(SafeJson.safeGet(uploadObj, Field.URL));
+                    message.setMessage(SafeJson.safeGet(uploadObj, Field.TOKEN));
+                }
             } else {
                 message.setStatus(Status.FAILED);
             }

@@ -54,8 +54,8 @@ public class IMMessageBuilder {
      * @param path
      * @return
      */
-    public static IMMessage buildSendImageMessage(String path) {
-        return buildCommonUploadMessage(path, Field.VISITOR);
+    public static IMMessage buildSendImageMessage(String path, String token) {
+        return buildCommonUploadMessage(token, path, Field.VISITOR);
     }
 
     /**
@@ -67,7 +67,7 @@ public class IMMessageBuilder {
     public static List<IMMessage> buildSendImageList(List<File> fileList) {
         List<IMMessage> messageList = new ArrayList<>();
         for (File file : fileList) {
-            messageList.add(buildSendImageMessage(file.getAbsolutePath()));
+            messageList.add(buildSendImageMessage(file.getAbsolutePath(), null));
         }
         return messageList;
     }
@@ -81,7 +81,7 @@ public class IMMessageBuilder {
     public static List<IMMessage> buildSendImageMessageList(String... path) {
         List<IMMessage> messageList = new ArrayList<>();
         for (String s : path) {
-            messageList.add(buildSendImageMessage(s));
+            messageList.add(buildSendImageMessage(s, null));
         }
         return messageList;
     }
@@ -100,10 +100,11 @@ public class IMMessageBuilder {
      * 发送语音消息实体
      *
      * @param path
+     * @param token
      * @return
      */
-    public static IMMessage buildSendVoiceMessage(String path) {
-        return buildCommonUploadMessage(path, Field.VISITOR);
+    public static IMMessage buildSendVoiceMessage(String path, String token) {
+        return buildCommonUploadMessage(token, path, Field.VISITOR);
     }
 
     /**
@@ -161,8 +162,8 @@ public class IMMessageBuilder {
     }
 
 
-    private static IMMessage buildCommonUploadMessage(String path, String role) {
-        IMMessage imMessage = buildCommonIMMessage("", Field.CHAT_UPLOAD, role, Status.SENDING);
+    private static IMMessage buildCommonUploadMessage(String content, String path, String role) {
+        IMMessage imMessage = buildCommonIMMessage(content, Field.CHAT_UPLOAD, role, Status.SENDING);
         imMessage.setUpload(buildCommonUpload(path));
         return imMessage;
     }

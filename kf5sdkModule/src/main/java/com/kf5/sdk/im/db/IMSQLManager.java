@@ -11,6 +11,7 @@ import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.entity.Status;
 import com.kf5.sdk.im.entity.Upload;
 import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.Utils;
 
 import java.util.ArrayList;
@@ -69,41 +70,10 @@ public class IMSQLManager extends SQLManager {
 
         Log.i(Utils.KF5_TAG, "插入消息");
         if (iMMessage == null) return null;
-        ContentValues contentValues = new ContentValues();
         try {
-            contentValues.put(DataBaseColumn.CHAT_ID, iMMessage.getChatId());
-            contentValues.put(DataBaseColumn.MESSAGE_TYPE, iMMessage.getType());
-            contentValues.put(DataBaseColumn.IS_READ, iMMessage.getIsRead());
-            contentValues.put(DataBaseColumn.MESSAGE, iMMessage.getMessage());
-            contentValues.put(DataBaseColumn.CREATED_DATE, iMMessage.getCreated());
-            contentValues.put(DataBaseColumn.MESSAGE_ID, iMMessage.getId());
-            contentValues.put(DataBaseColumn.MARK, iMMessage.getTimeStamp());
-            contentValues.put(DataBaseColumn.ROLE, iMMessage.getRole());
-            contentValues.put(DataBaseColumn.USER_ID, iMMessage.getUserId());
-            contentValues.put(DataBaseColumn.NAME, iMMessage.getName());
-            switch (iMMessage.getStatus()) {
-                case FAILED:
-                    contentValues.put(DataBaseColumn.SEND_STATUS, -1);
-                    break;
-                case SUCCESS:
-                    contentValues.put(DataBaseColumn.SEND_STATUS, 0);
-                    break;
-                case SENDING:
-                    contentValues.put(DataBaseColumn.SEND_STATUS, 1);
-                    break;
-            }
-            Upload upload = iMMessage.getUpload();
-            if (upload != null) {
-                contentValues.put(DataBaseColumn.FILE_TYPE, upload.getType());
-                contentValues.put(DataBaseColumn.FILE_URL, upload.getUrl());
-                contentValues.put(DataBaseColumn.FILE_NAME, upload.getName());
-                contentValues.put(DataBaseColumn.LOCAL_PATH, upload.getLocalPath());
-            }
-            getInstance(context).openSqlDB().insert(DataBaseHelper.DB_TABLE, null, contentValues);
+            getInstance(context).openSqlDB().insert(DataBaseHelper.DB_TABLE, null, bindContentValues(iMMessage));
         } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            contentValues.clear();
+            LogUtil.printf("插入消息出异常", e);
         }
         return iMMessage;
     }
@@ -117,47 +87,53 @@ public class IMSQLManager extends SQLManager {
      * @return
      */
     private static void update(Context context, IMMessage iMMessage) {
-
         Log.i(Utils.KF5_TAG, "更新消息");
         if (iMMessage == null) return;
-        ContentValues contentValues = new ContentValues();
         try {
-            contentValues.put(DataBaseColumn.CHAT_ID, iMMessage.getChatId());
-            contentValues.put(DataBaseColumn.MESSAGE_TYPE, iMMessage.getType());
-            contentValues.put(DataBaseColumn.IS_READ, iMMessage.getIsRead());
-            contentValues.put(DataBaseColumn.MESSAGE, iMMessage.getMessage());
-            contentValues.put(DataBaseColumn.CREATED_DATE, iMMessage.getCreated());
-            contentValues.put(DataBaseColumn.MESSAGE_ID, iMMessage.getId());
-            contentValues.put(DataBaseColumn.MARK, iMMessage.getTimeStamp());
-            contentValues.put(DataBaseColumn.ROLE, iMMessage.getRole());
-            contentValues.put(DataBaseColumn.USER_ID, iMMessage.getUserId());
-            contentValues.put(DataBaseColumn.NAME, iMMessage.getName());
-            switch (iMMessage.getStatus()) {
-                case FAILED:
-                    contentValues.put(DataBaseColumn.SEND_STATUS, -1);
-                    break;
-                case SUCCESS:
-                    contentValues.put(DataBaseColumn.SEND_STATUS, 0);
-                    break;
-                case SENDING:
-                    contentValues.put(DataBaseColumn.SEND_STATUS, 1);
-                    break;
-            }
-            Upload upload = iMMessage.getUpload();
-            if (upload != null) {
-                contentValues.put(DataBaseColumn.FILE_TYPE, upload.getType());
-                contentValues.put(DataBaseColumn.FILE_URL, upload.getUrl());
-                contentValues.put(DataBaseColumn.FILE_NAME, upload.getName());
-                contentValues.put(DataBaseColumn.LOCAL_PATH, upload.getLocalPath());
-            }
-            getInstance(context).openSqlDB().update(DataBaseHelper.DB_TABLE, contentValues, DataBaseColumn.MARK + " = ?", new String[]{iMMessage.getTimeStamp()});
+            getInstance(context).openSqlDB().update(DataBaseHelper.DB_TABLE, bindContentValues(iMMessage), DataBaseColumn.MARK + " = ?", new String[]{iMMessage.getTimeStamp()});
         } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            contentValues.clear();
+            LogUtil.printf("更新消息异常", e);
         }
     }
 
+    /**
+     * 绑定内容到ContentValues
+     *
+     * @param iMMessage
+     * @return
+     */
+    private static ContentValues bindContentValues(IMMessage iMMessage) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DataBaseColumn.CHAT_ID, iMMessage.getChatId());
+        contentValues.put(DataBaseColumn.MESSAGE_TYPE, iMMessage.getType());
+        contentValues.put(DataBaseColumn.IS_READ, iMMessage.getIsRead());
+        contentValues.put(DataBaseColumn.MESSAGE, iMMessage.getMessage());
+        contentValues.put(DataBaseColumn.CREATED_DATE, iMMessage.getCreated());
+        contentValues.put(DataBaseColumn.MESSAGE_ID, iMMessage.getId());
+        contentValues.put(DataBaseColumn.MARK, iMMessage.getTimeStamp());
+        contentValues.put(DataBaseColumn.ROLE, iMMessage.getRole());
+        contentValues.put(DataBaseColumn.USER_ID, iMMessage.getUserId());
+        contentValues.put(DataBaseColumn.NAME, iMMessage.getName());
+        switch (iMMessage.getStatus()) {
+            case FAILED:
+                contentValues.put(DataBaseColumn.SEND_STATUS, -1);
+                break;
+            case SUCCESS:
+                contentValues.put(DataBaseColumn.SEND_STATUS, 0);
+                break;
+            case SENDING:
+                contentValues.put(DataBaseColumn.SEND_STATUS, 1);
+                break;
+        }
+        Upload upload = iMMessage.getUpload();
+        if (upload != null) {
+            contentValues.put(DataBaseColumn.FILE_TYPE, upload.getType());
+            contentValues.put(DataBaseColumn.FILE_URL, upload.getUrl());
+            contentValues.put(DataBaseColumn.FILE_NAME, upload.getName());
+            contentValues.put(DataBaseColumn.LOCAL_PATH, upload.getLocalPath());
+        }
+        return contentValues;
+    }
 
     /**
      * 分页查询历史数据
@@ -204,7 +180,7 @@ public class IMSQLManager extends SQLManager {
     }
 
     /**
-     * 通过标签将附件的token保存在DataBaseCloum的message字段
+     * 通过标签将附件的token保存在DataBaseColumn的message字段
      *
      * @param context
      * @param tag
@@ -235,6 +211,24 @@ public class IMSQLManager extends SQLManager {
             ContentValues contentValues = new ContentValues();
             contentValues.put(DataBaseColumn.LOCAL_PATH, localPath);
             getInstance(context).openSqlDB().update(DataBaseHelper.DB_TABLE, contentValues, DataBaseColumn.MARK + " = ?", new String[]{timeStamp});
+        }
+    }
+
+    /**
+     * 更新附件远程url和唯一令牌
+     *
+     * @param context
+     * @param url       RemoteUrl
+     * @param token     令牌
+     * @param timestamp 根据时间戳更新
+     */
+    public static void updateRemoteUrlByTimestamp(Context context, String url, String token, String timestamp) {
+        if (!TextUtils.isEmpty(url)) {
+            LogUtil.printf("更新远程地址" + url + "======" + token);
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DataBaseColumn.FILE_URL, url);
+            contentValues.put(DataBaseColumn.MESSAGE, token);
+            getInstance(context).openSqlDB().update(DataBaseHelper.DB_TABLE, contentValues, DataBaseColumn.MARK + " = ?", new String[]{timestamp});
         }
     }
 
@@ -344,16 +338,16 @@ public class IMSQLManager extends SQLManager {
                     contentValues.put(DataBaseColumn.SEND_STATUS, 0);
                     contentValues.put(DataBaseColumn.CHAT_ID, iMMessage.getChatId());
                     contentValues.put(DataBaseColumn.MESSAGE_ID, iMMessage.getId());
-                    contentValues.put(DataBaseColumn.MARK, iMMessage.getTimeStamp());
+//                    contentValues.put(DataBaseColumn.MARK, iMMessage.getTimeStamp());
                     contentValues.put(DataBaseColumn.CREATED_DATE, iMMessage.getCreated());
                     contentValues.put(DataBaseColumn.NAME, iMMessage.getName());
                     contentValues.put(DataBaseColumn.USER_ID, iMMessage.getUserId());
-                    if (iMMessage.getUploadId() > 0) {
-                        Upload upload = iMMessage.getUpload();
-                        if (upload != null) {
-                            contentValues.put(DataBaseColumn.FILE_TYPE, upload.getType());
-                            contentValues.put(DataBaseColumn.FILE_URL, upload.getUrl());
-                        }
+                    contentValues.put(DataBaseColumn.MESSAGE, iMMessage.getMessage());
+                    Upload upload = iMMessage.getUpload();
+                    if (upload != null) {
+                        contentValues.put(DataBaseColumn.FILE_TYPE, upload.getType());
+                        contentValues.put(DataBaseColumn.FILE_URL, upload.getUrl());
+                        LogUtil.printf("更新附件远程url" + upload.getUrl());
                     }
                     break;
             }
@@ -480,8 +474,9 @@ public class IMSQLManager extends SQLManager {
     private static boolean isContainTimeStamp(Context context, String timeStamp) {
 
         String sql = "select * from " + DataBaseHelper.DB_TABLE + " where " + DataBaseColumn.MARK + "=" + timeStamp;
+        Cursor cursor = null;
         try {
-            Cursor cursor = getInstance(context).openSqlDB().rawQuery(sql, null);
+            cursor = getInstance(context).openSqlDB().rawQuery(sql, null);
             if (cursor == null)
                 return false;
             int count = cursor.getCount();
@@ -489,11 +484,11 @@ public class IMSQLManager extends SQLManager {
                 return false;
             else
                 return true;
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-        return false;
     }
 
 
@@ -577,8 +572,6 @@ public class IMSQLManager extends SQLManager {
             agent.setName(cursor.getString(cursor.getColumnIndexOrThrow(UserColumn.NAME)));
             agent.setDisplayName(cursor.getString(cursor.getColumnIndexOrThrow(UserColumn.DISPLAY_NAME)));
             agent.setPhoto(cursor.getString(cursor.getColumnIndexOrThrow(UserColumn.PHOTO_URL)));
-        } catch (Exception e) {
-            e.printStackTrace();
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -609,14 +602,10 @@ public class IMSQLManager extends SQLManager {
                 return false;
             else
                 return true;
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
         } finally {
             if (cursor != null)
                 cursor.close();
         }
-        return false;
     }
 
 

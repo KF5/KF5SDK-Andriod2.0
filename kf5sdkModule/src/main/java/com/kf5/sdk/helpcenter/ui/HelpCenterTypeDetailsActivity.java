@@ -136,7 +136,7 @@ public class HelpCenterTypeDetailsActivity extends BaseActivity<HelpCenterDetail
     protected void onPause() {
         super.onPause();
         try {
-            mWebView.getClass().getMethod("onPause").invoke(mWebView, (Object[]) null);
+            mWebView.getClass().getMethod("onRelease").invoke(mWebView, (Object[]) null);
         } catch (Exception e) {
             e.printStackTrace();
         }

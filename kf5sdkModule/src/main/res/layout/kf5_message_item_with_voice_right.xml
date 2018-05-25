@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/kf5_dimen_8dp"
-    android:paddingTop="@dimen/kf5_dimen_8dp" >
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/kf5_dimen_8dp"
+              android:paddingTop="@dimen/kf5_dimen_8dp">
 
     <TextView
         android:id="@+id/kf5_tvDate"
@@ -14,12 +14,12 @@
         android:layout_marginTop="@dimen/kf5_dimen_8dp"
         android:background="@drawable/kf5_message_item_with_date_bg"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/kf5_text_size_14" />
+        android:textSize="@dimen/kf5_text_size_14"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/kf5_dimen_16dp" >
+        android:layout_marginTop="@dimen/kf5_dimen_16dp">
 
         <com.kf5.sdk.im.widget.CircleImageView
             android:id="@+id/kf5_message_item_with_voice_head_img"
@@ -27,9 +27,11 @@
             android:layout_height="48dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/kf5_dimen_8dp"
             android:layout_marginRight="@dimen/kf5_dimen_8dp"
-            android:contentDescription="@null" />
+            android:contentDescription="@null"/>
+
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -41,7 +43,7 @@
             android:layout_marginStart="@dimen/kf5_dimen_32dp"
             android:layout_toLeftOf="@+id/kf5_message_item_with_voice_head_img"
             android:layout_toStartOf="@+id/kf5_message_item_with_voice_head_img"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <RelativeLayout
                 android:id="@+id/kf5_progress_layout"
@@ -49,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/kf5_dimen_4dp"
-                android:layout_marginRight="@dimen/kf5_dimen_4dp" >
+                android:layout_marginRight="@dimen/kf5_dimen_4dp">
 
                 <ProgressBar
                     android:id="@+id/kf5_progressbar"
@@ -57,8 +59,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:visibility="visible" />
+                    android:visibility="visible"/>
             </RelativeLayout>
+
 
             <TextView
                 android:id="@+id/kf5_message_item_with_voice"
@@ -69,8 +72,20 @@
                 android:background="@drawable/kf5_message_to_with_text_bg"
                 android:gravity="center_vertical|start"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/kf5_text_size_16" />
+                android:textSize="@dimen/kf5_text_size_16"/>
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/kf5_message_item_with_voice_play_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/kf5_dimen_16dp"
+            android:layout_marginRight="@dimen/kf5_dimen_16dp"
+            android:layout_toLeftOf="@+id/kf5_message_item_with_voice_head_img"
+            android:layout_toStartOf="@+id/kf5_message_item_with_voice_head_img"
+            android:padding="@dimen/kf5_dimen_6dp"
+            android:src="@drawable/kf5_voice_play_right_src_1"/>
     </RelativeLayout>
 
 </LinearLayout>

@@ -7,5 +7,10 @@ package com.kf5.sdk.im.api;
  */
 
 public interface FileDownLoadCallBack {
-    void onResult(String result);
+
+    enum Status {
+        SUCCESS, FAILED
+    }
+
+    void onResult(Status status, String result, String fileName);
 }

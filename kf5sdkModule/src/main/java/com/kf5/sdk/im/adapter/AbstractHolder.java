@@ -41,6 +41,7 @@ import com.kf5.sdk.system.utils.ByteArrayUtil;
 import com.kf5.sdk.system.utils.CustomTextView;
 import com.kf5.sdk.system.utils.FilePath;
 import com.kf5.sdk.system.utils.ImageLoaderManager;
+import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.MD5Utils;
 import com.kf5.sdk.system.utils.SafeJson;
 import com.kf5.sdk.system.utils.Utils;
@@ -50,7 +51,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -86,16 +86,25 @@ abstract class AbstractHolder {
      * @param downLoadList
      * @param callBack
      */
-    protected final void loadVoiceData(int position, IMMessage message, TextView textViewLength, ProgressBar progressBar, List<String> downLoadList, FileDownLoadCallBack callBack) {
+    protected final void loadVoiceData(int position, IMMessage message, TextView textViewLength, ProgressBar progressBar, Map<String, IMMessage> downLoadList, FileDownLoadCallBack callBack, ImageView imageView, MessageAdapterItemClickListener.VoiceType voiceType) {
         int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         textViewLength.measure(w, h);
         int width = textViewLength.getMeasuredWidth();
-        textViewLength.setOnClickListener(new MessageAdapterItemClickListener(message, position));
+        if (voiceType == MessageAdapterItemClickListener.VoiceType.RIGHT) {
+            imageView.setImageResource(R.drawable.kf5_voice_play_right_src_3);
+        } else {
+            imageView.setImageResource(R.drawable.kf5_voice_play_left_src_3);
+        }
+        textViewLength.setOnClickListener(new MessageAdapterItemClickListener(message, position, imageView, voiceType));
         Upload upload = message.getUpload();
-        File localFile = new File(FilePath.SAVE_RECORDER + MD5Utils.GetMD5Code(upload.getUrl()) + ".amr");
+//        File localFile = new File(FilePath.SAVE_RECORDER + MD5Utils.GetMD5Code(upload.getUrl()) + ".amr");
+        File localFile = null;
+        if (!TextUtils.isEmpty(upload.getLocalPath())) {
+            localFile = new File(upload.getLocalPath());
+        }
         MediaPlayer mediaPlayer = null;
-        if (localFile.exists()) {
+        if (localFile != null && localFile.exists()) {
             mediaPlayer = MediaPlayer.create(context, Uri.parse(localFile.getAbsolutePath()));
             if (mediaPlayer != null) {
                 int length = mediaPlayer.getDuration() / 1000 + 1;
@@ -111,30 +120,40 @@ abstract class AbstractHolder {
                     progressBar.setVisibility(View.GONE);
             }
         } else {
-            File file = new File(FilePath.SAVE_RECORDER + upload.getName());
-            if (file.exists()) {
-                mediaPlayer = MediaPlayer.create(context, Uri.parse(file.getAbsolutePath()));
-                if (mediaPlayer != null) {
-                    int length = mediaPlayer.getDuration() / 1000 + 1;
-                    //noinspection StringBufferReplaceableByString
-                    textViewLength.setText(new StringBuilder().append(length).append("''").toString());
-                    double maxWidth = Utils.getDisplayWidth(context) / 3 * 2;
-                    double percentWidth = (maxWidth - width) / 60;
-                    ViewGroup.LayoutParams layoutParams = textViewLength.getLayoutParams();
-                    layoutParams.width = (int) (width + percentWidth * length);
-                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                    textViewLength.setLayoutParams(layoutParams);
-                    if (progressBar != null)
-                        progressBar.setVisibility(View.GONE);
-                }
-            } else {
-                if (!downLoadList.contains(upload.getName())) {
-                    downLoadList.add(upload.getName());
-                    DownLoadManager.getInstance().downloadFile(upload.getUrl(), FilePath.SAVE_RECORDER, upload.getName(), callBack);
+//            File file = new File(FilePath.SAVE_RECORDER + upload.getName());
+//            LogUtil.printf("本地缓存文件存在" + message.getId() + "====" + file.getAbsolutePath()+"===="+file.getName());
+//            if (file.exists()) {
+//                mediaPlayer = MediaPlayer.create(context, Uri.parse(file.getAbsolutePath()));
+//                if (mediaPlayer != null) {
+//                    int length = mediaPlayer.getDuration() / 1000 + 1;
+//                    //noinspection StringBufferReplaceableByString
+//                    textViewLength.setText(new StringBuilder().append(length).append("''").toString());
+//                    double maxWidth = Utils.getDisplayWidth(context) / 3 * 2;
+//                    double percentWidth = (maxWidth - width) / 60;
+//                    ViewGroup.LayoutParams layoutParams = textViewLength.getLayoutParams();
+//                    layoutParams.width = (int) (width + percentWidth * length);
+//                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+//                    textViewLength.setLayoutParams(layoutParams);
+//                    if (progressBar != null)
+//                        progressBar.setVisibility(View.GONE);
+//                }
+//            } else {
+            String url = upload.getUrl();
+            if (!TextUtils.isEmpty(url)) {
+                String fileName = MD5Utils.GetMD5Code(upload.getUrl()) + ".amr";
+                LogUtil.printf("下载语音" + fileName);
+                if (!downLoadList.containsKey(fileName)) {
+                    downLoadList.put(fileName, message);
+                    DownLoadManager.getInstance().downloadFile(url, FilePath.SAVE_RECORDER, fileName, callBack);
                     if (progressBar != null)
                         progressBar.setVisibility(View.VISIBLE);
                 }
+            } else {
+                Exception exception = new IllegalArgumentException("本地语音缓存为空，远程url为空，有一种可能那就是该消息为APP端发送语音，同时当前语音在发送状态时Im界面被关闭了，本地缓存文件被删掉了");
+                LogUtil.printf("语音文件本地缓存和远程url都为空", exception);
             }
+
+//            }
         }
         if (mediaPlayer != null) {
             mediaPlayer.release();

@@ -708,7 +708,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
 
     @Override
     public void onRecordFinished(float seconds, String filePath) {
-        onSendVoiceMessage(filePath);
+        onSendVoiceMessage(filePath, null);
     }
 
     /**
@@ -826,8 +826,8 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      *
      * @param filePath
      */
-    public void onSendVoiceMessage(String filePath) {
-        IMMessage message = IMMessageBuilder.buildSendVoiceMessage(filePath);
+    public void onSendVoiceMessage(String filePath, String token) {
+        IMMessage message = IMMessageBuilder.buildSendVoiceMessage(filePath, token);
         presenter.sendVoiceMessage(message, new File(filePath));
         refreshListAndNotifyData(IMMessageBuilder.addIMMessageToList(message));
     }

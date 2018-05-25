@@ -2,20 +2,24 @@ package com.kf5.sdk.im.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.kf5.sdk.R;
 import com.kf5.sdk.im.api.FileDownLoadCallBack;
+import com.kf5.sdk.im.db.IMSQLManager;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.entity.Upload;
 import com.kf5.sdk.system.base.CommonAdapter;
 import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.utils.FilePath;
 import com.kf5.sdk.system.utils.Utils;
 
-import java.util.ArrayList;
+import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 /**
  * author:chosen
@@ -40,7 +44,8 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
     private static final int MESSAGE_TYPE_RECEIVE_CUSTOM = 12;
     private static final int MESSAGE_TYPE_SEND_CUSTOM = 13;
     private static final int MESSAGE_TYPE_CARD = 14;
-    private List<String> listName = new ArrayList<>();
+
+    private Map<String, IMMessage> downloadMap = new ArrayMap<>();
 
     public MessageAdapter(Context context, List<IMMessage> list) {
         super(context, list);
@@ -302,7 +307,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
         } else {
             holder = (VoiceReceiveHolder) convertView.getTag();
         }
-        holder.bindData(message, position, getItem(position - 1), listName, callBack);
+        holder.bindData(message, position, getItem(position - 1), downloadMap, callBack);
         return convertView;
 
     }
@@ -326,7 +331,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
         } else {
             holder = (VoiceSendHolder) convertView.getTag();
         }
-        holder.bindData(message, position, getItem(position - 1), listName, callBack);
+        holder.bindData(message, position, getItem(position - 1), downloadMap, callBack);
 
         return convertView;
 
@@ -495,19 +500,31 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
     private FileDownLoadCallBack callBack = new FileDownLoadCallBack() {
 
         @Override
-        public void onResult(String result) {
-
-            if (!TextUtils.isEmpty(result) && listName != null && listName.contains(result)) {
-                listName.remove(result);
-                if (mContext != null && mContext instanceof Activity) {
-                    ((Activity) mContext).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            notifyDataSetInvalidated();
+        public void onResult(Status status, String result, String fileName) {
+            if (downloadMap.containsKey(fileName)) {
+                IMMessage message = downloadMap.get(fileName);
+                downloadMap.remove(fileName);
+                if (Status.SUCCESS == status) {
+                    File file = new File(FilePath.SAVE_RECORDER, fileName);
+                    if (file.exists()) {
+                        Upload upload = message.getUpload();
+                        if (upload != null) {
+                            upload.setLocalPath(file.getAbsolutePath());
+                            IMSQLManager.updateLocalPathByTimeStamp(mContext, file.getAbsolutePath(), message.getTimeStamp());
                         }
-                    });
+                    }
+                    if (mContext != null && mContext instanceof Activity) {
+                        ((Activity) mContext).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                notifyDataSetInvalidated();
+                            }
+                        });
+                    }
                 }
             }
+
+
         }
     };
 

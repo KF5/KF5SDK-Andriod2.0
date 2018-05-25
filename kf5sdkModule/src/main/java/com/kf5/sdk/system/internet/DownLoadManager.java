@@ -36,14 +36,14 @@ public class DownLoadManager {
     }
 
 
-    public void downloadFile(final String url, final String fileUrl, final String fileName, final FileDownLoadCallBack callBack) {
+    public void downloadFile(final String url, final String parent, final String fileName, final FileDownLoadCallBack callBack) {
 
         final Request request = new Request.Builder().url(url).build();
         OkHttpManager.getInstance().getOkHttpClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 if (callBack != null)
-                    callBack.onResult(e.getMessage());
+                    callBack.onResult(FileDownLoadCallBack.Status.FAILED, e.getMessage(), fileName);
             }
 
             @Override
@@ -54,7 +54,7 @@ public class DownLoadManager {
                 FileOutputStream fos = null;
                 try {
                     is = response.body().byteStream();
-                    File file = new File(fileUrl, fileName);
+                    File file = new File(parent, fileName);
                     if (!file.exists())
                         file.getParentFile().mkdirs();
                     file.createNewFile();
@@ -65,11 +65,11 @@ public class DownLoadManager {
                     fos.flush();
                     //如果下载文件成功，第一个参数为文件的绝对路径
                     if (callBack != null)
-                        callBack.onResult(fileName);
+                        callBack.onResult(FileDownLoadCallBack.Status.SUCCESS, "下载成功",fileName);
                 } catch (Exception e) {
                     e.printStackTrace();
                     if (callBack != null)
-                        callBack.onResult(e.getMessage());
+                        callBack.onResult(FileDownLoadCallBack.Status.FAILED, e.getMessage(),fileName);
                 } finally {
                     try {
                         if (is != null) is.close();
@@ -77,7 +77,7 @@ public class DownLoadManager {
                     } catch (Exception e) {
                         e.printStackTrace();
                         if (callBack != null)
-                            callBack.onResult(e.getMessage());
+                            callBack.onResult(FileDownLoadCallBack.Status.FAILED, e.getMessage(),fileName);
                     }
                 }
             }

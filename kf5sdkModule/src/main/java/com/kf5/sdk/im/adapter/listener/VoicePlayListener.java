@@ -9,13 +9,14 @@ import android.media.MediaPlayer;
  * email:812219713@qq.com
  */
 
-public class VoicePlayListener implements MediaPlayer.OnPreparedListener {
+public class VoicePlayListener implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
 
     private MediaPlayer mediaPlayer;
 
-
     private static VoicePlayListener voicePlayListener;
+
+    private Object tag;
 
     private VoicePlayListener() {
     }
@@ -33,14 +34,16 @@ public class VoicePlayListener implements MediaPlayer.OnPreparedListener {
     }
 
 
-    public void startPlay(String path) {
+    public void startPlay(String path, OnMediaPlayListener mediaPlayListener, Object tag) {
 
         if (mediaPlayer == null) {
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setOnPreparedListener(this);
+            mediaPlayer.setOnCompletionListener(this);
         }
-
+        mMediaPlayListener = mediaPlayListener;
+        this.tag = tag;
         try {
             mediaPlayer.reset();
             mediaPlayer.setDataSource(path);
@@ -55,6 +58,9 @@ public class VoicePlayListener implements MediaPlayer.OnPreparedListener {
     @Override
     public void onPrepared(MediaPlayer mp) {
         mediaPlayer.start();
+        if (mMediaPlayListener != null) {
+            mMediaPlayListener.onPrepared();
+        }
     }
 
     public void onDestroy() {
@@ -64,6 +70,7 @@ public class VoicePlayListener implements MediaPlayer.OnPreparedListener {
                 mediaPlayer.release();
                 mediaPlayer = null;
             }
+            tag = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,9 +81,40 @@ public class VoicePlayListener implements MediaPlayer.OnPreparedListener {
             if (mediaPlayer != null) {
                 mediaPlayer.pause();
             }
+            if (mMediaPlayListener != null) {
+                mMediaPlayListener.onRelease();
+            }
+            tag = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Object getTag() {
+        return tag;
+    }
+
+    public boolean isPlaying() {
+        return mediaPlayer != null && mediaPlayer.isPlaying();
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        tag = null;
+        if (mMediaPlayListener != null) {
+            mMediaPlayListener.onCompletion();
+        }
+    }
+
+    private OnMediaPlayListener mMediaPlayListener;
+
+    public interface OnMediaPlayListener {
+
+        void onPrepared();
+
+        void onCompletion();
+
+        void onRelease();
     }
 }
 

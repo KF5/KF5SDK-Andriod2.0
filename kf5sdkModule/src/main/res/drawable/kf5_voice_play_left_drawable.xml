@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false" >
+
+    <item
+        android:drawable="@drawable/kf5_voice_play_left_src_1"
+        android:duration="350"/>
+    <item
+        android:drawable="@drawable/kf5_voice_play_left_src_2"
+        android:duration="350"/>
+    <item
+        android:drawable="@drawable/kf5_voice_play_left_src_3"
+        android:duration="350"/>
+
+</animation-list>

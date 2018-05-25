@@ -1,16 +1,18 @@
 package com.kf5.sdk.im.adapter;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kf5.sdk.R;
+import com.kf5.sdk.im.adapter.listener.MessageAdapterItemClickListener;
 import com.kf5.sdk.im.api.FileDownLoadCallBack;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.widget.CircleImageView;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * author:chosen
@@ -30,6 +32,7 @@ class VoiceSendHolder extends AbstractHolder {
 
     private TextView tvDate;
 
+    private ImageView mImageView;
 
     VoiceSendHolder(View convertView) {
         super(convertView.getContext());
@@ -38,13 +41,14 @@ class VoiceSendHolder extends AbstractHolder {
         tvDate = (TextView) convertView.findViewById(R.id.kf5_tvDate);
         progressBar = (ProgressBar) convertView.findViewById(R.id.kf5_progressbar);
         relativeLayout = (RelativeLayout) convertView.findViewById(R.id.kf5_progress_layout);
+        mImageView = (ImageView) convertView.findViewById(R.id.kf5_message_item_with_voice_play_img);
         convertView.setTag(this);
     }
 
-    public void bindData(IMMessage message, int position, IMMessage previousMessage, List<String> downLoadList, FileDownLoadCallBack callBack) {
+    public void bindData(IMMessage message, int position, IMMessage previousMessage, Map<String, IMMessage> downLoadList, FileDownLoadCallBack callBack) {
 
         try {
-            loadVoiceData(position, message, textViewLength, null, downLoadList, callBack);
+            loadVoiceData(position, message, textViewLength, null, downLoadList, callBack, mImageView, MessageAdapterItemClickListener.VoiceType.RIGHT);
             loadImage(headImg, R.drawable.kf5_end_user);
             dealMessageStatus(message, previousMessage, position, tvDate, progressBar, relativeLayout);
         } catch (Exception e) {

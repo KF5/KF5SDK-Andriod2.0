@@ -24,7 +24,7 @@ public class PresenterLoader<T extends Presenter> extends Loader<T> {
     protected void onStartLoading() {
         super.onStartLoading();
         if (mPresenter != null) {
-          //  deliverResult(mPresenter);
+//            deliverResult(mPresenter);
             return;
         }
         forceLoad();
