@@ -20,7 +20,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static final String DB_USER = "kf5_chat_user";
 
-    private static final int VERSION = 3;
+    private static final int VERSION = 4;
 
     public static boolean isCreateDb;
 
@@ -75,7 +75,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 + DataBaseColumn.IS_READ + "  INTEGER DEFAULT 0, "
                 + DataBaseColumn.MARK + " TEXT, "
                 + DataBaseColumn.USER_ID + " TEXT, "
-                + DataBaseColumn.NAME + " TEXT "
+                + DataBaseColumn.NAME + " TEXT, "
+                + DataBaseColumn.RECALLED + " INTEGER "
                 + ");";
         database.execSQL(sql);
     }
@@ -103,6 +104,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         addField(database, DB_TABLE, DataBaseColumn.LOCAL_PATH);
         addField(database, DB_TABLE, DataBaseColumn.USER_ID);
         addField(database, DB_TABLE, DataBaseColumn.NAME);
+        addField(database, DB_TABLE, DataBaseColumn.RECALLED);
         if (!isTableExist(database, DB_USER)) {
             createUserTable(database);
         }

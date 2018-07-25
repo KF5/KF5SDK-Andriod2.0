@@ -10,7 +10,8 @@ import android.widget.ListView;
  * email:812219713@qq.com
  */
 
-public class NoScrollListView extends ListView {
+ class NoScrollListView extends ListView {
+
     public NoScrollListView(Context context) {
         super(context);
     }

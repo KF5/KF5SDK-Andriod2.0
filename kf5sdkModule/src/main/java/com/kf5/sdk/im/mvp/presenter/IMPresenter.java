@@ -245,6 +245,31 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
         }
     }
 
+    /**
+     * 获取撤回消息列表
+     */
+    public void synchronizationRecalledMessages() {
+        try {
+            final String params = SocketParams.getRecallMessageListString();
+            LogUtil.printf("获取撤回消息列表参数" + params);
+            mMessageManager.sendEventMessage(params, new IPCCallBack.Stub() {
+                @Override
+                public void onResult(int code, String result) throws RemoteException {
+                    LogUtil.printf("获取撤回消息列表返回值" + code + "=====返回值====" + result);
+                    if (code == RESULT_OK) {
+                        JSONObject jsonObject = SafeJson.parseObj(result);
+                        JSONArray jsonArray = SafeJson.safeArray(jsonObject, Field.HISTORY);
+                        if (jsonArray != null) {
+                            List<IMMessage> list = GsonManager.getInstance().getIMMessageList(jsonArray.toString());
+                            getMvpView().onLoadRecallMessageList(list);
+                        }
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 设置用户自定义属性

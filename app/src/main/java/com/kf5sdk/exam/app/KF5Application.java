@@ -16,5 +16,6 @@ public class KF5Application extends Application {
     public void onCreate() {
         super.onCreate();
         KF5SDKInitializer.init(getApplicationContext());
+//        LeakCanary.install(this);
     }
 }

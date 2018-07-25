@@ -33,7 +33,7 @@ public class ImageLoaderManager {
                 }
             }
         }
-        return new ImageLoaderManager(context);
+        return instance;
     }
 
     /**

@@ -181,4 +181,10 @@ public interface IIMView extends MvpView {
 
     void setRatingLevelCount(int levelCount);
 
+    /**
+     * 载入撤回消息列表
+     *
+     * @param messages
+     */
+    void onLoadRecallMessageList(List<IMMessage> messages);
 }

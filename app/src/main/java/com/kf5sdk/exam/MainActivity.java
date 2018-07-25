@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         // TODO Auto-generated method stub
         switch (v.getId()) {
+
             case R.id.home_layout:
 
                 changeFragment(HomeFragment.getInstance());

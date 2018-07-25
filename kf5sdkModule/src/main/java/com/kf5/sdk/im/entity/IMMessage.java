@@ -38,6 +38,8 @@ public class IMMessage {
 
     private static final String TIMESTAMP = "timestamp";
 
+    private static final String RECALLED = "recalled";
+
     @SerializedName(ID)
     private int id; //消息id
     @SerializedName(NAME)
@@ -66,7 +68,8 @@ public class IMMessage {
     private int reply_timeout;
     @SerializedName(COMPANY_ID)
     private int companyId;
-
+    @SerializedName(RECALLED)
+    private int recalledStatus;
 
     private Status status; //发送状态
 
@@ -191,4 +194,11 @@ public class IMMessage {
         this.reply_timeout = reply_timeout;
     }
 
+    public int getRecalledStatus() {
+        return recalledStatus;
+    }
+
+    public void setRecalledStatus(int recalledStatus) {
+        this.recalledStatus = recalledStatus;
+    }
 }

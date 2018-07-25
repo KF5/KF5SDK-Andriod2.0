@@ -139,8 +139,8 @@ public class SocketParams {
     }
 
     /*
-    * 获取发送消息时的必要参数
-    */
+     * 获取发送消息时的必要参数
+     */
     public static String getSendMessagesParams(String content, String timeStamp) {
 
         JSONObject jsonObject = new JSONObject();
@@ -205,15 +205,15 @@ public class SocketParams {
      * @param msg
      * @return
      */
-    public static String getAIMessageParams(String msg, String tag,JSONArray category_ids,JSONArray forum_ids) {
+    public static String getAIMessageParams(String msg, String tag, JSONArray category_ids, JSONArray forum_ids) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(ACTION, AI_MESSAGE);
             JSONObject paramsObj = new JSONObject();
             paramsObj.put(MSG, msg);
             paramsObj.put(TIMESTAMP, tag);
-            paramsObj.put("question_category_ids",category_ids);
-            paramsObj.put("forum_category_ids",forum_ids);
+            paramsObj.put("question_category_ids", category_ids);
+            paramsObj.put("forum_category_ids", forum_ids);
             jsonObject.put(PARAMS, paramsObj);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -300,6 +300,24 @@ public class SocketParams {
             paramsObj.put(METADATA, jsonArray);
             jsonObject.put(PARAMS, paramsObj);
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
+    }
+
+
+    /**
+     * 获取撤回消息列表
+     * （新增该接口主要是为了解决一下场景：sdk已经收到当前消息，sdk断开im链接，客服端撤回已发送消息，由于sdk本地已经存在当前消息，所以需要单独对撤回消息处理）
+     *
+     * @return
+     */
+    public static String getRecallMessageListString() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(ACTION, "recalled_message");
+            jsonObject.put(PARAMS, new JSONObject());
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return jsonObject.toString();

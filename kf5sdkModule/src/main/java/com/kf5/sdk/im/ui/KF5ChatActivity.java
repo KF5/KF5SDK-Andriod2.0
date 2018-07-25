@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.kf5.sdk.R;
+import com.kf5.sdk.im.db.IMSQLManager;
 import com.kf5.sdk.im.entity.Agent;
 import com.kf5.sdk.im.entity.AgentFailureType;
 import com.kf5.sdk.im.entity.Chat;
@@ -17,6 +18,7 @@ import com.kf5.sdk.im.utils.IMCacheUtils;
 import com.kf5.sdk.im.widget.RatingDialog;
 import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.utils.FilePathUtils;
+import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.SafeJson;
 
 import org.json.JSONObject;
@@ -213,6 +215,7 @@ public class KF5ChatActivity extends BaseChatActivity {
                         setTitleContent(getString(R.string.kf5_allocating));
                         //由于可能重连,同时removeQueueItemView
                         removeQueueItemView();
+                        presenter.synchronizationRecalledMessages();
                         presenter.synchronizationMessages();
                         //如果状态为chatting,则直接开始聊天
                         if (TextUtils.equals(Field.CHATTING, status)) {
@@ -254,7 +257,26 @@ public class KF5ChatActivity extends BaseChatActivity {
 
     @Override
     public void onReceiveMessageList(List<IMMessage> messageList) {
-        refreshListAndNotifyData(messageList);
+        List<IMMessage> targetList = new ArrayList<>();
+        for (IMMessage receiveMessage : messageList) {
+            int messageRecalled = receiveMessage.getRecalledStatus();
+            if (messageRecalled == 1) {
+                boolean isRecalled = false;
+                for (IMMessage localMessage : mIMMessageList) {
+                    if (localMessage.getId() == receiveMessage.getId()) {
+                        isRecalled = true;
+                        localMessage.setRecalledStatus(1);
+                        break;
+                    }
+                }
+                if (!isRecalled) {
+                    targetList.add(receiveMessage);
+                }
+            } else {
+                targetList.add(receiveMessage);
+            }
+        }
+        refreshListAndNotifyData(targetList);
     }
 
     @Override
@@ -482,6 +504,34 @@ public class KF5ChatActivity extends BaseChatActivity {
         }
     }
 
+    @Override
+    public void onLoadRecallMessageList(List<IMMessage> messages) {
+        if (messages != null && !messages.isEmpty()) {
+            boolean notify = false;
+            for (IMMessage remoteMessage : messages) {
+                int remoteMessageId = remoteMessage.getId();
+                int remoteMessageRecalledStatus = remoteMessage.getRecalledStatus();
+                if (remoteMessageRecalledStatus == 1) {
+                    for (IMMessage localMessage : mIMMessageList) {
+                        if (localMessage.getId() == remoteMessageId && localMessage.getRecalledStatus() != remoteMessageRecalledStatus) {
+                            notify = true;
+                            IMSQLManager.updateMessageRecalledByMessageId(this, remoteMessageId);
+                            localMessage.setRecalledStatus(1);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (notify) {
+                mListView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.notifyDataSetInvalidated();
+                    }
+                }, 0);
+            }
+        }
+    }
 
     /**
      * 处理接收到ShareIntent

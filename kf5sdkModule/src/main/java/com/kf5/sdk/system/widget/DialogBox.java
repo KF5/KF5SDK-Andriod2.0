@@ -151,7 +151,7 @@ public class DialogBox {
 //        this.itemClick = itemClick;
 //        listView = new ListView(context);
 //        listView.setCacheColorHint(0x00000000);
-//        listView.setAdapter(new ArrayAdapter<>(context, ResourceIDFinder.getResLayoutID("dialog_item"), items));
+//        listView.setAdapter(new ArrayAdapter<CharSequence>(context, R.layout.dia, items));
 //        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
 //                LinearLayout.LayoutParams.MATCH_PARENT,
 //                LinearLayout.LayoutParams.MATCH_PARENT, 1);
@@ -257,6 +257,5 @@ public class DialogBox {
         void onItemClickListener(DialogBox dialog, int index);
 
     }
-
 
 }

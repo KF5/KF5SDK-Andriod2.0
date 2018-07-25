@@ -15,6 +15,7 @@ import com.kf5.sdk.im.entity.Upload;
 import com.kf5.sdk.system.base.CommonAdapter;
 import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.utils.FilePath;
+import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.Utils;
 
 import java.io.File;
@@ -44,6 +45,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
     private static final int MESSAGE_TYPE_RECEIVE_CUSTOM = 12;
     private static final int MESSAGE_TYPE_SEND_CUSTOM = 13;
     private static final int MESSAGE_TYPE_CARD = 14;
+    private static final int MESSAGE_TYPE_MESSAGE_RECALLED = 15;
 
     private Map<String, IMMessage> downloadMap = new ArrayMap<>();
 
@@ -53,71 +55,75 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
 
     @Override
     public int getItemViewType(int position) {
-
         IMMessage message = getItem(position);
         String role = message.getRole();
         String type = message.getType();
-        if (TextUtils.equals(type, Field.CHAT_SYSTEM)) {
-            return MESSAGE_TYPE_SYSTEM;
-        } else if (TextUtils.equals(type, Field.QUEUE_WAITING)) {
-            return MESSAGE_TYPE_QUEUE_WAITING;
-        } else if (TextUtils.equals(type, Field.CHAT_CARD)) {
-            return MESSAGE_TYPE_CARD;
+        if (message.getRecalledStatus() == 1) {
+            return MESSAGE_TYPE_MESSAGE_RECALLED;
         } else {
-            if (TextUtils.equals(Field.VISITOR, role)) {
-                switch (type) {
-                    case Field.CHAT_MSG:
-                        return MESSAGE_TYPE_SEND_TXT;
-                    case Field.CHAT_UPLOAD:
-                        Upload upload = message.getUpload();
-                        String uploadType = upload.getType();
-                        if (Utils.isImage(uploadType)) {
-                            //图片
-                            return MESSAGE_TYPE_SEND_IMAGE;
-                        } else if (Utils.isAMR(uploadType)) {
-                            //语音
-                            return MESSAGE_TYPE_SEND_VOICE;
-                        } else {
-                            //附件
-                            return MESSAGE_TYPE_SEND_FILE;
-                        }
-                    case Field.AI_SEND:
-                        return MESSAGE_TYPE_AI_MESSAGE_SEND;
-                    case Field.CHAT_CUSTOM:
-                        return MESSAGE_TYPE_SEND_CUSTOM;
+            if (TextUtils.equals(type, Field.CHAT_SYSTEM)) {
+                return MESSAGE_TYPE_SYSTEM;
+            } else if (TextUtils.equals(type, Field.QUEUE_WAITING)) {
+                return MESSAGE_TYPE_QUEUE_WAITING;
+            } else if (TextUtils.equals(type, Field.CHAT_CARD)) {
+                return MESSAGE_TYPE_CARD;
+            } else {
+                if (TextUtils.equals(Field.VISITOR, role)) {
+                    switch (type) {
+                        case Field.CHAT_MSG:
+                            return MESSAGE_TYPE_SEND_TXT;
+                        case Field.CHAT_UPLOAD:
+                            Upload upload = message.getUpload();
+                            String uploadType = upload.getType();
+                            if (Utils.isImage(uploadType)) {
+                                //图片
+                                return MESSAGE_TYPE_SEND_IMAGE;
+                            } else if (Utils.isAMR(uploadType)) {
+                                //语音
+                                return MESSAGE_TYPE_SEND_VOICE;
+                            } else {
+                                //附件
+                                return MESSAGE_TYPE_SEND_FILE;
+                            }
+                        case Field.AI_SEND:
+                            return MESSAGE_TYPE_AI_MESSAGE_SEND;
+                        case Field.CHAT_CUSTOM:
+                            return MESSAGE_TYPE_SEND_CUSTOM;
+                    }
+                } else if (TextUtils.equals(Field.AGENT, role)) {
+                    switch (type) {
+                        case Field.CHAT_MSG:
+                            return MESSAGE_TYPE_RECEIVE_TXT;
+                        case Field.CHAT_UPLOAD:
+                            Upload upload = message.getUpload();
+                            String uploadType = upload.getType();
+                            if (Utils.isImage(uploadType)) {
+                                //图片
+                                return MESSAGE_TYPE_RECEIVE_IMAGE;
+                            } else if (Utils.isAMR(uploadType)) {
+                                //语音
+                                return MESSAGE_TYPE_RECEIVE_VOICE;
+                            } else {
+                                //附件
+                                return MESSAGE_TYPE_RECEIVE_FILE;
+                            }
+                        case Field.AI_RECEIVE:
+                            return MESSAGE_TYPE_AI_MESSAGE_RECEIVE;
+                        case Field.CHAT_CUSTOM:
+                            return MESSAGE_TYPE_RECEIVE_CUSTOM;
+                    }
+                } else if (TextUtils.equals(Field.ROBOT, role)) {
+                    return MESSAGE_TYPE_AI_MESSAGE_RECEIVE;
                 }
-            } else if (TextUtils.equals(Field.AGENT, role)) {
-                switch (type) {
-                    case Field.CHAT_MSG:
-                        return MESSAGE_TYPE_RECEIVE_TXT;
-                    case Field.CHAT_UPLOAD:
-                        Upload upload = message.getUpload();
-                        String uploadType = upload.getType();
-                        if (Utils.isImage(uploadType)) {
-                            //图片
-                            return MESSAGE_TYPE_RECEIVE_IMAGE;
-                        } else if (Utils.isAMR(uploadType)) {
-                            //语音
-                            return MESSAGE_TYPE_RECEIVE_VOICE;
-                        } else {
-                            //附件
-                            return MESSAGE_TYPE_RECEIVE_FILE;
-                        }
-                    case Field.AI_RECEIVE:
-                        return MESSAGE_TYPE_AI_MESSAGE_RECEIVE;
-                    case Field.CHAT_CUSTOM:
-                        return MESSAGE_TYPE_RECEIVE_CUSTOM;
-                }
-            } else if (TextUtils.equals(Field.ROBOT, role)) {
-                return MESSAGE_TYPE_AI_MESSAGE_RECEIVE;
             }
         }
+
         return -1;
     }
 
     @Override
     public int getViewTypeCount() {
-        return 15;
+        return 16;
     }
 
     @Override
@@ -156,12 +162,27 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
                 return getCustomSendView(position, convertView, parent, message);
             case MESSAGE_TYPE_CARD:
                 return getCardMessageView(position, convertView, parent, message);
+            case MESSAGE_TYPE_MESSAGE_RECALLED:
+                return getMessageRecalledView(position, convertView, parent, message);
             default:
                 return getDefaultView(position, convertView, parent);
         }
 
     }
 
+
+    public View getMessageRecalledView(int position, View convertView, ViewGroup parent, IMMessage message) {
+
+        MessageRecalledHolder holder;
+        if (convertView == null) {
+            convertView = inflateLayout(R.layout.kf5_message_item_with_system, parent);
+            holder = new MessageRecalledHolder(convertView);
+        } else {
+            holder = (MessageRecalledHolder) convertView.getTag();
+        }
+        holder.bindData(mContext.getString(R.string.kf5_message_recalled));
+        return convertView;
+    }
 
     /**
      * 卡片消息
@@ -471,7 +492,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
     }
 
 
-    public View getMessageViewWithSystem(int position, View convertView, ViewGroup parent, IMMessage message) {
+    private View getMessageViewWithSystem(int position, View convertView, ViewGroup parent, IMMessage message) {
 
         SystemHolder holder;
         if (convertView == null) {

@@ -46,6 +46,7 @@
             android:textSize="20sp"/>
 
         <TextView
+            android:id="@+id/home_test"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/kf5_dimen_32dp"

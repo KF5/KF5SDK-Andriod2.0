@@ -11,4 +11,5 @@
     <string name="language_setting">语言设置</string>
     <string name="chinese">中文</string>
     <string name="english">英语</string>
+    <string name="test">测试翻译</string>
 </resources>

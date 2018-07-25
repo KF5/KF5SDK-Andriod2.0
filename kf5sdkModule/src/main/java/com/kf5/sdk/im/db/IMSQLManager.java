@@ -114,6 +114,7 @@ public class IMSQLManager extends SQLManager {
         contentValues.put(DataBaseColumn.ROLE, iMMessage.getRole());
         contentValues.put(DataBaseColumn.USER_ID, iMMessage.getUserId());
         contentValues.put(DataBaseColumn.NAME, iMMessage.getName());
+        contentValues.put(DataBaseColumn.RECALLED, iMMessage.getRecalledStatus());
         switch (iMMessage.getStatus()) {
             case FAILED:
                 contentValues.put(DataBaseColumn.SEND_STATUS, -1);
@@ -362,6 +363,27 @@ public class IMSQLManager extends SQLManager {
 
 
     /**
+     * 设置消息为撤回状态
+     *
+     * @param context
+     * @param messageId
+     */
+    public static void updateMessageRecalledByMessageId(Context context, int messageId) {
+        try {
+            if (isContainThisObj(context, DataBaseHelper.DB_TABLE, DataBaseColumn.MESSAGE_ID, messageId)) {
+                LogUtil.printf("更新消息为撤回状态");
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(DataBaseColumn.RECALLED, 1);
+                getInstance(context).openSqlDB().update(DataBaseHelper.DB_TABLE, contentValues, DataBaseColumn.MESSAGE_ID + " = ?", new String[]{String.valueOf(messageId)});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.printf("更新消息撤回状态出错", e);
+        }
+    }
+
+
+    /**
      * 分页ͨ查询历史数据内容
      *
      * @param cursor
@@ -389,6 +411,7 @@ public class IMSQLManager extends SQLManager {
                 iMMessage.setRole(cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.ROLE)));
                 iMMessage.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseColumn.USER_ID)));
                 iMMessage.setName(cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.NAME)));
+                iMMessage.setRecalledStatus(cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseColumn.RECALLED)));
                 String type = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseColumn.MESSAGE_TYPE));
                 iMMessage.setType(type);
                 int status = cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseColumn.SEND_STATUS));

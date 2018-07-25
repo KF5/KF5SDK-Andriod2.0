@@ -23,7 +23,6 @@ import com.kf5.sdk.R;
 public class MaskImage extends ImageView {
 
     int mMaskSource = 0;  // 遮罩图片id
-    RuntimeException mException;
     Drawable mask;
 
     public MaskImage(Context context) {
@@ -42,8 +41,6 @@ public class MaskImage extends ImageView {
             mMaskSource = R.drawable.kf5_message_to_text_bg_normal;
         }
         mask = getResources().getDrawable(mMaskSource);
-        if (mException != null)
-            throw mException;
     }
 
     private static final Paint paintMask = createMaskPaint();

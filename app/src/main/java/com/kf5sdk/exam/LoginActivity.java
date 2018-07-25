@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -75,22 +76,45 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnLogin.setOnClickListener(this);
         tvHostChange = (TextView) findViewById(R.id.tv_host_change);
         tvHostChange.setOnClickListener(this);
-//        etEmail.setText("123456654asd897@qq.com");
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+//        etEmail.setText(year + "-" + (month + 1) + "-" + day + "@qq.com");
+//        etAddress.setText("im2beta.kf5.com");
+//        etAppid.setText("001589d1e48784ee06bf96e16d845ca177b73f48ec6a0b2d");
+//        etName.setText("Android 用户");
+
+
+        etEmail.setText(year + "-" + (month + 1) + "-" + day + "@qq.com");
+//        etAddress.setText("aibox.kf5.com");
+//        etAppid.setText("00159b67b412e7033f89a377fc248bc151455075de60761b");
+//        etName.setText("Android 用户");
+
+//        SPUtils.saveAppID("00159b67b412e7033f89a377fc248bc151455075de60761b");
+//        SPUtils.saveHelpAddress("aibox.kf5.com");
 //        etAddress.setText("chosen.kf5.com");
 //        etAppid.setText("0015703278adb2883f1e71145ffa131ef6a8073e3ac7ec00");
 //        etName.setText("Android 用户");
 
-
-        etEmail.setText("cc454f6c-d7c7-4717-aa46-14b1ee4a8479@qq.com");
-        etAddress.setText("ehjinrong.kf5.com");
-        etAppid.setText("0015a1f782f47696efee768991ef56f3343617d016c76ac7");
-        etName.setText("Android 用户");
-
-//        etEmail.setText("123456@qq.com");
-//        etAddress.setText("tianxiang.kf5.com");
-//        etAppid.setText("00155bee6f7945ea5aa21c6ffc35f7aa7ed0999d7c6b6029");
+//        etAddress.setText("yyxx.kf5.com");
+//        etAppid.setText("00159409e3aa8dd8b1582dc397ebd11bf330bbd3bbfa3437");
 //        etName.setText("Android 用户");
 
+//        etEmail.setText("cc454f6c-d7c7-4717-aa46-14b1ee4a8479@qq.com");
+//        etAddress.setText("mifan365.kf5.com");
+//        etAppid.setText("0015a444192a3dc846e7337f11d0743c84f4a6a8e6504546");
+//        etName.setText("Android 用户");
+
+//        etEmail.setText("123456@qq.com");
+        etAddress.setText("tianxiang.kf5.com");
+        etAppid.setText("00155bee6f7945ea5aa21c6ffc35f7aa7ed0999d7c6b6029");
+        etName.setText("Android 用户");
+
+//        etEmail.setText("18364263806");
+//        etAddress.setText("rsdpay.kf5.com");
+//        etAppid.setText("0015ae3f6e356cac3729747a22d8e0fd2de299d8fedea441");
+//        etName.setText("Android 用户");
 
 //        etEmail.setText("xinm@51eaju.com");
 //        etAddress.setText("yianju001.kf5.com");
@@ -212,6 +236,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //                map.put(ParamsKey.EMAIL, etEmail.getText().toString());
                 map.put(ParamsKey.EMAIL, etEmail.getText().toString());
 //                map.put(Field.PHONE, etEmail.getText().toString());
+//                map.put(ParamsKey.NAME, "能不能设置昵称？");
                 LogUtil.printf("测试");
                 SPUtils.saveAppID(etAppid.getText().toString());
                 SPUtils.saveHelpAddress(etAddress.getText().toString());
@@ -304,6 +329,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     new DialogBox(LoginActivity.this)
                                             .setMessage("登录成功")
                                             .setLeftButton("取消", null)
+
                                             .setRightButton("确定", new DialogBox.onClickListener() {
                                                 @Override
                                                 public void onClick(DialogBox dialog) {

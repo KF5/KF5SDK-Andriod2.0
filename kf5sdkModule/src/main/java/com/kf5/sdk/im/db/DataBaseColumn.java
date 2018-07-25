@@ -54,4 +54,7 @@ public class DataBaseColumn {
     public static final String USER_ID = "user_id";
 
     public static final String NAME = "name";
+
+    //撤回标记
+    public static final String RECALLED = "recalled";
 }

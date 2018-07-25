@@ -160,6 +160,7 @@
     <string name="kf5_queue_too_long">当前服务高峰，请提交留言。</string>
     <string name="kf5_queue_error">排队失败</string>
     <string name="kf5_select_question">咨询类型</string>
+    <string name="kf5_message_recalled">该消息已被客服撤回</string>
 
 
 </resources>
