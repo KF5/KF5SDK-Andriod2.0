@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5Engine.service.BaseService;
 import com.kf5Engine.service.api.ActionCallBack;
 import com.kf5Engine.service.api.SocketEventCallBack;
@@ -23,6 +24,7 @@ public class MessageService extends BaseService {
     @Override
     public void onCreate() {
         super.onCreate();
+        LogUtil.printf("创建服务");
         mMessageServiceStub = new MessageServiceStub(this);
     }
 
@@ -36,6 +38,7 @@ public class MessageService extends BaseService {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        LogUtil.printf("销毁服务");
         mMessageServiceStub.mCallbackList.kill();
     }
 

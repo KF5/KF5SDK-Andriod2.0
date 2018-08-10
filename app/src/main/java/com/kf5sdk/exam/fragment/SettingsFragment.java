@@ -16,6 +16,8 @@ import com.kf5.sdk.im.db.IMSQLManager;
 import com.kf5.sdk.im.entity.CardConstant;
 import com.kf5.sdk.im.ui.KF5ChatActivity;
 import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.entity.ParamsKey;
+import com.kf5.sdk.system.init.UserInfoAPI;
 import com.kf5.sdk.system.internet.HttpRequestCallBack;
 import com.kf5.sdk.system.utils.SPUtils;
 import com.kf5.sdk.ticket.ui.FeedBackActivity;
@@ -164,7 +166,20 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.tvSetting:
-                startActivity(new Intent(getContext(), LanguageActivity.class));
+                // startActivity(new Intent(getContext(), LanguageActivity.class));
+                Map<String, String> fieldMap = new ArrayMap<>();
+                ((ArrayMap<String, String>) fieldMap).put(ParamsKey.NAME, "能改不");
+                UserInfoAPI.getInstance().updateUser(fieldMap, new HttpRequestCallBack() {
+                    @Override
+                    public void onSuccess(String result) {
+
+                    }
+
+                    @Override
+                    public void onFailure(String result) {
+
+                    }
+                });
                 break;
             default:
 

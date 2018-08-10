@@ -32,6 +32,7 @@ import com.kf5sdk.exam.entity.HelpAddress;
 import com.kf5sdk.exam.utils.Preference;
 import com.kf5sdk.exam.utils.Utils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -240,6 +241,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 LogUtil.printf("测试");
                 SPUtils.saveAppID(etAppid.getText().toString());
                 SPUtils.saveHelpAddress(etAddress.getText().toString());
+                //这里是传入用户自定义字段信息，同时更新用户信息接口也可以设置用户自定义字段。
+                JSONArray jsonArray = new JSONArray();
+
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put(ParamsKey.NAME, "field_1000572");
+                    jsonObject.put(ParamsKey.VALUE, "这里是测试字段");
+                    jsonArray.put(jsonObject);
+
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put(ParamsKey.NAME, "field_1000573");
+                    jsonObject1.put(ParamsKey.VALUE, "这里是文本区域");
+                    jsonArray.put(jsonObject1);
+
+                    JSONObject jsonObject2 = new JSONObject();
+                    jsonObject2.put(ParamsKey.NAME, "field_1000574");
+                    jsonObject2.put(ParamsKey.VALUE, "1");
+                    //      jsonObject.put("field_1000572", "13233");
+                    jsonArray.put(jsonObject2);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                map.put(ParamsKey.USER_FIELDS, jsonArray.toString());
+                LogUtil.printf(map.toString());
                 SPUtils.saveUserAgent(Utils.getAgent(new SoftReference<Context>(LoginActivity.this)));
                 UserInfoAPI.getInstance().createUser(map
                         , new HttpRequestCallBack() {
