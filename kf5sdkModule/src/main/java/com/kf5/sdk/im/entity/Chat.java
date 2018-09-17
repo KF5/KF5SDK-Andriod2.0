@@ -1,6 +1,7 @@
 package com.kf5.sdk.im.entity;
 
 import com.google.gson.annotations.SerializedName;
+import com.kf5.sdk.system.entity.Field;
 
 /**
  * author:chosen
@@ -26,6 +27,10 @@ public class Chat {
     private boolean robotEnable;
     @SerializedName("version")
     private int version;
+    @SerializedName(Field.VISITOR_QUEUE_NOTIFY)
+    private boolean visitor_queue_notify = true;
+    @SerializedName(Field.QUEUE_INDEX)
+    private int queueIndex;
 
     private TimeOut timeout;
 
@@ -99,5 +104,21 @@ public class Chat {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public boolean isVisitor_queue_notify() {
+        return visitor_queue_notify;
+    }
+
+    public void setVisitor_queue_notify(boolean visitor_queue_notify) {
+        this.visitor_queue_notify = visitor_queue_notify;
+    }
+
+    public int getQueueIndex() {
+        return queueIndex;
+    }
+
+    public void setQueueIndex(int queueIndex) {
+        this.queueIndex = queueIndex;
     }
 }

@@ -254,4 +254,10 @@ public class Field {
     public static final String CATEGORY_IDS = "category_ids";
 
     public static final String FORUM_IDS = "forum_ids";
+
+    public static final String VISITOR_QUEUE_NOTIFY = "visitor_queue_notify";
+
+    public static final String QUEUE_INDEX = "queue_index";
+
+    public static final String SILENT = "silent";
 }

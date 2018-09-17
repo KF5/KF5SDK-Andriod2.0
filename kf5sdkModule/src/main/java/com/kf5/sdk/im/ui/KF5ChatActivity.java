@@ -224,7 +224,10 @@ public class KF5ChatActivity extends BaseChatActivity {
                             mXhsEmoticonsKeyBoard.showIMView();
                             //如果状态为queue,则开始排队，同时接受push过来处于的排队位置
                         } else if (TextUtils.equals(Field.QUEUE, status)) {
-                            aiToGetAgents();
+                            setTitleContent(getString(R.string.kf5_queue_waiting));
+                            if (chat.isVisitor_queue_notify()) {
+                                updateQueueMessage(getString(R.string.kf5_update_queue_num, (chat.getQueueIndex() + 1)));
+                            }
                             mXhsEmoticonsKeyBoard.showIMView();
                             isAgentOnline = false;
                             //如果状态为none，则进入下一级判断
@@ -411,9 +414,13 @@ public class KF5ChatActivity extends BaseChatActivity {
                     mXhsEmoticonsKeyBoard.showIMView();
                     JSONObject jsonObject = SafeJson.parseObj(message);
                     String agentStatus = SafeJson.safeGet(jsonObject, Field.STATUS);
+
                     if (TextUtils.equals(Field.ONLINE, agentStatus)) {
-                        int index = SafeJson.safeInt(jsonObject, Field.INDEX);
-                        updateQueueMessage(getString(R.string.kf5_update_queue_num, (index + 1)));
+                        boolean silent = SafeJson.safeBoolean(jsonObject, Field.SILENT);
+                        if (!silent) {
+                            int index = SafeJson.safeInt(jsonObject, Field.INDEX);
+                            updateQueueMessage(getString(R.string.kf5_update_queue_num, (index + 1)));
+                        }
                     } else {
                         isAgentOnline = false;
                         setTitleContent(getString(R.string.kf5_no_agent_online));

@@ -61,6 +61,7 @@ public final class UserInfoAPI extends BaseHttpManager {
      * @param callBack 请求回调
      */
     public void createUser(Map<String, String> fieldMap, HttpRequestCallBack callBack) {
+        fieldMap.put("source", "Github");
         sendPostRequest(KF5API.createUser(SPUtils.getHelpAddress()), fieldMap, callBack);
     }
 

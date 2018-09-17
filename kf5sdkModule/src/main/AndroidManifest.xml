@@ -73,6 +73,7 @@
             android:name=".ticket.ui.RatingActivity"
             android:exported="false"
             android:theme="@style/KF5AppTheme" />
+
         <activity
             android:name=".im.ui.AgentGroupChoseActivity"
             android:exported="false"

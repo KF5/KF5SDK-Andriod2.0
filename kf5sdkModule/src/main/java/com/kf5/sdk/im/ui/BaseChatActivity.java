@@ -143,6 +143,8 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
 
     private JSONArray category_ids, forum_ids;
 
+    private boolean visitor_queue_notify = true;
+
 
     @Override
     public Loader<IMPresenter> onCreateLoader(int id, Bundle args) {
@@ -222,6 +224,8 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
                                 category_ids = SafeJson.safeArray(robotObj, Field.CATEGORY_IDS);
                                 forum_ids = SafeJson.safeArray(robotObj, Field.FORUM_IDS);
                             }
+
+
                         } catch (Exception e) {
                             e.printStackTrace();
                             hideLoading();
@@ -606,7 +610,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      * @param agentIds 客服id json数组
      * @param force    是否强制分配，1是，0否
      */
-    private void getAgent(String agentIds, int force) {
+    protected void getAgent(String agentIds, int force) {
         if (inWorkTime) {
             presenter.getAgents(agentIds, force);
         } else {
