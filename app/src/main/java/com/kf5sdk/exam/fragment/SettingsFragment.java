@@ -19,10 +19,10 @@ import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.entity.ParamsKey;
 import com.kf5.sdk.system.init.UserInfoAPI;
 import com.kf5.sdk.system.internet.HttpRequestCallBack;
+import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.SPUtils;
 import com.kf5.sdk.ticket.ui.FeedBackActivity;
 import com.kf5.sdk.ticket.ui.LookFeedBackActivity;
-import com.kf5sdk.exam.LanguageActivity;
 import com.kf5sdk.exam.R;
 
 import org.json.JSONObject;
@@ -158,7 +158,17 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     jsonObject.put(CardConstant.IMG_URL, "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1504695965182&di=5b4e8b755cebd1abf17341215f89b5c6&imgtype=0&src=http%3A%2F%2Fimghr.heiguang.net%2F3%2F2014%2F0707%2F2014070753ba66264d67a2.jpg");
                     jsonObject.put(CardConstant.PRICE, "123456");
                     jsonObject.put(CardConstant.LINK_TITLE, "发送东西");
-                    Intent intent = new Intent(getContext(), KF5ChatActivity.class);
+                    Intent intent;
+//                    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
+//                        //版本的特殊性，由于主题设置了透明，同时固定了屏幕方向，8.0版本报错，
+//                        // java.lang.IllegalStateException: Only fullscreen opaque activities can request orientation
+//                        //特殊处理
+//                        LogUtil.printf("====8.0");
+//                        intent = new Intent(getContext(), KF5ChatActivity_O.class);
+//                    } else {
+                    LogUtil.printf("====其他版本");
+                    intent = new Intent(getContext(), KF5ChatActivity.class);
+//                    }
 //                    intent.putExtra(KF5ChatActivity.CARD_MESSAGE_KEY, jsonObject.toString());
                     startActivity(intent);
                 } catch (Exception e) {

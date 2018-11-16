@@ -17,6 +17,10 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
+    <style name="KF5AppTheme_O" parent="KF5BaseAppTheme">
+        <item name="android:windowDisablePreview">true</item>
+    </style>
+
     <style name="KF5ActionSheetDialogStyle" parent="@android:style/Theme.Dialog">
         <!-- 背景透明 -->
         <item name="android:windowBackground">@android:color/transparent</item>

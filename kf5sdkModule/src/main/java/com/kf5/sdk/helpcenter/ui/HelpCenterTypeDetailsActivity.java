@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -22,8 +23,12 @@ import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.mvp.presenter.PresenterFactory;
 import com.kf5.sdk.system.mvp.presenter.PresenterLoader;
 import com.kf5.sdk.system.utils.FileSizeUtil;
+import com.kf5.sdk.system.utils.LogUtil;
+import com.kf5.sdk.system.utils.SPUtils;
 import com.kf5.sdk.system.utils.Utils;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.TimerTask;
 
@@ -78,12 +83,13 @@ public class HelpCenterTypeDetailsActivity extends BaseActivity<HelpCenterDetail
             public void run() {
                 mDetailTitle.setText(post.getTitle());
                 String body = post.getContent();
+//                String body = "<p><img src=\"/attachments/download/5836931/0015bcef5a8f15377af662664968779/\" alt=\"0015bcef5a8f15377af662664968779\"></p><p><img src=\"https://tianxiang.kf5.com/attachments/download/5836928/0015bcef57e967c7bf1a08ea82e9320/\" alt=\"0015bcef57e967c7bf1a08ea82e9320\"></p><p>132423677<br></p>";
                 if (!body.trim().startsWith("<style>"))
                     body = WEB_STYLE + body;
                 body = body.replaceAll("(<img[^>]*?)\\s+width\\s*=\\s*\\S+", "$1");
                 body = body.replaceAll("(<img[^>]*?)\\s+height\\s=\\s*\\S+", "$1");
                 body += appendAttachmentHtml(post.getAttachments());
-                mWebView.loadDataWithBaseURL(null, body, "text/html", "utf-8", null);
+                mWebView.loadDataWithBaseURL("https://" + SPUtils.getHelpAddress(), body, "text/html", "utf-8", null);
                 mDate.setText(Utils.getAllTime(post.getCreatedAt()));
             }
         });

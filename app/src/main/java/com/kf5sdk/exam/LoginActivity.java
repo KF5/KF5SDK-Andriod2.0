@@ -81,55 +81,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-//        etEmail.setText(year + "-" + (month + 1) + "-" + day + "@qq.com");
-//        etAddress.setText("im2beta.kf5.com");
-//        etAppid.setText("001589d1e48784ee06bf96e16d845ca177b73f48ec6a0b2d");
-//        etName.setText("Android 用户");
 
 
         etEmail.setText(year + "-" + (month + 1) + "-" + day + "@qq.com");
-//        etAddress.setText("aibox.kf5.com");
-//        etAppid.setText("00159b67b412e7033f89a377fc248bc151455075de60761b");
-//        etName.setText("Android 用户");
-
-//        SPUtils.saveAppID("00159b67b412e7033f89a377fc248bc151455075de60761b");
-//        SPUtils.saveHelpAddress("aibox.kf5.com");
-//        etAddress.setText("chosen.kf5.com");
-//        etAppid.setText("0015703278adb2883f1e71145ffa131ef6a8073e3ac7ec00");
-//        etName.setText("Android 用户");
-
-//        etAddress.setText("yyxx.kf5.com");
-//        etAppid.setText("00159409e3aa8dd8b1582dc397ebd11bf330bbd3bbfa3437");
-//        etName.setText("Android 用户");
-
-//        etEmail.setText("cc454f6c-d7c7-4717-aa46-14b1ee4a8479@qq.com");
-//        etAddress.setText("mifan365.kf5.com");
-//        etAppid.setText("0015a444192a3dc846e7337f11d0743c84f4a6a8e6504546");
-//        etName.setText("Android 用户");
-
-//        etEmail.setText("123456@qq.com");
         etAddress.setText("tianxiang.kf5.com");
         etAppid.setText("00155bee6f7945ea5aa21c6ffc35f7aa7ed0999d7c6b6029");
         etName.setText("Android 用户");
 
-//        etEmail.setText("18364263806");
-//        etAddress.setText("rsdpay.kf5.com");
-//        etAppid.setText("0015ae3f6e356cac3729747a22d8e0fd2de299d8fedea441");
-//        etName.setText("Android 用户");
-
-//        etEmail.setText("xinm@51eaju.com");
-//        etAddress.setText("yianju001.kf5.com");
-//        etAppid.setText("00158e5ce330c3585dd60fbac8fb5844f2e8878cb0402a3a");
-//        etName.setText("Android 用户");
-
-//        etEmail.setText("12345@qq.com");
-//        etAddress.setText("twyunjiang.kf5.com");
-//        etAppid.setText("00158ee40759d14a3b83cde37dc60888ef31161f938751c3");
-//        etName.setText("Android 用户");
-        mHelpAddresses.add(new HelpAddress("chosen", "0015703278adb2883f1e71145ffa131ef6a8073e3ac7ec00", "chosen.kf5.com"));
-        mHelpAddresses.add(new HelpAddress("tianxiang", "00155bee6f7945ea5aa21c6ffc35f7aa7ed0999d7c6b6029", "tianxiang.kf5.com"));
-        mHelpAddresses.add(new HelpAddress("im2beta", "001589d1e48784ee06bf96e16d845ca177b73f48ec6a0b2d", "im2beta.kf5.com"));
-        mHelpAddresses.add(new HelpAddress("wuruo", "001589a8b77a298cb35c8b8ef2376372fca61daa4799416a", "wuruo.kf5.com"));
         mRadioGroup = (RadioGroup) findViewById(R.id.radio_group);
         if (IMCacheUtils.temporaryMessageFirst(LoginActivity.this)) {
             RadioButton radioButton = (RadioButton) findViewById(R.id.rb_message_first);
@@ -155,70 +113,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             }
         });
-//        etEmail.setText("123456@qq.com");
-//        etAddress.setText("ielpm.kf5.com");
-//        etAppid.setText("001590085a4d173b65ccd04246e5ef91127f0d08e7e3d3de");
-//        etName.setText("Android 用户");
-
-//        etEmail.setText("123456789231456@qq.com");
-//        etAddress.setText("ximalaya.kf5.com");
-//        etAppid.setText("00158298f97da6befccc2d53ae94fd0087fef30dc278b20b");
-//        etName.setText("Android测试");
-
-
-//        etEmail.setText("123456@qq.com");
-//        etAddress.setText("xuzy.kf5.com");
-//        etAppid.setText("00158fd7bc7ada31ef6de3bfa0ee1201cb5f18e789d05a7c");
-//        etName.setText("Android 用户");
-
-
-//        etEmail.setText("1234567@qq.com");
-//        etAddress.setText("im2.kf5.com");
-//        etAppid.setText("00158b3c29707edc00722d20870160827178d782697e97b7");
-//        etName.setText("Android 用户");
-
-
-        //第一个测试AppS
-//        etEmail.setText("123@qq.com");
-//        etAddress.setText("wuruo.kf5.com");
-//        etAppid.setText("001570f2c8a0493961e0a5d927d3f8168dc1d3ec320d0b35");
-//        etName.setText("Android 用户");
-
-
-//        第二个测试App
-//        etEmail.setText("123@qq.com");
-//        etAddress.setText("wuruo.kf5.com");
-//        etAppid.setText("001589a8b77a298cb35c8b8ef2376372fca61daa4799416a");
-//        etName.setText("Android 用户");
-
-
-//        etEmail.setText("123424@qq.com");
-//        etAddress.setText("tianxiang.kf5.com");
-//        etAppid.setText("00155bee6f7945ea5aa21c6ffc35f7aa7ed0999d7c6b6029");
-//        etName.setText("Android 用户");
-
-//
-//        etEmail.setText("123456@qq.com");
-//        etAddress.setText("im2beta.kf5.com");
-//        etAppid.setText("001589d1e48784ee06bf96e16d845ca177b73f48ec6a0b2d");
-//        etName.setText("Android 用户");
-
-
-//        etEmail.setText("15110272604");
-//        etAddress.setText("yianju001.kf5.com");
-//        etAppid.setText("00158e5ce330c3585dd60fbac8fb5844f2e8878cb0402a3a");
-//        etName.setText("Android 用户");
-
-//        etEmail.setText("123456@qq.com");
-//        etAddress.setText("laoliu.kf5.com");
-//        etAppid.setText("00158eaef2fac9251e8019aa3fab1b9194750c368f1d5b60");
-//        etName.setText("Android 用户");
-
-
-//        etEmail.setText("123424@qq.com");
-//        etAddress.setText("shixiseng.kf5.com");
-//        etAppid.setText("00158abb1c7321d6c8e4092bba0eab412bc8fa9e32a12fc5");
-//        etName.setText("Android 用户");
     }
 
     /**

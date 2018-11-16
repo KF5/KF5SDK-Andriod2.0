@@ -7,8 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
@@ -51,6 +53,7 @@ import com.kf5.sdk.system.mvp.presenter.PresenterFactory;
 import com.kf5.sdk.system.mvp.presenter.PresenterLoader;
 import com.kf5.sdk.system.utils.GsonManager;
 import com.kf5.sdk.system.utils.ImageLoaderManager;
+import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.SPUtils;
 import com.kf5.sdk.system.utils.SafeJson;
 import com.kf5.sdk.system.utils.Utils;
@@ -249,11 +252,13 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-//        if (!TextUtils.isEmpty(SPUtils.getChatUrl()) && presenter != null) {
-//            presenter.connectIPC();
-//        }
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        //版本的特殊性，由于主题设置了透明，同时固定了屏幕方向，8.0版本报错，
+        // java.lang.IllegalStateException: Only fullscreen opaque activities can request orientation
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
+            setTheme(R.style.KF5AppTheme_O);
+        }
+        super.onCreate(savedInstanceState);
     }
 
     @Override
