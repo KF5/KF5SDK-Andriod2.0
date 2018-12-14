@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_rating"
     android:layout_width="match_parent"
@@ -18,12 +17,12 @@
             android:id="@+id/kf5_return_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:contentDescription="@null"
             android:src="@drawable/kf5_back_img_bg"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/kf5_right_text_view"
@@ -38,7 +37,7 @@
             android:padding="@dimen/kf5_dimen_4dp"
             android:text="@string/kf5_submit"
             android:textColor="@drawable/kf5_text_bg"
-            android:textSize="@dimen/kf5_text_xh_size"/>
+            android:textSize="@dimen/kf5_text_xh_size" />
 
         <TextView
             android:id="@+id/kf5_title"
@@ -47,27 +46,32 @@
             android:layout_centerInParent="true"
             android:text="@string/kf5_rate"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/kf5_text_xxh_size"/>
+            android:textSize="@dimen/kf5_text_xxh_size" />
     </RelativeLayout>
 
 
-    <ScrollView android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none">
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:focusableInTouchMode="true"
-                      android:orientation="vertical">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/kf5_dimen_12dp"
                 android:text="@string/kf5_rating_text"
-                android:textSize="@dimen/kf5_text_size_20"/>
+                android:textSize="@dimen/kf5_text_size_20" />
 
-            <View android:layout_width="match_parent"
-                  android:layout_height="@dimen/kf5_line_1dp"
-                  android:background="@color/kf5_line_deliver_color"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/kf5_line_1dp"
+                android:background="@color/kf5_line_deliver_color" />
 
             <com.kf5.sdk.ticket.widgets.NoScrollListView
                 android:id="@+id/kf5_rating_lv"
@@ -75,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:divider="@null"
                 android:dividerHeight="0dp"
-                android:listSelector="@null"/>
+                android:listSelector="@null" />
 
             <EditText
                 android:id="@+id/kf5_rating_comment"
@@ -86,7 +90,8 @@
                 android:gravity="top|start|left"
                 android:hint="@string/kf5_rating_placeholder"
                 android:padding="@dimen/kf5_dimen_6dp"
-                android:textSize="@dimen/kf5_text_size_18"/>
+                android:textColorHint="@color/kf5_et_hint_text_color"
+                android:textSize="@dimen/kf5_text_size_18" />
         </LinearLayout>
 
     </ScrollView>

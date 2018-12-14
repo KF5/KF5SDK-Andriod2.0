@@ -32,7 +32,7 @@ dependencies {
     //    compile project(':kf5SdkFramework')
     implementation 'com.google.code.gson:gson:2.7'
     //    compile 'com.alibaba:fastjson:1.2.18'
-    implementation files('libs/com.kf5sdk.framework_v2-1.4.jar')
+    implementation files('libs/com.kf5sdk.framework_v2-1.5.jar')
 }
 
 

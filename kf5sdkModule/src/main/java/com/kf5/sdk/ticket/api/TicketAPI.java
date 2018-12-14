@@ -113,4 +113,14 @@ public final class TicketAPI extends BaseHttpManager {
         sendPostRequest(KF5API.rating(SPUtils.getHelpAddress()), fieldMap, callBack);
     }
 
+
+    /**
+     * 催单
+     *
+     * @param fieldMap 催单参数:{ticket_id: 工单id}
+     * @param callBack 请求回调:{"error": 0, "message": "催单成功！"} or {"error" : 40000,"message" : "您刚刚已催过单，请耐心等待，催单间隔时间为10分钟","data" : {}}
+     */
+    public void pushTicket(Map<String, String> fieldMap, HttpRequestCallBack callBack) {
+        sendPostRequest(KF5API.pushTicket(SPUtils.getHelpAddress()), fieldMap, callBack);
+    }
 }

@@ -227,6 +227,8 @@ public class KF5ChatActivity extends BaseChatActivity {
                             setTitleContent(getString(R.string.kf5_queue_waiting));
                             if (chat.isVisitor_queue_notify()) {
                                 updateQueueMessage(getString(R.string.kf5_update_queue_num, (chat.getQueueIndex() + 1)));
+                            } else {
+                                updateQueueMessage(getString(R.string.kf5_update_queue));
                             }
                             mXhsEmoticonsKeyBoard.showIMView();
                             isAgentOnline = false;
