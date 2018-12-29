@@ -716,6 +716,41 @@ public class IMPresenter extends BasePresenter<IIMView> implements IChatPresente
         }
     }
 
+
+    /**
+     * 触发器分配客服
+     *
+     * @param keyId 触发器id
+     */
+    public void getAgents(int keyId) {
+        try {
+            mMessageManager.sendEventMessage(SocketParams.getAgentsAssignParams(keyId), new IPCCallBack.Stub() {
+                @Override
+                public void onResult(final int code, final String result) throws RemoteException {
+                    try {
+                        JSONObject jsonObject = SafeJson.parseObj(result);
+                        LogUtil.printf("触发器分配客服收到了客服的信息" + jsonObject.toString() + "====" + code);
+                        if (code != RESULT_OK) {
+                            String message = jsonObject.getString(Field.MESSAGE);
+                            if (jsonObject.has(Field.ERROR) && jsonObject.getInt(Field.ERROR) == 1001) {
+                                getMvpView().setTitleContent(getMvpView().getContext().getString(R.string.kf5_no_agent_online));
+                            } else {
+                                getMvpView().setTitleContent(message);
+                            }
+                            getMvpView().getAgentFailure(AgentFailureType.NO_AGENT_ONLINE);
+                        } else {
+                            getMvpView().onGetAgentResult(code, result);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 满意度评价
      *

@@ -260,4 +260,8 @@ public class Field {
     public static final String QUEUE_INDEX = "queue_index";
 
     public static final String SILENT = "silent";
+
+    public static final String KEY = "key";
+
+    public static final String ASSIGN_QUESTION = "assign_question";
 }

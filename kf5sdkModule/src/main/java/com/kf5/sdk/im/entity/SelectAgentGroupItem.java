@@ -16,21 +16,12 @@ public class SelectAgentGroupItem implements Parcelable {
 
     @SerializedName(Field.TITLE)
     private String title;
-    @SerializedName(Field.GROUP_ID)
-    private int groupId;
     @SerializedName(Field.DESCRIPTION)
     private String description;
-    @SerializedName(Field.AGENT_IDS)
-    private String agentIds;
+    @SerializedName(Field.KEY)
+    private int key;
 
     public SelectAgentGroupItem() {
-    }
-
-    public SelectAgentGroupItem(String title, int groupId, String description, String agentIds) {
-        this.title = title;
-        this.groupId = groupId;
-        this.description = description;
-        this.agentIds = agentIds;
     }
 
     public String getTitle() {
@@ -41,14 +32,6 @@ public class SelectAgentGroupItem implements Parcelable {
         this.title = title;
     }
 
-    public int getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -57,13 +40,14 @@ public class SelectAgentGroupItem implements Parcelable {
         this.description = description;
     }
 
-    public String getAgentIds() {
-        return agentIds;
+    public int getKey() {
+        return key;
     }
 
-    public void setAgentIds(String agentIds) {
-        this.agentIds = agentIds;
+    public void setKey(int key) {
+        this.key = key;
     }
+
 
     @Override
     public int describeContents() {
@@ -73,19 +57,17 @@ public class SelectAgentGroupItem implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.title);
-        dest.writeInt(this.groupId);
         dest.writeString(this.description);
-        dest.writeString(this.agentIds);
+        dest.writeInt(this.key);
     }
 
     protected SelectAgentGroupItem(Parcel in) {
         this.title = in.readString();
-        this.groupId = in.readInt();
         this.description = in.readString();
-        this.agentIds = in.readString();
+        this.key = in.readInt();
     }
 
-    public static final Parcelable.Creator<SelectAgentGroupItem> CREATOR = new Parcelable.Creator<SelectAgentGroupItem>() {
+    public static final Creator<SelectAgentGroupItem> CREATOR = new Creator<SelectAgentGroupItem>() {
         @Override
         public SelectAgentGroupItem createFromParcel(Parcel source) {
             return new SelectAgentGroupItem(source);

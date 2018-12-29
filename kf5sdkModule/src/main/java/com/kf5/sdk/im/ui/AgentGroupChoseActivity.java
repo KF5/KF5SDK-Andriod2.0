@@ -59,8 +59,7 @@ public class AgentGroupChoseActivity extends BaseSwipeBackActivity {
                 Intent intent = new Intent(BaseChatActivity.SelectGroupReceiver.ACTION_FILTER);
                 try {
                     SelectAgentGroupItem item = adapter.getItem(position - 1);
-                    String agentArrayString = item.getAgentIds() != null ? item.getAgentIds() : "[]";
-                    intent.putExtra(BaseChatActivity.SelectGroupReceiver.DATA_KEY, agentArrayString);
+                    intent.putExtra(BaseChatActivity.SelectGroupReceiver.DATA_KEY, item.getKey());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

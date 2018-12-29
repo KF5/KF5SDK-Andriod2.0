@@ -75,6 +75,8 @@ public class SocketParams {
 
     private static final String DATA = "data";
 
+    private static final String QUESTION = "question";
+
     public static String getSettingParams() {
 
         JSONObject jsonObject = new JSONObject();
@@ -101,6 +103,27 @@ public class SocketParams {
             JSONObject queryObj = new JSONObject();
             queryObj.put(AGENT_IDS, agentArray);
             queryObj.put(FORCE, force);
+            obj1.put(PARAMS, queryObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        LogUtil.printf(obj1.toString());
+        return obj1.toString();
+    }
+
+    /**
+     * 通过触发器分配客服
+     *
+     * @param keyId 触发器id
+     * @return
+     */
+    public static String getAgentsAssignParams(int keyId) {
+
+        JSONObject obj1 = new JSONObject();
+        try {
+            obj1.put(ACTION, ASSIGN_AGENT);
+            JSONObject queryObj = new JSONObject();
+            queryObj.put(QUESTION, keyId);
             obj1.put(PARAMS, queryObj);
         } catch (Exception e) {
             e.printStackTrace();

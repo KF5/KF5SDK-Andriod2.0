@@ -86,8 +86,7 @@ public class GsonManager {
             SelectAgentGroupItem item = new SelectAgentGroupItem();
             item.setTitle(SafeJson.safeGet(itemObj, Field.TITLE));
             item.setDescription(SafeJson.safeGet(itemObj, Field.DESCRIPTION));
-            item.setGroupId(SafeJson.safeInt(itemObj, Field.GROUP_ID));
-            item.setAgentIds(SafeJson.safeArray(itemObj, Field.AGENT_IDS).toString());
+            item.setKey(SafeJson.safeInt(itemObj, Field.KEY));
             items.add(item);
         }
         return items;

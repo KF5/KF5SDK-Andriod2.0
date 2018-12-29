@@ -6,6 +6,8 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.Layout;
+import android.text.NoCopySpan;
+import android.text.Selection;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -13,11 +15,14 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.text.method.MovementMethod;
+import android.text.method.ScrollingMovementMethod;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.Patterns;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -30,6 +35,7 @@ import com.kf5.sdk.im.expression.bean.EmojiDisplay;
 import com.kf5.sdk.im.keyboard.utils.EmoticonsKeyboardUtils;
 import com.kf5.sdk.system.listener.RichLinkMovementMethod;
 import com.kf5.sdk.system.listener.URLSpanNoUnderline;
+import com.kf5Engine.api.KF5API;
 
 import org.json.JSONObject;
 
@@ -252,11 +258,16 @@ public class CustomTextView {
 
     // ****************************2018-1-31新增代码 修复部分机型机器人消息url无法正确匹配bug**************************
     public static void applyRichText(final TextView textView, String text, final OnLongClickCallback callback) {
+
+//        textView.setText(Html.fromHtml(text));
+//        textView.setMovementMethod(LinkMovementMethod.getInstance());
         List<LinkEntity> list = dealRichList(textView, text);
         if (list.isEmpty()) {
-            textView.setText(text);
+//            textView.setText(filterAllHtmlTag(text));
+            textView.setText(Html.fromHtml(text));//需要开启html显示style，直接使用该接口
             return;
         }
+
         Collections.sort(list, new Comparator<LinkEntity>() {
             @Override
             public int compare(LinkEntity link1, LinkEntity link2) {
@@ -302,7 +313,11 @@ public class CustomTextView {
                                     IntentUtils.openBrowser(context, url);
                                     break;
                                 case IMAGE:
-                                    IntentUtils.browserImage(context, url);
+                                    String tempUrl = url;
+                                    if (!tempUrl.startsWith("http:") || !tempUrl.startsWith("https:")) {
+                                        tempUrl = String.format("https://%1$s/sdkmobilev2", SPUtils.getHelpAddress()) + tempUrl;
+                                    }
+                                    IntentUtils.browserImage(context, tempUrl);
                                     break;
                                 case DOCUMENT:
                                     IntentUtils.viewHelpCenterDetail(context, url);
@@ -321,14 +336,14 @@ public class CustomTextView {
                 String front = remainText.substring(0, subStart);//截取出一段文字+一段url
                 remainText = remainText.substring(end - lastStart, remainText.length());//剩下的部分
                 lastStart = end;
-                if (front.length() > 0) textView.append(front);
+                if (front.length() > 0) textView.append(Html.fromHtml(front));
                 textView.append(spannableString);
+
             } catch (Exception e) {
                 continue;
             }
         }
-//        if (remainText != null && remainText.length() > 0) textView.append(remainText);
-        if (!TextUtils.isEmpty(remainText)) textView.append(remainText);
+        if (!TextUtils.isEmpty(remainText)) textView.append(Html.fromHtml(remainText));
         final RichTextMovementMethod method = new RichTextMovementMethod();
         textView.setMovementMethod(method);//响应点击事件
         if (callback != null) {
@@ -342,10 +357,24 @@ public class CustomTextView {
         }
     }
 
+//    private static String filterAllHtmlTag(String text) {
+//        Pattern pattern = Pattern.compile("<p>((.|\n)*?)</p>");
+//        Matcher matcher = pattern.matcher(text);
+//        LogUtil.printf("========="+matcher.replaceAll(""));
+//        String target = text;
+//        target = target.replaceAll("<br\\s{0,1}/?>", "");
+//        target = target.replaceAll("<p>((.|\n)*?)</p>", "");
+//        target = target.replaceAll("<[^>]+>|\n+$|(&nbsp;|\\s)+$", "");
+//        target = target.replaceAll("&nbsp;", "");
+//        return target;
+//    }
+
+
     private static List<LinkEntity> dealRichList(TextView textView, String text) {
 
         List<LinkEntity> list = new ArrayList<>();
         textView.setText("");
+//        text = filterAllHtmlTag(text);//如果需要开启html显示风格，直接注释掉即可
         dealHrefTag(list, text);
         addEmailLink(list, text);
         addWebUrlLink(list, text);
@@ -357,44 +386,29 @@ public class CustomTextView {
     }
 
     private static void dealHrefTag(List<LinkEntity> list, String text) {
-        Pattern pattern = Pattern.compile("<a href=\".*?\">(.*?)</a>");//首先将a标签分离出来
-//        Pattern pattern = Pattern.compile("<a\\b[^>]+\\bhref\\s*=\\s*\"([^\"]*)\"[^>]*>([\\s\\S]*?)</a>");//首先将a标签分离出来
+        Pattern pattern = Pattern.compile("<a\\b[^>]+\\bhref\\s*=\\s*\"([^\"]*)\"[^>]*>([\\s\\S]*?)</a>");//首先将a标签分离出来
         Matcher matcher = pattern.matcher(text);
+
         while (matcher.find()) {
-            String raw = matcher.group(0);
-            Pattern url_pattern = Pattern.compile("<a href=\"(.*?)\">");//将href分离出来
-            Matcher url_matcher = url_pattern.matcher(raw);
-//            String content;
-//            String clickUrl = null;
-//            int startIndex;
-//            int endIndex;
-            LinkEntity linkEntity = new LinkEntity();
-            try {
-                if (url_matcher.find()) {
-                    String clickUrl = url_matcher.group(1);
-                    if (clickUrl.startsWith("chosenDocumentTo://")) {
-                        linkEntity.url = clickUrl.substring("chosenDocumentTo://".length(), clickUrl.length());
-                        linkEntity.linkType = LinkType.DOCUMENT;
-                    } else if (clickUrl.startsWith("chosenQuestionTo://")) {
-                        linkEntity.url = clickUrl.substring("chosenQuestionTo://".length(), clickUrl.length());
-                        linkEntity.linkType = LinkType.QUESTION;
-                    } else {
-                        linkEntity.url = clickUrl;
-                        linkEntity.linkType = LinkType.URL;
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                linkEntity.content = matcher.group(1);
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (matcher.groupCount() != 2) {
                 continue;
+            }
+            String clickUrl = matcher.group(1);
+            LinkEntity linkEntity = new LinkEntity();
+            if (clickUrl.startsWith("chosenDocumentTo://")) {
+                linkEntity.url = clickUrl.substring("chosenDocumentTo://".length(), clickUrl.length());
+                linkEntity.linkType = LinkType.DOCUMENT;
+            } else if (clickUrl.startsWith("chosenQuestionTo://")) {
+                linkEntity.url = clickUrl.substring("chosenQuestionTo://".length(), clickUrl.length());
+                linkEntity.linkType = LinkType.QUESTION;
+            } else {
+                linkEntity.url = clickUrl;
+                linkEntity.linkType = LinkType.URL;
             }
             if (TextUtils.isEmpty(linkEntity.url)) {
                 continue;
             }
+            linkEntity.content = Html.fromHtml(matcher.group(2)).toString();
             linkEntity.start = matcher.start();
             linkEntity.end = matcher.end();
             list.add(linkEntity);
@@ -403,7 +417,8 @@ public class CustomTextView {
 
 
     private static void addPhoneLink(List<LinkEntity> list, String text) {
-        Pattern pattern = Patterns.PHONE;
+//        Pattern pattern = Patterns.PHONE;
+        Pattern pattern = Pattern.compile("1[0-9]{10}(?!\\\\d)");
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
             String common = matcher.group(0);
@@ -417,7 +432,6 @@ public class CustomTextView {
 
 
     private static void addWebUrlLink(List<LinkEntity> list, String text) {
-//        Pattern pattern = Patterns.WEB_URL;
         Pattern pattern = Pattern.compile("([hH]ttp[s]{0,1})://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\-~!@#$%^&*+?:_/=<>.\',;]*)?");
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
@@ -474,20 +488,14 @@ public class CustomTextView {
 
 
     private static void addImgHtmlTagLink(List<LinkEntity> list, String text) {
-//        Pattern pattern = Pattern.compile("<img.*?src\\s*=\\s*\"(.*?)\".*?>");
-        Pattern pattern = Pattern.compile("<(img|IMG)(.*?)(/>|></img>|>)");
+        Pattern pattern = Pattern.compile("<img.*?src\\s*=\\s*\"(.*?)\".*?>");
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
-            String content = matcher.group(2);
-            Pattern srcPattern = Pattern.compile("(src|SRC)=(\"|\')(.*?)(\"|\')");
-            Matcher srcMatcher = srcPattern.matcher(content);
-            if (srcMatcher.find()) {
-                String url = srcMatcher.group(3);
-                int start = matcher.start();
-                int end = matcher.end();
-                if (!isInBounds(list, start, end)) {
-                    list.add(new LinkEntity("[图片]", url, start, end, LinkType.IMAGE));
-                }
+            String url = matcher.group(1);
+            int start = matcher.start();
+            int end = matcher.end();
+            if (!isInBounds(list, start, end)) {
+                list.add(new LinkEntity("[图片]", url, start, end, LinkType.IMAGE));
             }
         }
     }

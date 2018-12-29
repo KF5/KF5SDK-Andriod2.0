@@ -139,7 +139,6 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
     protected boolean isInQueue = false;
 
     private boolean questionAgentEnabled = false;
-    private boolean questionAgentForce = false;
     private List<SelectAgentGroupItem> mAgentGroupItemList = new ArrayList<>();
 
     private SelectGroupReceiver mSelectGroupReceiver;
@@ -212,15 +211,15 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
                                 inWorkTime = SafeJson.safeBoolean(serviceTimeObj, Field.IN_WORK_TIME);
                                 canUseRobot = SafeJson.safeBoolean(serviceTimeObj, Field.CAN_USE_ROBOT);
                             }
-                            if (SafeJson.isContainKey(jsonObject, Field.QUESTION_AGENTS)) {
-                                JSONObject questionObj = SafeJson.safeObject(jsonObject, Field.QUESTION_AGENTS);
+                            if (SafeJson.isContainKey(jsonObject, Field.ASSIGN_QUESTION)) {
+                                JSONObject questionObj = SafeJson.safeObject(jsonObject, Field.ASSIGN_QUESTION);
                                 questionAgentEnabled = SafeJson.safeBoolean(questionObj, Field.ENABLED);
-                                questionAgentForce = SafeJson.safeBoolean(questionObj, Field.FORCE);
                                 JSONArray optionsArray = SafeJson.safeArray(questionObj, Field.OPTIONS);
                                 if (optionsArray != null) {
                                     mAgentGroupItemList.addAll(GsonManager.getInstance().getSelectAgentGroupItemList(optionsArray));
                                 }
                             }
+
 
                             if (SafeJson.isContainKey(jsonObject, Field.ROBOT)) {
                                 JSONObject robotObj = SafeJson.safeObject(jsonObject, Field.ROBOT);
@@ -859,16 +858,16 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String agentIds = "[]";
-            int force = 0;
-            if (intent != null) {
-                String action = intent.getAction();
-                if (TextUtils.equals(ACTION_FILTER, action)) {
-                    agentIds = intent.getStringExtra(DATA_KEY);
-                    force = questionAgentForce ? 1 : 0;
+            String action = intent.getAction();
+
+            if (TextUtils.equals(ACTION_FILTER, action)) {
+                int key = intent.getIntExtra(DATA_KEY, 0);
+                if (inWorkTime) {
+                    presenter.getAgents(key);
+                } else {
+                    getAgentFailure(AgentFailureType.NOT_IN_SERVICE_TIME);
                 }
             }
-            getAgent(agentIds, force);
         }
     }
 }
