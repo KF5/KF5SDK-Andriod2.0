@@ -1,0 +1,6 @@
+<resources>
+    <string name="kf5_camera_feature_both_hint">轻触拍照，按住摄像</string>
+    <string name="kf5_camera_feature_picture_hint">轻触拍照</string>
+    <string name="kf5_camera_feature_video_hint">按住摄像</string>
+    <string name="kf5_camera_record_short">录制时间过短</string>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.chosen.cameraview.JCameraView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/jcameraview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:duration_max="10000"
+    app:iconMargin="24dp"
+    app:iconSize="32dp"
+    app:iconSrc="@drawable/kf5_camera_ic_camera"
+    tools:context=".ui.CameraActivity">
+
+</com.chosen.cameraview.JCameraView>

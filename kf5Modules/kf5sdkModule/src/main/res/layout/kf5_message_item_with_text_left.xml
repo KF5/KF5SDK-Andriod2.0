@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/kf5_tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/kf5_dimen_16dp"
+        android:background="@drawable/kf5_message_item_with_date_bg"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/kf5_text_size_14" />
+
+    <LinearLayout
+        android:id="@+id/kf5_head_img_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/kf5_tvDate"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:orientation="horizontal">
+
+        <com.kf5.sdk.im.widget.CircleImageView
+            android:id="@+id/kf5_message_head_img"
+            android:layout_width="@dimen/kf5_im_head_img_size"
+            android:layout_height="@dimen/kf5_im_head_img_size"
+            android:layout_marginEnd="@dimen/kf5_dimen_4dp"
+            android:layout_marginRight="@dimen/kf5_dimen_4dp"
+            android:contentDescription="@null"
+            tools:src="@drawable/kf5_end_user" />
+
+        <View
+            android:id="@+id/kf5_im_arrow"
+            android:layout_width="@dimen/kf5_im_arrow_width"
+            android:layout_height="@dimen/kf5_im_arrow_height"
+            android:layout_gravity="center_vertical"
+            tools:background="@android:color/holo_red_light" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/kf5_message_item_with_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/kf5_head_img_container"
+        android:layout_marginEnd="@dimen/kf5_dimen_32dp"
+        android:layout_marginRight="@dimen/kf5_dimen_32dp"
+        android:layout_toEndOf="@+id/kf5_head_img_container"
+        android:layout_toRightOf="@+id/kf5_head_img_container"
+        android:background="@drawable/kf5_im_list_item_bg_left"
+        android:gravity="start|center"
+        android:minWidth="@dimen/kf5_im_head_img_size"
+        android:lineSpacingExtra="@dimen/kf5_im_text_line_space"
+        android:minHeight="@dimen/kf5_im_head_img_size"
+        android:paddingLeft="@dimen/kf5_dimen_6dp"
+        android:paddingTop="@dimen/kf5_dimen_4dp"
+        android:paddingRight="@dimen/kf5_dimen_6dp"
+        android:paddingBottom="@dimen/kf5_dimen_4dp"
+        android:textColor="@android:color/black"
+        android:textColorLink="#64cbf4"
+        android:textSize="@dimen/kf5_text_size_16"
+        tools:text="测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试" />
+
+</RelativeLayout>

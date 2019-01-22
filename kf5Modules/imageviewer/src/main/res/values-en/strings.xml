@@ -1,0 +1,9 @@
+<resources>
+    <string name="kf5_imageviewer_failed_to_load_img">Failed to load</string>
+    <string name="kf5_imageviewer_permission_denied_hint">Permission denied and the download failed!</string>
+    <string name="kf5_imageviewer_view_original_img">Original photo</string>
+    <string name="kf5_imageviewer_file_location_hint">File already exists \n%1$s</string>
+    <string name="kf5_imageviewer_start_to_download">Start download...</string>
+    <string name="kf5_imageviewer_failed_to_download">Save failed</string>
+    <string name="kf5_imageviewer_success_to_download">Saved successfully to \n%1$s</string>
+</resources>

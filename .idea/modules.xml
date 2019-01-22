@@ -3,9 +3,14 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/KF5SDK-Andriod2.0.iml" filepath="$PROJECT_DIR$/KF5SDK-Andriod2.0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kf5Modules/album/album.iml" filepath="$PROJECT_DIR$/kf5Modules/album/album.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kf5SdkFramework/kf5SdkFramework.iml" filepath="$PROJECT_DIR$/kf5SdkFramework/kf5SdkFramework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kf5Modules/cameradisplay/cameradisplay.iml" filepath="$PROJECT_DIR$/kf5Modules/cameradisplay/cameradisplay.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kf5Modules/imageviewer/imageviewer.iml" filepath="$PROJECT_DIR$/kf5Modules/imageviewer/imageviewer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kf5Modules/kf5Modules.iml" filepath="$PROJECT_DIR$/kf5Modules/kf5Modules.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kf5Modules/kf5sdkModule/kf5sdkModule.iml" filepath="$PROJECT_DIR$/kf5Modules/kf5sdkModule/kf5sdkModule.iml" />
       <module fileurl="file://$PROJECT_DIR$/kf5sdkModule/kf5sdkModule.iml" filepath="$PROJECT_DIR$/kf5sdkModule/kf5sdkModule.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kf5Modules/videoplayer/videoplayer.iml" filepath="$PROJECT_DIR$/kf5Modules/videoplayer/videoplayer.iml" />
     </modules>
   </component>
 </project>

@@ -1,0 +1,9 @@
+<resources>
+    <string name="kf5_imageviewer_failed_to_load_img">加载失败</string>
+    <string name="kf5_imageviewer_permission_denied_hint">您拒绝了权限，下载失败!</string>
+    <string name="kf5_imageviewer_view_original_img">查看原图</string>
+    <string name="kf5_imageviewer_file_location_hint">文件已存在\n%1$s</string>
+    <string name="kf5_imageviewer_start_to_download">开始下载...</string>
+    <string name="kf5_imageviewer_failed_to_download">保存失败</string>
+    <string name="kf5_imageviewer_success_to_download">成功保存到\n%1$s</string>
+</resources>

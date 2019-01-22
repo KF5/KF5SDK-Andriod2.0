@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="kf5_videoplay_tips_not_wifi">You are currently using a mobile network, and continuing to play will consume traffic</string>
+    <string name="kf5_videoplay_tips_not_wifi_confirm">Continue playing</string>
+    <string name="kf5_videoplay_tips_not_wifi_cancel">Stop play</string>
+    <string name="kf5_videoplay_no_url">Invalid url</string>
+    <string name="kf5_videoplay_replay">Replay</string>
+    <string name="kf5_videoplay_click_to_restart">Retry</string>
+    <string name="kf5_videoplay_video_loading_failed">Video loading failed</string>
+</resources>
