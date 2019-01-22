@@ -31,7 +31,7 @@ v2.0版本的SDK较v1.0版本的sdk主要区别在于：基于Framework代码库
 ## 三、SDK使用方法  
 1.使用SDK的相关功能，需要获取到用户的相关信息，用户信息的相关接口全部封装在UserInfoAPI中，SDK中除了`loginUser(Map<String, String> fieldMap, HttpRequestCallBack callBack)`与`createUser(Map<String, String> fieldMap, HttpRequestCallBack callBack)`不需要userToken（用户唯一标示），其他网络请求接口都需要userToken，所以开发者必须调用两者任意接口先获取到userToken，然后在调用`[SPUtils.saveUserToken(String userToken)]`将userToken保存，方便其他接口调用；每次接口的功能已在注释里做了说明，此处不再描述。  
 
- _注意：如果逻辑是先调用`loginUser`接口，这个接口只验证后台当前登录的用户是否存在，当用户不存在的时候返回用户不存在，这时需要调用`createUser`创建用户，创建成功之后将必要信息缓存起来即可，处理逻辑与`loginUser`相同；如果逻辑是先调用`createUser`接口，这个接口只会在用户不存在的时候创建用户，因此可能返回用户已存在的信息，这时调用`loginUser`直接登录用户即可，处理逻辑同上，如果用户创建成功处理逻辑同上。_  
+ _注意：如果逻辑是先调用`loginUser`接口，这个接口只验证后台当前登录的用户是否存在，当用户不存在的时候返回用户不存在，这时需要调用`createUser`创建用户，创建成功之后将必要信息缓存起来即可，处理逻辑与`loginUser`相同；如果逻辑是先调用`createUser`接口，这个接口只会在用户不存在的时候创建用户，因此可能返回用户已存在的信息，这时调用`loginUser`直接登录用户即可，处理逻辑同上，如果用户创建成功处理逻辑同上。**为避免资源浪费，强烈建议loginUser与createUser俩接口采用惰性初始化，不建议应用初始化时就调用这俩接口。**_  
  
 2.需要用到的接口：TicketAPI（工单模块）,HelpCenterHttpAPI（帮助中心模块）,IMAPI（即时交谈模块）.
 
