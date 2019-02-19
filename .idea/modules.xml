@@ -9,7 +9,6 @@
       <module fileurl="file://$PROJECT_DIR$/kf5Modules/imageviewer/imageviewer.iml" filepath="$PROJECT_DIR$/kf5Modules/imageviewer/imageviewer.iml" />
       <module fileurl="file://$PROJECT_DIR$/kf5Modules/kf5Modules.iml" filepath="$PROJECT_DIR$/kf5Modules/kf5Modules.iml" />
       <module fileurl="file://$PROJECT_DIR$/kf5Modules/kf5sdkModule/kf5sdkModule.iml" filepath="$PROJECT_DIR$/kf5Modules/kf5sdkModule/kf5sdkModule.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kf5sdkModule/kf5sdkModule.iml" filepath="$PROJECT_DIR$/kf5sdkModule/kf5sdkModule.iml" />
       <module fileurl="file://$PROJECT_DIR$/kf5Modules/videoplayer/videoplayer.iml" filepath="$PROJECT_DIR$/kf5Modules/videoplayer/videoplayer.iml" />
     </modules>
   </component>

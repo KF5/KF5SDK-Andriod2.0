@@ -20,7 +20,7 @@ v2.0版本的SDK较v1.0版本的sdk主要区别在于：基于Framework代码库
 
 1、下载[KF5SDK-Android2.0](https://github.com/KF5/KF5SDK-Andriod2.0/archive/master.zip)的官方demo；注：v2.0版本的SDK基于AndroidStudio开发，集成步骤均指的是AndroidStudio的IDE，若您的IDE是Eclipse，请[联系我们](http://www.kf5.com/)。
 
-2、将demo里的kf5sdkModule导入到您的工程中，然后添加依赖，具体导入步骤请自行查阅相关资料，并将manifest.xml文件里的关于各种权限以及组件声明拷贝到工程的manifest.xml文件下，若有相同权限可以直接过滤掉。
+2、将demo里的kf5sdkModules文件夹里所有module导入到您的工程中，kf5sdkModules文件夹是对kf5的module封装，具体操作步骤[请看这里](https://blog.csdn.net/speverriver/article/details/69397749)，然后依赖编译，具体导入步骤请自行查阅相关资料。
 
 3、在Application下调用`KF5SDKInitializer.init(context)`全局初始化接口。
 
