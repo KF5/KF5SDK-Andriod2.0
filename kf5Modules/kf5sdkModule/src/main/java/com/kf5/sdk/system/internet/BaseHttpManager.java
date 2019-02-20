@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -210,7 +211,7 @@ public abstract class BaseHttpManager {
         map.putAll(HeaderUtils.getHeaderMap(SPUtils.getAppid()));
         map.put("sdk-version", BuildConfig.VERSION_NAME);
         map.put("source", "github");
-        map.put("DisplayName", AppUtils.getAppName(KF5SDKInitializer.getContext()));
+        map.put("DisplayName", URLEncoder.encode(AppUtils.getAppName(KF5SDKInitializer.getContext())));
         map.put("BundleIdentifier", AppUtils.getPackageName(KF5SDKInitializer.getContext()));
 //        Map<String, String> map = HeaderUtils.getHeaderMap(SPUtils.getAppid());
         Iterator<String> iterator = map.keySet().iterator();
