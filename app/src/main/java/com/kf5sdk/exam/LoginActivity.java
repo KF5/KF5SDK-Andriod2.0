@@ -83,9 +83,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
 
+//        etEmail.setText(year + "-" + (month + 1) + "-" + day + "@qq.com");
+//        etAddress.setText("tianxiang.kf5.com");
+//        etAppid.setText("0015c0f2c6bc70f42c90c1f8cc6c5bc94566eaf720bedd9a");
+//        etName.setText("Android 用户");
+
         etEmail.setText(year + "-" + (month + 1) + "-" + day + "@qq.com");
-        etAddress.setText("tianxiang.kf5.com");
-        etAppid.setText("00155bee6f7945ea5aa21c6ffc35f7aa7ed0999d7c6b6029");
+        etAddress.setText("chosen.kf5.com");
+        etAppid.setText("0015703278adb2883f1e71145ffa131ef6a8073e3ac7ec00");
         etName.setText("Android 用户");
 
         mRadioGroup = (RadioGroup) findViewById(R.id.radio_group);
@@ -283,7 +288,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Log.i("kf5测试", "登录失败" + result);
             }
         });
-    }
+}
 
 
     private void saveToken(Map<String, String> map) {
@@ -333,4 +338,66 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
+//    private void initUserInfo(Map<String, String> map) {
+//        UserInfoAPI.getInstance().createUser(map
+//                , new HttpRequestCallBack() {
+//                    @Override
+//                    public void onSuccess(final String result) {
+//                        Log.i("kf5测试", "登录成功" + result);
+//                        final JSONObject jsonObject = SafeJson.parseObj(result);
+//                        int resultCode = SafeJson.safeInt(jsonObject, "error");
+//                        if (resultCode == 0) {
+//                            //我们先调用的是createUser接口，当code==0时，意味着注册用户成功，这里我们就可以缓存必要的信息，比如说userToken，userId；
+//                            //如果我们需要用到推送功能，我们也可以在保存userToken之后调用saveToken接口。
+//                            //这里省略了具体解析逻辑。
+////                           SPUtils.saveUserToken(userToken);
+////                           SPUtils.saveUserId(id);
+//                        } else {
+//                            //由于我们先调用的是createUser接口，当code不等于0时，我们就默认用户存在，则走登陆接口
+//                            loginUser(map);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(String result) {
+//                        //onSuccess回调接口是指http请求正常的回调接口，它的回调不代表用户信息初始化成功；
+//                        //onFailure回调接口是在http请求失败时回调的接口。例如java.net.UnknownHostException: Unable to resolve host "sdkmobilev2":
+//                        //No address associated with hostname
+//                        Log.i("kf5测试", "登录失败" + result);
+//                    }
+//                });
+//    }
+//
+//
+//    private void loginUser(final Map<String, String> map) {
+//        UserInfoAPI.getInstance().loginUser(map, new HttpRequestCallBack() {
+//            @Override
+//            public void onSuccess(final String result) {
+//                Log.i("kf5测试", "登录成功" + result);
+//                try {
+//                    final JSONObject jsonObject = SafeJson.parseObj(result);
+//                    int resultCode = SafeJson.safeInt(jsonObject, "error");
+//                    if (resultCode == 0) {
+//                        //由于先调用了createUser接口，当createUser接口的code不等于0时，且传入参数合法时，我们默认用户信息存在，这时我们就调用登陆接口。
+//                        //当loginUser接口返回值等于0时，我们就认为用户登陆成功，这里我们就可以缓存必要的信息，比如说userToken，userId；
+//                        //如果我们需要用到推送功能，我们也可以在保存userToken之后调用saveToken接口。
+//                        //这里省略了具体解析逻辑。
+//                        //SPUtils.saveUserToken(userToken);
+//                        //SPUtils.saveUserId(id);
+//                    } else {
+//                        //那么问题来了，当先调用的是createUser接口，如果用户以存在，这时走到了loginUser接口，当loginUser接口的返回的code也不等于0呢？
+//                        //如果按照这种逻辑调用，且code也不等于0时，那么就是属于参数格式不正确，或者参数遗漏造成的，参数规则请往下看。
+//                        String message = jsonObject.getString("message");
+//                        Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            @Override
+//            public void onFailure(String result) {
+//                Log.i("kf5测试", "登录失败" + result);
+//            }
+//        });
+//    }
 }

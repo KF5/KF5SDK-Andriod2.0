@@ -1,6 +1,7 @@
 package com.kf5.sdk.im.adapter;
 
 import android.content.Context;
+import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.Utils;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * author:chosen
@@ -41,6 +43,8 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
     private static final int MESSAGE_TYPE_MESSAGE_RECALLED = 15;
     private static final int MESSAGE_TYPE_VIDEO_SEND = 16;
     private static final int MESSAGE_TYPE_VIDEO_RECEIVE = 17;
+
+    protected Map<Integer, String> urlMap = new ArrayMap<>();
 
     public MessageAdapter(Context context, List<IMMessage> list) {
         super(context, list);

@@ -1,11 +1,14 @@
 package com.kf5.sdk.im.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.kf5.sdk.R;
+import com.kf5.sdk.im.db.IMSQLManager;
+import com.kf5.sdk.im.entity.Agent;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.widget.CircleImageView;
 import com.kf5.sdk.system.utils.Utils;
@@ -44,7 +47,22 @@ class BaseHolder {
 
     protected void setUpUI() {
         //显示头像
-        Glide.with(context).load(isReceive ? R.drawable.kf5_agent : R.drawable.kf5_end_user).into(headImg);
+        if (isReceive) {
+            String url = null;
+            final int userID = message.getUserId();
+            if (userID > 0) {
+                if (messageAdapter.urlMap.containsKey(userID)) {
+                    url = messageAdapter.urlMap.get(userID);
+                } else {
+                    Agent agent = IMSQLManager.getAgent(context, userID);
+                    url = agent.getPhoto();
+                    messageAdapter.urlMap.put(userID, url);
+                }
+            }
+            Glide.with(context).load(!TextUtils.isEmpty(url) ? url : R.drawable.kf5_agent).into(headImg);
+        } else {
+            Glide.with(context).load(R.drawable.kf5_end_user).into(headImg);
+        }
         //根据时间跨度动态加载时间控件
         toggleDateViewVisibility();
     }
