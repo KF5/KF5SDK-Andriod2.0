@@ -26,11 +26,15 @@ public class MessageUtils {
     private static final String TAG_SPACE = "&#160";
     private static final String TAG_SOLID_CIRCLE = "●";
     private static final String TAG_PREFIX = TAG_SOLID_CIRCLE + TAG_SPACE + TAG_SPACE;
+    private static final String TAG_BR = "<br/>";
+    private static final String RecommendedCategories = "recommended categories";
+    private static final String HotCategories = "hot categories";
 
 
     public static final String HREF_PREFIX_QUESTION = "chosenQuestionTo://";
     public static final String HREF_PREFIX_DOCUMENT = "chosenDocumentTo://";
     public static final String HREF_PREFIX_CUSTOM = "chosenVideoChatTo://";
+    public static final String HREF_PREFIX_CATEGORY = "chosenCategoryTo://";
 
     private MessageUtils() {
 
@@ -52,6 +56,18 @@ public class MessageUtils {
                                 + context.getString(R.string.kf5_invite_video_chat)
                                 + "</a>";
                     }
+                } else if (TextUtils.equals(CustomField.CATEGORIES, type)) {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    if (jsonObject.has(Field.TITLE)) {
+                        String title = jsonObject.getString(Field.TITLE);
+                        if (TextUtils.equals(RecommendedCategories, title)) {
+                            stringBuilder.append(context.getString(R.string.kf5_recommended_categories));
+                        } else if (TextUtils.equals(HotCategories, title)) {
+                            stringBuilder.append(context.getString(R.string.kf5_hot_categories));
+                        }
+                    }
+                    dealCategories(jsonObject, stringBuilder);
+                    return stringBuilder.toString();
                 }
             }
         } catch (Exception e) {
@@ -61,68 +77,18 @@ public class MessageUtils {
     }
 
 
-    public static String dealAIMessage(String message) {
-
-        try {
-            StringBuilder stringBuilder = new StringBuilder();
-            new JSONObject(message);
-            JSONObject jsonObject = SafeJson.parseObj(message);
-            String content = SafeJson.safeGet(jsonObject, Field.CONTENT);
-            if (content.contains("{{") && content.contains("}}")) {
-                content = content.replaceAll("\\{\\{", "<a href=\"" + Field.GET_AGENT + "\">");
-                content = content.replaceAll("\\}\\}", "</a>");
-            }
-            stringBuilder.append(content);
-
-            String type = SafeJson.safeGet(jsonObject, Field.TYPE);
-            if (TextUtils.equals(Field.QUESTION, type)) {
-                dealQuestions(jsonObject, stringBuilder);
-            } else if (TextUtils.equals(Field.DOCUMENT, type)) {
-                dealDocuments(jsonObject, stringBuilder);
-            }
-            return stringBuilder.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-            try {
-                JSONArray jsonArray = new JSONArray(message);
-                StringBuilder sb = new StringBuilder();
-                sb.append("已为您找到以下内容：")
-                        .append("<br/>");
-                int size = jsonArray.length();
-                for (int i = 0; i < size; i++) {
-                    JSONObject itemObj = jsonArray.getJSONObject(i);
-                    sb.append("● ")
-                            .append("<a href=\"")
-                            .append(SafeJson.safeGet(itemObj, Field.ID))
-                            .append("\">")
-                            .append(SafeJson.safeGet(itemObj, Field.TITLE_TAG))
-                            .append("</a>");
-                    if (i != size - 1) {
-                        sb.append("<br/>");
-                    }
-                }
-                return sb.toString();
-            } catch (JSONException e1) {
-                e1.printStackTrace();
-                return message;
-            }
-        }
-    }
-
     /**
      * 解析机器人消息中的文档内容
      *
-     * @param jsonObject
+     * @param jsonArray
      * @param stringBuilder
      * @throws JSONException
      */
-    private static void dealDocuments(JSONObject jsonObject, StringBuilder stringBuilder) throws JSONException {
-
-        JSONArray jsonArray = SafeJson.safeArray(jsonObject, Field.DOCUMENTS);
+    private static void dealDocuments(JSONArray jsonArray, StringBuilder stringBuilder) throws JSONException {
         if (jsonArray != null) {
             int size = jsonArray.length();
             if (size > 0) {
-                stringBuilder.append("<br/>");
+                stringBuilder.append(TAG_BR);
             }
             for (int i = 0; i < size; i++) {
                 int id = 0;
@@ -141,7 +107,7 @@ public class MessageUtils {
                         .append(SafeJson.safeGet(jsonArray.getJSONObject(i), Field.TITLE_TAG))
                         .append("</a>");
                 if (i != size - 1) {
-                    stringBuilder.append("<br/>");
+                    stringBuilder.append(TAG_BR);
                 }
             }
         }
@@ -150,16 +116,15 @@ public class MessageUtils {
     /**
      * 解析机器人消息的分词内容
      *
-     * @param jsonObject
+     * @param jsonArray
      * @param stringBuilder
      * @throws JSONException
      */
-    private static void dealQuestions(JSONObject jsonObject, StringBuilder stringBuilder) throws JSONException {
-        JSONArray jsonArray = SafeJson.safeArray(jsonObject, Field.QUESTIONS);
+    private static void dealQuestions(JSONArray jsonArray, StringBuilder stringBuilder) throws JSONException {
         if (jsonArray != null) {
             int size = jsonArray.length();
             if (size > 0) {
-                stringBuilder.append("<br/>");
+                stringBuilder.append(TAG_BR);
             }
             for (int i = 0; i < size; i++) {
                 stringBuilder.append(TAG_PREFIX)
@@ -170,7 +135,30 @@ public class MessageUtils {
                         append(SafeJson.safeGet(jsonArray.getJSONObject(i), Field.TITLE_TAG))
                         .append("</a>");
                 if (i != size - 1) {
-                    stringBuilder.append("<br/>");
+                    stringBuilder.append(TAG_BR);
+                }
+            }
+        }
+    }
+
+
+    private static void dealCategories(JSONObject jsonObject, StringBuilder stringBuilder) throws JSONException {
+        JSONArray jsonArray = SafeJson.safeArray(jsonObject, Field.CATEGORIES);
+        if (jsonArray != null) {
+            int size = jsonArray.length();
+            if (size > 0) {
+                stringBuilder.append(TAG_BR);
+            }
+            for (int i = 0; i < size; i++) {
+                stringBuilder.append(TAG_PREFIX)
+                        .append("<a href=\"")
+                        .append(HREF_PREFIX_CATEGORY)
+                        .append(SafeJson.safeGet(jsonArray.getJSONObject(i), Field.ID))
+                        .append("\">").
+                        append(SafeJson.safeGet(jsonArray.getJSONObject(i), Field.TITLE_TAG))
+                        .append("</a>");
+                if (i != size - 1) {
+                    stringBuilder.append(TAG_BR);
                 }
             }
         }
@@ -191,9 +179,9 @@ public class MessageUtils {
             }
             String type = SafeJson.safeGet(jsonObject, Field.TYPE);
             if (TextUtils.equals(Field.QUESTION, type)) {
-                dealQuestions(jsonObject, stringBuilder);
+                dealQuestions(SafeJson.safeArray(jsonObject, Field.QUESTIONS), stringBuilder);
             } else if (TextUtils.equals(Field.DOCUMENT, type)) {
-                dealDocuments(jsonObject, stringBuilder);
+                dealDocuments(SafeJson.safeArray(jsonObject, Field.DOCUMENTS), stringBuilder);
             }
             return stringBuilder.toString();
         } catch (Exception e) {

@@ -7,7 +7,6 @@
               android:showDividers="middle">
 
     <include
-        android:id="@+id/kf5_top_layout"
         layout="@layout/kf5_image_selector_customer_actionbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

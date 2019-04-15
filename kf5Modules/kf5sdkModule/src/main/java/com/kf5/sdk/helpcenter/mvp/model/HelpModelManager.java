@@ -12,14 +12,6 @@ public class HelpModelManager {
         return new HelpCenterModel();
     }
 
-    public static HelpCenterTypeModel provideHelpCenterTypeModel() {
-        return new HelpCenterTypeModel();
-    }
-
-    public static HelpCenterTypeChildModel provideHelpCenterTypeChildModel() {
-        return new HelpCenterTypeChildModel();
-    }
-
     public static HelpCenterDetailModel provideHelpCenterDetailModel() {
         return new HelpCenterDetailModel();
     }

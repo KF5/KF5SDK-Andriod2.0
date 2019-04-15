@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.kf5.sdk.im.entity.Agent;
 import com.kf5.sdk.im.entity.AgentFailureType;
-import com.kf5.sdk.im.entity.Chat;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.system.mvp.view.MvpView;
 
@@ -102,9 +101,9 @@ public interface IIMView extends MvpView {
     /**
      * 初始化IM指令返回值
      *
-     * @param chat
+     * @param result
      */
-    void onChatStatus(Chat chat);
+    void onChatStatus(String result);
 
     /**
      * 拉取消息的回调接口
@@ -133,7 +132,7 @@ public interface IIMView extends MvpView {
      *
      * @param text
      */
-    void setTitleContent(String text);
+    void setTitleContentBySocket(String text);
 
 
     /**
@@ -179,7 +178,7 @@ public interface IIMView extends MvpView {
 
     void onSyncMessageResult(int resultCode);
 
-    void setRatingLevelCount(int levelCount);
+//    void setRatingLevelCount(int levelCount);
 
     /**
      * 载入撤回消息列表

@@ -10,8 +10,8 @@ import com.kf5.sdk.helpcenter.entity.HelpCenterRequestType;
 
 public interface IHelpCenterPresenter {
 
-    void getCategoriesList(HelpCenterRequestType helpCenterRequestType);
-
     void searchDocument(HelpCenterRequestType helpCenterRequestType);
+
+    void getCommonDataList(HelpCenterRequestType helpCenterRequestType);
 
 }

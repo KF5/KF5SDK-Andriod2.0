@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.kf5.sdk.im.expression.bean.EmojiDisplay;
 import com.kf5.sdk.im.keyboard.utils.EmoticonsKeyboardUtils;
-import com.kf5.sdk.system.listener.URLSpanNoUnderline;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +30,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.kf5.sdk.im.utils.MessageUtils.HREF_PREFIX_CATEGORY;
 import static com.kf5.sdk.im.utils.MessageUtils.HREF_PREFIX_CUSTOM;
 import static com.kf5.sdk.im.utils.MessageUtils.HREF_PREFIX_DOCUMENT;
 import static com.kf5.sdk.im.utils.MessageUtils.HREF_PREFIX_QUESTION;
@@ -53,12 +53,6 @@ public class CustomTextView {
      */
     public static void stripUnderlines(final Context context, final TextView tv_content, String text, final int mask) {
 
-        //至于dealData为什么要调用两次呢？我现在也muji，可能是第一次针对的是链接解析，第二次是html解析
-//        tv_content.setText(Html.fromHtml(filterHtmlTag(text)));
-//        dealUnderLinesData(tv_content, context);
-//        Linkify.addLinks(tv_content, mask);
-//        tv_content.setMovementMethod(new RichLinkMovementMethod());
-//        dealUnderLinesData(tv_content, context);
         List<LinkEntity> list = new ArrayList<>();
         tv_content.setText("");
         Pattern pattern = Pattern.compile("<a\\b[^>]+\\bhref\\s*=\\s*\"([^\"]*)\"[^>]*>([\\s\\S]*?)</a>");//首先将a标签分离出来
@@ -84,146 +78,6 @@ public class CustomTextView {
         addPhoneLink(list, text);
         applyRichText(list, tv_content, text, null);
     }
-
-
-    /**
-     * 解析link
-     *
-     * @param tv_content
-     * @param context
-     */
-    private static void dealUnderLinesData(TextView tv_content, Context context) {
-        CharSequence charSequence = tv_content.getText();
-        if (charSequence instanceof Spannable) {
-            tv_content.setText("");
-            Spannable s = EmojiDisplay.spannableFilter(tv_content.getContext(),
-                    new SpannableStringBuilder(charSequence),
-                    charSequence,
-                    EmoticonsKeyboardUtils.getFontHeight(tv_content));
-            URLSpan[] spans = s.getSpans(0, s.length(), URLSpan.class);
-            for (URLSpan span : spans) {
-                int start = s.getSpanStart(span);
-                int end = s.getSpanEnd(span);
-                String clickText = s.subSequence(start, end).toString();
-                URLSpanNoUnderline urlSpanNoUnderline = new URLSpanNoUnderline(context, span.getURL(), clickText);
-                s.setSpan(urlSpanNoUnderline, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            tv_content.append(s);
-        }
-    }
-
-    /**
-     * 解析机器人搜索到文档的内容
-     *
-     * @param textView
-     * @param text
-     */
-//    public static void setTextWithAIMessage(TextView textView, String text, String type) {
-//        textView.setText(Html.fromHtml(filterHtmlTag(MessageUtils.dealAIMessage(text))));
-//        dealAILink(textView, type);
-//        Linkify.addLinks(textView, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
-//        textView.setMovementMethod(new AIMessageMovementMethod());
-//        dealAILink(textView, type);
-//    }
-
-    /**
-     * 解析机器人对话link
-     *
-     * @param textView
-     */
-//    private static void dealAILink(TextView textView, String type) {
-//        CharSequence charSequence = textView.getText();
-//        if (charSequence instanceof Spannable) {
-//            textView.setText("");
-//            Spannable s = (Spannable) charSequence;
-//            URLSpan[] spans = s.getSpans(0, s.length(), URLSpan.class);
-//            for (URLSpan span : spans) {
-//                int start = s.getSpanStart(span);
-//                int end = s.getSpanEnd(span);
-//                String clickContent = s.subSequence(start, end).toString();
-//                AIURLSpan myURLSpan = new AIURLSpan(span.getURL(), type, clickContent, textView.getContext());
-//                s.setSpan(myURLSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            }
-//            textView.append(s);
-//        }
-//    }
-
-
-    /**
-     * 显示富文本消息
-     *
-     * @param textView
-     * @param message
-     */
-//    public static void setCustomMessage(TextView textView, String message) {
-//        LogUtil.printf("========富文本消息");
-//        JSONObject jsonObject = SafeJson.parseObj(message);
-//        if (SafeJson.isContainKey(jsonObject, CustomField.TYPE)) {
-//            String type = SafeJson.safeGet(jsonObject, CustomField.TYPE);
-//            if (TextUtils.equals(CustomField.VIDEO, type)) {
-//                if (SafeJson.isContainKey(jsonObject, CustomField.VISITOR_URL)) {
-//                    String url = SafeJson.safeGet(jsonObject, CustomField.VISITOR_URL);
-//                    textView.setText(makeUrlWithHtmlHref(url, textView.getContext().getString(R.string.kf5_invite_video_chat)));
-//                } else {
-//                    textView.setText(resolveTextWithHtmlTag(message));
-//                }
-//            } else {
-//                textView.setText(resolveTextWithHtmlTag(message));
-//            }
-//        } else {
-//            textView.setText(resolveTextWithHtmlTag(message));
-//        }
-//        dealCustomLink(textView);
-//        Linkify.addLinks(textView, Linkify.ALL);
-//        textView.setMovementMethod(new CustomLinkMovementMethod());
-//        dealCustomLink(textView);
-//    }
-
-    /**
-     * 解析富文本link
-     *
-     * @param textView
-     */
-//    private static void dealCustomLink(TextView textView) {
-//        CharSequence charSequence = textView.getText();
-//        if (charSequence instanceof Spannable) {
-//            textView.setText("");
-//            Spannable s = (Spannable) charSequence;
-//            URLSpan[] spans = s.getSpans(0, s.length(), URLSpan.class);
-//            for (URLSpan span : spans) {
-//                int start = s.getSpanStart(span);
-//                int end = s.getSpanEnd(span);
-//                CustomClickSpan myURLSpan = new CustomClickSpan(textView.getContext(), span.getURL());
-//                s.setSpan(myURLSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            }
-//            textView.append(s);
-//        }
-//    }
-
-    /**
-     * url拼接A标签
-     *
-     * @param url
-     * @param hrefText
-     * @return
-     */
-//    public static Spanned makeUrlWithHtmlHref(String url, String hrefText) {
-//        String string = "<a href=" +
-//                url +
-//                ">" +
-//                hrefText +
-//                "</a>";
-//        return resolveTextWithHtmlTag(string);
-//    }
-
-
-//    private static Spanned resolveTextWithHtmlTag(String text) {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            return Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT);
-//        } else {
-//            return Html.fromHtml(text);
-//        }
-//    }
 
     private final static String[] PROTOCOL = new String[]{"http://", "https://", "rtsp://"};
 
@@ -345,7 +199,8 @@ public class CustomTextView {
                                     IntentUtils.viewHelpCenterDetail(context, url);
                                     break;
                                 case QUESTION:
-                                    IntentUtils.sendQuestionContent(context, showText, url);
+                                case CATEGORY:
+                                    IntentUtils.sendQuestionContent(context, showText, url, entity.linkType == LinkType.CATEGORY);
                                     break;
                                 case GET_AGENT:
                                     IntentUtils.getAgent(context);
@@ -410,6 +265,9 @@ public class CustomTextView {
             } else if (clickUrl.startsWith(HREF_PREFIX_CUSTOM)) {
                 linkEntity.url = clickUrl.substring(HREF_PREFIX_CUSTOM.length(), clickUrl.length());
                 linkEntity.linkType = LinkType.CUSTOM;
+            } else if (clickUrl.startsWith(HREF_PREFIX_CATEGORY)) {
+                linkEntity.url = clickUrl.substring(HREF_PREFIX_CATEGORY.length(), clickUrl.length());
+                linkEntity.linkType = LinkType.CATEGORY;
             } else {
                 linkEntity.url = clickUrl;
                 linkEntity.linkType = LinkType.URL;
@@ -548,7 +406,7 @@ public class CustomTextView {
 
 
     private enum LinkType {
-        URL, PHONE, EMAIL, EMOJI, IMAGE, QUESTION, DOCUMENT, GET_AGENT, CUSTOM
+        URL, PHONE, EMAIL, EMOJI, IMAGE, QUESTION, DOCUMENT, GET_AGENT, CUSTOM, CATEGORY
     }
 
     public static class RichTextMovementMethod extends LinkMovementMethod {

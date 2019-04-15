@@ -1,33 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@drawable/kf5_message_box_bg"
-              android:gravity="center_vertical"
-              android:orientation="vertical"
-              android:padding="6dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/kf5_message_box_bg"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:padding="@dimen/kf5_dimen_8dp">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/kf5_image_view"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="4dp">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@null"
+        tools:src="@drawable/kf5_jump_icon" />
 
-        <ImageView
-            android:id="@+id/kf5_image_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@null"/>
-
-        <TextView
-            android:id="@+id/kf5_progress_dialog_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/kf5_dimen_4dp"
-            android:text="@string/kf5_loading"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"/>
-    </LinearLayout>
+    <TextView
+        android:id="@+id/kf5_progress_dialog_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/kf5_dimen_4dp"
+        android:text="@string/kf5_loading"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/kf5_text_size_14" />
 
 </LinearLayout>

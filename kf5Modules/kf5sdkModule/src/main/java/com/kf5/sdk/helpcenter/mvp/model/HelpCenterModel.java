@@ -21,6 +21,16 @@ public class HelpCenterModel implements IHelpCenterModel {
     }
 
     @Override
+    public void getPostByID(Map<String, String> map, HttpRequestCallBack callBack) {
+        HelpCenterHttpAPI.getInstance().getPostList(map, callBack);
+    }
+
+    @Override
+    public void getForumByID(Map<String, String> map, HttpRequestCallBack callBack) {
+        HelpCenterHttpAPI.getInstance().getForumsList(map, callBack);
+    }
+
+    @Override
     public void searchDocument(Map<String, String> map, HttpRequestCallBack callBack) {
         HelpCenterHttpAPI.getInstance().searchPost(map, callBack);
     }

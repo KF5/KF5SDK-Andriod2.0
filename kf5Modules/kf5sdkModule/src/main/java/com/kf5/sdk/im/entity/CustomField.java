@@ -16,4 +16,6 @@ public class CustomField {
 
     public static final String VISITOR_URL = "visitor_url";
 
+    public static final String CATEGORIES = "categories";
+
 }

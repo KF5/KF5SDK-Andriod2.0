@@ -77,11 +77,16 @@ public class SocketParams {
 
     private static final String QUESTION = "question";
 
-    public static String getSettingParams() {
+    private static final String ROBOT_WORK_TIME = "robot_work_time";
+
+    public static String getSettingParams(boolean robotEnable) {
 
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(ACTION, INIT);
+            JSONObject paramsObj = new JSONObject();
+            paramsObj.put(ROBOT_WORK_TIME, robotEnable);
+            jsonObject.put(PARAMS, paramsObj);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -252,13 +257,16 @@ public class SocketParams {
      * @param timeStamp
      * @return
      */
-    public static String getAIAnswerParams(int id, String timeStamp) {
+    public static String getAIAnswerParams(int id, String timeStamp, boolean isCategory) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(ACTION, AI_ANSWER);
             JSONObject paramsObj = new JSONObject();
             paramsObj.put(ID, id);
             paramsObj.put(TIMESTAMP, timeStamp);
+            if (isCategory) {
+                paramsObj.put(TYPE, "chat.category");
+            }
             jsonObject.put(PARAMS, paramsObj);
         } catch (JSONException e) {
             e.printStackTrace();

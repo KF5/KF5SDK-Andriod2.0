@@ -10,7 +10,7 @@ import java.util.Map;
  * email:812219713@qq.com
  */
 
-public interface IHelpCenterModel {
+public interface IHelpCenterModel extends IHelpCenterTypeModel, IHelpCenterTypeChildModel {
 
     void getCategoriesList(Map<String, String> queryMap, HttpRequestCallBack callBack);
 

@@ -47,7 +47,6 @@ public class ImagePreviewActivity extends AppCompatActivity implements Handler.C
 
     private List<ImageInfo> imageInfoList;
     private int currentItem;//当前显示的图片索引
-    private String downloadFolderName = "";//保存的文件夹名
     private boolean isShowDownButton;
     private boolean isShowCloseButton;
     private boolean isShowOriginButton;
@@ -106,7 +105,6 @@ public class ImagePreviewActivity extends AppCompatActivity implements Handler.C
             onBackPressed();
         }
         currentItem = ImagePreview.getInstance().getIndex();
-        downloadFolderName = ImagePreview.getInstance().getFolderName();
         isShowDownButton = ImagePreview.getInstance().isShowDownButton();
         isShowCloseButton = ImagePreview.getInstance().isShowCloseButton();
         isShowIndicator = ImagePreview.getInstance().isShowIndicator();
@@ -188,21 +186,20 @@ public class ImagePreviewActivity extends AppCompatActivity implements Handler.C
 //        String path = Environment.getExternalStorageDirectory() + "/" + downloadFolderName + "/";
 //        String suffix = currentItemOriginalPathUrl.substring(currentItemOriginalPathUrl.lastIndexOf('.') + 1, currentItemOriginalPathUrl.length());
         //suffix后缀名，有的时候url的不是以.jpg/.png这种格式结尾，先暂时默认保存为.png吧。。。。。。
-        String fileName;
-        if (currentItemOriginalPathUrl.startsWith("http:") || currentItemOriginalPathUrl.startsWith("https")) {
-            fileName = downloadFolderName + MD5Utils.GetMD5Code(currentItemOriginalPathUrl) + ".png";
-        } else {
-            fileName = currentItemOriginalPathUrl;
-        }
-        File file = new File(fileName);
-        if (file.exists()) {
-            Toast.makeText(context, String.format(getResources().getString(R.string.kf5_imageviewer_file_location_hint), file.getAbsolutePath()), Toast.LENGTH_SHORT).show();
-            return;
-        }
-//        String name = currentItemOriginalPathUrl.substring(currentItemOriginalPathUrl.lastIndexOf("/") + 1, currentItemOriginalPathUrl.length());
-//        FileUtil.createFileByDeleteOldFile(path + name);
-        FileUtil.createOrExistsFile(file);
-        DownloadPictureUtil.downloadPicture(context, currentItemOriginalPathUrl, downloadFolderName, file.getName());
+//        String fileName;
+//        if (currentItemOriginalPathUrl.startsWith("http:") || currentItemOriginalPathUrl.startsWith("https")) {
+//            fileName = downloadFolderName + MD5Utils.md5Encode(currentItemOriginalPathUrl) + ".png";
+//        } else {
+//            fileName = currentItemOriginalPathUrl;
+//        }
+//        File file = new File(fileName);
+//        if (file.exists()) {
+//            Toast.makeText(context, String.format(getResources().getString(R.string.kf5_imageviewer_file_location_hint), file.getAbsolutePath()), Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        FileUtil.createOrExistsFile(file);
+//        DownloadPictureUtil.downloadPicture(context, currentItemOriginalPathUrl, downloadFolderName, file.getName());
+        DownloadPictureUtil.downloadPicture(context.getApplicationContext(), currentItemOriginalPathUrl);
     }
 
 
@@ -300,7 +297,7 @@ public class ImagePreviewActivity extends AppCompatActivity implements Handler.C
             String url = bundle.getString("url");
             gone();
             if (currentItem == getRealIndexWithPath(url)) {
-                imagePreviewAdapter.loadOrigin(imageInfoList.get(currentItem));
+                imagePreviewAdapter.loadOrigin(currentItem);
             }
         } else if (msg.what == 2) {
             //加载中

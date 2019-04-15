@@ -2,13 +2,13 @@ package com.kf5.sdk.ticket.ui;
 
 import android.os.Bundle;
 import android.support.v4.content.Loader;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.kf5.sdk.R;
-import com.kf5.sdk.system.base.BaseActivity;
+import com.kf5.sdk.system.base.BaseMVPActivity;
 import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.entity.RefreshLayoutConfig;
+import com.kf5.sdk.system.entity.TitleBarProperty;
 import com.kf5.sdk.system.mvp.presenter.PresenterFactory;
 import com.kf5.sdk.system.mvp.presenter.PresenterLoader;
 import com.kf5.sdk.ticket.adapter.UserFieldAdapter;
@@ -16,36 +16,43 @@ import com.kf5.sdk.ticket.entity.UserField;
 import com.kf5.sdk.ticket.mvp.presenter.TicketAttributePresenter;
 import com.kf5.sdk.ticket.mvp.usecase.TicketUseCaseManager;
 import com.kf5.sdk.ticket.mvp.view.ITicketAttributeView;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 
-public class OrderAttributeActivity extends BaseActivity<TicketAttributePresenter, ITicketAttributeView> implements ITicketAttributeView, View.OnClickListener {
-
-    private ListView mListView;
+public class OrderAttributeActivity extends BaseMVPActivity<TicketAttributePresenter, ITicketAttributeView> implements ITicketAttributeView {
 
     private List<UserField> mUserFields;
 
     private UserFieldAdapter mUserFieldAdapter;
 
-    private ImageView mBackImg;
-
-
     @Override
     protected int getLayoutID() {
-        return R.layout.kf5_activity_order_attribute;
+        return R.layout.kf5_layout_refresh_listview;
     }
 
     @Override
     protected void initWidgets() {
         super.initWidgets();
-        mBackImg = (ImageView) findViewById(R.id.kf5_return_img);
-        mBackImg.setOnClickListener(this);
-        mListView = (ListView) findViewById(R.id.kf5_activity_order_attr_list_view);
         mUserFields = new ArrayList<>();
-        mUserFieldAdapter = new UserFieldAdapter(mActivity, mUserFields);
-        mListView.setAdapter(mUserFieldAdapter);
+        RefreshLayoutConfig.start()
+                .with(this)
+                .withListView((ListView) findViewById(R.id.kf5_listView))
+                .listViewDivider(getResources().getDrawable(R.drawable.kf5_divider_inset_left_16))
+                .listViewDividerHeight(1)
+                .withRefreshLayout(((RefreshLayout) findViewById(R.id.kf5_refreshLayout)))
+                .refreshLayoutEnableRefreshAndLoadMore(false, false)
+                .commitWithSetAdapter(mUserFieldAdapter = new UserFieldAdapter(mActivity, mUserFields));
+    }
+
+    @Override
+    protected TitleBarProperty getTitleBarProperty() {
+        return new TitleBarProperty.Builder()
+                .setTitleContent(getString(R.string.kf5_message_detail))
+                .setRightViewVisible(false)
+                .build();
     }
 
     @Override
@@ -79,19 +86,5 @@ public class OrderAttributeActivity extends BaseActivity<TicketAttributePresente
                 mUserFieldAdapter.notifyDataSetChanged();
             }
         });
-    }
-
-    @Override
-    public void showError(int resultCode, String msg) {
-        super.showError(resultCode, msg);
-        showToast(msg);
-    }
-
-    @Override
-    public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.kf5_return_img) {
-            finish();
-        }
     }
 }

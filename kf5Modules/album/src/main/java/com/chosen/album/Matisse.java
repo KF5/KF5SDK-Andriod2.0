@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import com.chosen.album.ui.MatisseActivity;
 
 import java.lang.ref.WeakReference;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -84,6 +85,7 @@ public final class Matisse {
     }
 
     /**
+     *
      * Obtain state whether user decide to use selected media in original
      *
      * @param data Intent passed by {@link Activity#onActivityResult(int, int, Intent)} or

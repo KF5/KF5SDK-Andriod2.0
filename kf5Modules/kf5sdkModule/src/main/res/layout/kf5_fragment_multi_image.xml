@@ -16,7 +16,6 @@
         android:verticalSpacing="@dimen/kf5_space_size" />
 
     <RelativeLayout
-        android:id="@+id/kf5_footer_layout"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:layout_alignParentBottom="true"

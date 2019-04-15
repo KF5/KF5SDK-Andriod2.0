@@ -59,7 +59,7 @@ public class EmoticonsToolBarView extends RelativeLayout {
         LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
         LayoutParams hsvParams = (LayoutParams) hsv_toolbar.getLayoutParams();
         if (view.getId() <= 0) {
-            view.setId(isRight ? R.id.id_toolbar_right : R.id.id_toolbar_left);
+            view.setId(isRight ? R.id.kf5_id_toolbar_right : R.id.kf5_id_toolbar_left);
         }
         if (isRight) {
             params.addRule(ALIGN_PARENT_RIGHT);
@@ -84,7 +84,7 @@ public class EmoticonsToolBarView extends RelativeLayout {
         LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(mBtnWidth, LayoutParams.MATCH_PARENT);
         iv_icon.setLayoutParams(imgParams);
         if (pageSetEntity != null) {
-            iv_icon.setTag(R.id.id_tag_page_set, pageSetEntity);
+            iv_icon.setTag(R.id.kf5_id_tag_page_set, pageSetEntity);
             ImageLoaderManager.getInstance(mContext).displayImage(pageSetEntity.getIconUri(), iv_icon);
         }
         toolBtnView.setOnClickListener(onClickListener != null ? onClickListener : new OnClickListener() {
@@ -106,7 +106,7 @@ public class EmoticonsToolBarView extends RelativeLayout {
         LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
         LayoutParams hsvParams = (LayoutParams) hsv_toolbar.getLayoutParams();
         if (toolBtnView.getId() <= 0) {
-            toolBtnView.setId(isRight ? R.id.id_toolbar_right : R.id.id_toolbar_left);
+            toolBtnView.setId(isRight ? R.id.kf5_id_toolbar_right : R.id.kf5_id_toolbar_left);
         }
         if (isRight) {
             params.addRule(ALIGN_PARENT_RIGHT);
@@ -141,7 +141,7 @@ public class EmoticonsToolBarView extends RelativeLayout {
         }
         int select = 0;
         for (int i = 0; i < mToolBtnList.size(); i++) {
-            Object object = mToolBtnList.get(i).getTag(R.id.id_tag_page_set);
+            Object object = mToolBtnList.get(i).getTag(R.id.kf5_id_tag_page_set);
             if (object != null && object instanceof PageSetEntity && uuid.equals(((PageSetEntity) object).getUuid())) {
                 mToolBtnList.get(i).setBackgroundColor(getResources().getColor(R.color.kf5_tool_bar_btn_bg_select));
                 select = i;

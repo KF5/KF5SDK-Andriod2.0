@@ -20,8 +20,6 @@
     <color name="kf5_et_hint_text_color">#6c6c6c</color>
     <color name="kf5_table_deliver">#EEEEEE</color>
     <color name="kf5_normal_color">#8d8d8d</color>
-    <color name="kf5_button_down">#EDEDED</color>
-    <color name="kf5_voice_text_color">#727272</color>
     <color name="kf5_tool_bar_btn_bg_normal">@color/kf5_white</color>
     <color name="kf5_tool_bar_btn_bg_select">#D9D9D9</color>
     <color name="kf5_black">#000000</color>

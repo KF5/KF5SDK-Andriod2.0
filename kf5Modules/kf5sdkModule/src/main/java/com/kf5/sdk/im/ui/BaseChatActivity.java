@@ -20,15 +20,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.chosen.album.Matisse;
 import com.chosen.album.internal.utils.PathUtils;
 import com.chosen.cameraview.ui.CameraActivity;
-import com.chosen.imageviewer.tool.file.FileUtil;
 import com.kf5.sdk.R;
 import com.kf5.sdk.im.adapter.MessageAdapter;
 import com.kf5.sdk.im.adapter.listener.VoicePlayListener;
@@ -51,16 +48,17 @@ import com.kf5.sdk.im.widget.AudioRecordButton;
 import com.kf5.sdk.im.widget.RatingDialog;
 import com.kf5.sdk.system.album.ImageSelectorManager;
 import com.kf5.sdk.system.api.KF5SystemAPI;
-import com.kf5.sdk.system.base.BaseActivity;
+import com.kf5.sdk.system.base.BaseMVPActivity;
 import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.entity.TitleBarProperty;
 import com.kf5.sdk.system.internet.HttpRequestCallBack;
 import com.kf5.sdk.system.mvp.presenter.PresenterFactory;
 import com.kf5.sdk.system.mvp.presenter.PresenterLoader;
 import com.kf5.sdk.system.utils.CameraDisplayUtils;
+import com.kf5.sdk.system.utils.ClickUtils;
 import com.kf5.sdk.system.utils.FilePath;
 import com.kf5.sdk.system.utils.GsonManager;
 import com.kf5.sdk.system.utils.ImageLoaderManager;
-import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.SPUtils;
 import com.kf5.sdk.system.utils.SafeJson;
 import com.kf5.sdk.system.utils.Utils;
@@ -88,7 +86,7 @@ import static com.kf5.sdk.im.ui.AgentGroupChoseActivity.OPTIONS_LIST;
  * email:812219713@qq.com
  */
 
-public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView> implements IIMView, View.OnClickListener,
+public abstract class BaseChatActivity extends BaseMVPActivity<IMPresenter, IIMView> implements IIMView,
         FuncLayout.OnFuncKeyBoardListener, AbsListView.OnScrollListener, RatingDialog.OnRatingItemClickListener,
         AudioRecordButton.AudioFinishRecorderListener, View.OnLongClickListener {
 
@@ -96,21 +94,18 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
+    public static final String KF5_QUESTION_ID = "assign_question_id";
+    private int questionId;
+
     protected EmoticonsKeyBoard mXhsEmoticonsKeyBoard;
 
     protected ListView mListView;
-
-    private ImageView mImageView;
 
     protected List<IMMessage> mIMMessageList = new ArrayList<>();
 
     protected MessageAdapter mAdapter;
 
-    private TextView mTextViewTitle;
-
     protected RatingDialog mRatingDialog;
-
-    private TextView mTextViewRight;
 
     protected EditText mEditTextAI,
             mEditTextTemporary,
@@ -157,7 +152,6 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
 
     private boolean visitor_queue_notify = true;
 
-
     @Override
     public Loader<IMPresenter> onCreateLoader(int id, Bundle args) {
         return new PresenterLoader<>(this, new PresenterFactory<IMPresenter>() {
@@ -175,17 +169,23 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
     }
 
     @Override
+    protected TitleBarProperty getTitleBarProperty() {
+        return new TitleBarProperty.Builder()
+                .setRightViewVisible(true)
+                .setRightViewClick(true)
+                .setRightViewContent(getString(R.string.kf5_ticket))
+                .build();
+    }
+
+    @Override
     protected void initWidgets() {
         super.initWidgets();
+        Intent intent = getIntent();
+        questionId = intent.getIntExtra(KF5_QUESTION_ID, 0);
         mXhsEmoticonsKeyBoard = (EmoticonsKeyBoard) findViewById(R.id.ek_bar);
         mListView = (ListView) findViewById(R.id.lv_chat);
         mListView.addHeaderView(LayoutInflater.from(mActivity).inflate(R.layout.kf5_list_view_footer_or_head_view, null));
         mListView.addFooterView(LayoutInflater.from(mActivity).inflate(R.layout.kf5_im_footer_view, null));
-        mImageView = (ImageView) findViewById(R.id.kf5_return_img);
-        mImageView.setOnClickListener(this);
-        mTextViewTitle = (TextView) findViewById(R.id.kf5_title);
-        mTextViewRight = (TextView) findViewById(R.id.kf5_right_text_view);
-        mTextViewRight.setOnClickListener(this);
         initData();
     }
 
@@ -231,14 +231,11 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
                                 }
                             }
 
-
                             if (SafeJson.isContainKey(jsonObject, Field.ROBOT)) {
                                 JSONObject robotObj = SafeJson.safeObject(jsonObject, Field.ROBOT);
                                 category_ids = SafeJson.safeArray(robotObj, Field.CATEGORY_IDS);
                                 forum_ids = SafeJson.safeArray(robotObj, Field.FORUM_IDS);
                             }
-
-
                         } catch (Exception e) {
                             e.printStackTrace();
                             hideLoading();
@@ -341,37 +338,12 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         map.put("appid", SPUtils.getAppid());
         map.put("platform", "Android");
         map.put("token", SPUtils.getUserToken());
-        map.put("version", "2.7");
+        map.put("version", "2.8");
         map.put("uuid", Utils.getUUID(mActivity));
         bundle.putString("query", com.kf5.sdk.im.utils.Utils.getMapAppend(map));
         bundle.putString("url", SPUtils.getChatUrl());
         presenter.initParams(bundle);
         presenter.connect();
-    }
-
-    /**
-     * 设置标题的可见性
-     *
-     * @param visibility
-     */
-    protected void setTitleVisibility(int visibility) {
-        mTextViewTitle.setVisibility(visibility);
-    }
-
-    /**
-     * 设置标题的内容
-     *
-     * @param text
-     */
-    protected void setTitleText(final String text) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (mTextViewTitle != null && mTextViewTitle.isShown())
-                    mTextViewTitle.setText(text);
-            }
-        });
-
     }
 
 
@@ -426,7 +398,6 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      * @param messages
      */
     protected void refreshListAndNotifyData(List<IMMessage> messages) {
-
         mIMMessageList.addAll(messages);
         refreshData();
     }
@@ -446,7 +417,6 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
                 scrollToBottom();
             }
         });
-
         mXhsEmoticonsKeyBoard.getBtnSend().setOnClickListener(this);
         AppsView appsView = new AppsView(this);
         appsView.getTextViewCamera().setOnClickListener(this);
@@ -492,7 +462,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
      * @param content
      * @param id
      */
-    public void onSendAITextMessage(String content, int id) {
+    public void onSendAITextMessage(String content, int id, boolean isCategory) {
         IMMessage message;
         //如果同客服聊天，直接发送文本消息
         if (isAgentOnline) {
@@ -501,7 +471,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
         } else {
             //否则发送分词消息
             message = IMMessageBuilder.buildSendAIMessage(content);
-            presenter.sendAIAnswerMessage(message, id);
+            presenter.sendAIAnswerMessage(message, id, isCategory);
         }
         refreshListAndNotifyData(IMMessageBuilder.addIMMessageToList(message));
     }
@@ -526,7 +496,7 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
             mDialogBox.dismiss();
         }
         if (robotEnable) {
-            setTitleText(robotName);
+            setTitleContent(!TextUtils.isEmpty(robotName) ? robotName : getResources().getString(R.string.kf5_chat));
             mXhsEmoticonsKeyBoard.showAIView();
         }
         mDialogBox = new DialogBox(mActivity)
@@ -639,8 +609,10 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
             intent.putParcelableArrayListExtra(OPTIONS_LIST, (ArrayList<? extends Parcelable>) mAgentGroupItemList);
             intent.setClass(this, AgentGroupChoseActivity.class);
             startActivity(intent);
-            //直接分配客服
+        } else if (questionId > 0) {
+            presenter.getAgents(questionId);
         } else {
+            //直接分配客服
             getAgent(agentIds, force);
         }
 
@@ -664,14 +636,15 @@ public abstract class BaseChatActivity extends BaseActivity<IMPresenter, IIMView
 
     @Override
     public void onClick(View view) {
+        if (ClickUtils.isInvalidClick(view)) {
+            return;
+        }
         int id = view.getId();
         if (id == mXhsEmoticonsKeyBoard.getBtnSend().getId()) {
             if (imWidgetEnable()) {
                 onSendTextMessage(mEditTextIM.getText().toString());
                 mEditTextIM.setText("");
             } else aiToGetAgents();
-        } else if (id == R.id.kf5_return_img) {
-            finish();
         } else if (id == R.id.kf5_textview_choice_from_camera) {
             if (hasPermission(CAMERA_PERMISSION)) {
                 if (imWidgetEnable())

@@ -9,10 +9,12 @@ buildscript {
                 targetSdk : 27
         ]
         moduleRemote = [
-                supportLib: "27.1.1",
-                glide     : '4.8.0',
+                supportLib        : "27.1.1",
+                glide             : '4.8.0',
 //                glide     : '3.7.0',
-                gson      : '2.8.5'
+                gson              : '2.8.5',
+                picasso           : '2.5.2',
+                smartRefreshLayout: '1.1.0-alpha-21'
         ]
     }
 

@@ -10,4 +10,5 @@ public interface IHelpCenterView extends IHelpCenterBaseView {
 
     String getSearchKey();
 
+    int getItemId();
 }

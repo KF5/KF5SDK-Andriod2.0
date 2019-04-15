@@ -10,19 +10,19 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.kf5.sdk.R;
 import com.kf5.sdk.helpcenter.entity.Attachment;
 import com.kf5.sdk.system.album.ImageSelectorManager;
-import com.kf5.sdk.system.base.BaseActivity;
+import com.kf5.sdk.system.base.BaseMVPActivity;
 import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.entity.ParamsKey;
+import com.kf5.sdk.system.entity.RefreshLayoutConfig;
+import com.kf5.sdk.system.entity.TitleBarProperty;
 import com.kf5.sdk.system.mvp.presenter.PresenterFactory;
 import com.kf5.sdk.system.mvp.presenter.PresenterLoader;
 import com.kf5.sdk.system.utils.ImageLoaderManager;
@@ -41,6 +41,7 @@ import com.kf5.sdk.ticket.receiver.RatingReceiver;
 import com.kf5.sdk.ticket.receiver.TicketReceiver;
 import com.kf5.sdk.ticket.widgets.FeedBackDetailBottomView;
 import com.kf5.sdk.ticket.widgets.api.FeedBackDetailBottomViewListener;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ import java.util.Map;
 import java.util.TimerTask;
 
 
-public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter, ITicketDetailView> implements ITicketDetailView, FeedBackDetailBottomViewListener, AbsListView.OnScrollListener, AdapterView.OnItemLongClickListener, View.OnClickListener, RatingReceiver.RatingListener {
+public class FeedBackDetailsActivity extends BaseMVPActivity<TicketDetailPresenter, ITicketDetailView> implements ITicketDetailView, FeedBackDetailBottomViewListener, AbsListView.OnScrollListener, AdapterView.OnItemLongClickListener, View.OnClickListener, RatingReceiver.RatingListener {
 
     private int nextPage = 1;
 
@@ -68,13 +69,7 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
 
     private FeedBackDetailBottomView mFeedBackDetailBottomView;
 
-    private RelativeLayout mLayoutBottom;
-
     private EditText mETContent;
-
-    private ImageView mBackImg;
-
-    private TextView mRightView;
 
     private int ticket_id;
 
@@ -94,29 +89,34 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
 
     private int mRatingLevelCount;
 
-
     @Override
     protected void initWidgets() {
         super.initWidgets();
-        mLayoutBottom = (RelativeLayout) findViewById(R.id.kf5_bottom_layout);
+        RelativeLayout mLayoutBottom = (RelativeLayout) findViewById(R.id.kf5_bottom_layout);
         mFeedBackDetailBottomView = new FeedBackDetailBottomView(mActivity);
         mFeedBackDetailBottomView.setListener(this);
         mETContent = layoutListener.getEditText();
         mLayoutBottom.addView(mFeedBackDetailBottomView);
-        mListView = (ListView) findViewById(R.id.kf5_activity_feed_back_details_listview);
-        mListView.setOnScrollListener(this);
-        mListView.setOnItemLongClickListener(this);
-        mListView.addHeaderView(inflateHeaderView());
-        mBackImg = (ImageView) findViewById(R.id.kf5_return_img);
-        mBackImg.setOnClickListener(this);
-        mRightView = (TextView) findViewById(R.id.kf5_right_text_view);
-        mRightView.setOnClickListener(this);
+        mListView = (ListView) findViewById(R.id.kf5_listView);
+        RefreshLayout refreshLayout = ((RefreshLayout) findViewById(R.id.kf5_refreshLayout));
+        RefreshLayoutConfig.start()
+                .with(this)
+                .withListView(mListView)
+                .listViewWithHeaderView(inflateHeaderView())
+                .listViewDivider(getResources().getDrawable(R.drawable.kf5_divider_inset_left_16))
+                .listViewDividerHeight(1)
+                .listViewHeaderDividersEnabled(false)
+                .listViewItemLongClickListener(this)
+                .listViewItemScrollListener(this)
+                .withRefreshLayout(refreshLayout)
+                .refreshLayoutEnableRefreshAndLoadMore(false, false)
+                .commitWithSetAdapter(mFeedBackDetailAdapter = new FeedBackDetailAdapter(mActivity, mCommentList = new ArrayList<>()));
     }
 
     private View inflateHeaderView() {
         mHeaderView = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.kf5_rating_header, null);
         mHeaderView.setOnClickListener(this);
-        mHeaderContent = (TextView) mHeaderView.findViewById(R.id.kf5_rating_status);
+        mHeaderContent = mHeaderView.findViewById(R.id.kf5_rating_status);
         return mHeaderView;
     }
 
@@ -126,7 +126,6 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
         super.setData();
         mHelper = new KF5SDKtoHelper(mActivity);
         mHelper.openDatabase();
-        mListView.setAdapter(mFeedBackDetailAdapter = new FeedBackDetailAdapter(mActivity, mCommentList = new ArrayList<>()));
         mRatingReceiver = new RatingReceiver();
         mRatingReceiver.setRatingListener(this);
         IntentFilter intentFilter = new IntentFilter();
@@ -165,15 +164,20 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
         presenter.getTicketDetail();
     }
 
-    @Override
-    public void showError(int resultCode, String msg) {
-        super.showError(resultCode, msg);
-        showToast(msg);
-    }
 
     @Override
     protected int getLayoutID() {
         return R.layout.kf5_activity_feed_back_details;
+    }
+
+    @Override
+    protected TitleBarProperty getTitleBarProperty() {
+        return new TitleBarProperty.Builder()
+                .setTitleContent(getString(R.string.kf5_ticket))
+                .setRightViewVisible(true)
+                .setRightViewClick(true)
+                .setRightViewContent(getString(R.string.kf5_message_detail))
+                .build();
     }
 
     @Override
@@ -328,7 +332,10 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
 
     @Override
     public boolean onItemLongClick(final AdapterView<?> adapterView, View view, int i, long l) {
-        final Comment comment = mFeedBackDetailAdapter.getItem(i);
+        if (i == 0) {
+            return false;
+        }
+        final Comment comment = mFeedBackDetailAdapter.getItem(i - 1);
         if (comment.getMessageStatus() == MessageStatus.FAILED) {
             new DialogBox(mActivity)
                     .setMessage(getString(R.string.kf5_resend_message_hint))
@@ -349,8 +356,9 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
                             }
                         }
                     }).show();
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -364,9 +372,7 @@ public class FeedBackDetailsActivity extends BaseActivity<TicketDetailPresenter,
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.kf5_return_img) {
-            finish();
-        } else if (id == R.id.kf5_right_text_view) {
+        if (id == R.id.kf5_right_text_view) {
             Intent intent = new Intent(mActivity, OrderAttributeActivity.class);
             intent.putExtra(Field.ID, getTicketId());
             startActivity(intent);

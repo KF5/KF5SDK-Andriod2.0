@@ -9,6 +9,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +18,30 @@ import android.widget.TextView;
 import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.SPUtils;
 import com.kf5.sdk.system.widget.DialogBox;
+import com.kf5sdk.exam.Base64Utils;
 import com.kf5sdk.exam.LoginActivity;
 import com.kf5sdk.exam.R;
 import com.kf5sdk.exam.utils.Preference;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * author:chosen
@@ -92,6 +110,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 //                return true;
 //            }
 //        });
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+//                sendGetRequest();
+                test();
+            }
+        }).start();
+
     }
 
 
@@ -220,4 +246,98 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
 
+    public static void sendGetRequest() {
+        String url = "https://shelf-kefu.kf5.com/apiv2/ticket_fields.json";
+        String baseToken = Base64Utils.encode("18666623932:imageDT2016");
+        Log.i("========", baseToken);
+        HttpURLConnection connection = null;
+        try {
+            URL realUrl = new URL(url);
+            Log.i("========", realUrl.toString());
+            // 打开和URL之间的连接
+            connection = (HttpURLConnection) realUrl.openConnection();
+            // 设置通用的请求属性
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("connection", "Keep-Alive");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
+            connection.setUseCaches(false);
+            connection.setDoInput(true);
+            connection.setConnectTimeout(10 * 1000);
+            connection.setRequestProperty("Authorization", "Basic " + Base64Utils.encode("18666623932:imageDT2016"));
+            // 建立实际的连接
+            connection.connect();
+            Log.i("========", "返回值code" + connection.getResponseCode());
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                getInputStream(connection.getInputStream());
+            } else {
+                getInputStream(connection.getErrorStream());
+            }
+
+//            Scanner s = new Scanner(connection.getInputStream()).useDelimiter("\\A");
+//            String result = s.hasNext() ? s.next() : "";
+//            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+//                Log.i("kf5", connection.getResponseCode() + "=====" + result);
+//            } else {
+//                Log.i("kf5", connection.getResponseCode() + "=====" + result);
+//            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("========", "这里有异常了", e);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+    }
+
+    private static String getInputStream(InputStream stream) throws Exception {
+        if (stream == null) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        String line;
+        BufferedReader bufferedReader = null;
+        bufferedReader = new BufferedReader(new InputStreamReader(stream, "utf-8"));
+        while ((line = bufferedReader.readLine()) != null) {
+            sb.append(line);
+        }
+        bufferedReader.close();
+        // System.out.println("返回值===="+sb.toString());
+        Log.i("========", "返回值" + sb.toString());
+        return sb.toString();
+    }
+
+    private void test() {
+//        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+//                .connectTimeout(60, TimeUnit.SECONDS)
+//                .readTimeout(60, TimeUnit.SECONDS)
+//                .writeTimeout(60, TimeUnit.SECONDS)
+//                .retryOnConnectionFailure(true)
+//                .addNetworkInterceptor(new Interceptor() {
+//                    @Override
+//                    public Response intercept(Chain chain) throws IOException {
+//                        Request originalRequest = chain.request();
+//                        Request compressRequest = originalRequest.newBuilder()
+//                                .addHeader("User-Agent", "123455")
+//                                .build();
+//                        return chain.proceed(compressRequest);
+//                    }
+//                })
+//                .build();
+//        Request.Builder builder = new Request.Builder();
+//        builder.header("Authorization", "Basic " + Base64Utils.encode("18666623932:imageDT2016"));
+//        okHttpClient.newCall(builder.url("https://shelf-kefu.kf5.com/apiv2/ticket_fields.json").build()).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//
+//            }
+//        });
+    }
 }

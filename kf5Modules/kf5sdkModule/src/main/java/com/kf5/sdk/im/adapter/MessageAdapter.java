@@ -70,21 +70,7 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
                         case Field.CHAT_MSG:
                             return MESSAGE_TYPE_SEND_TXT;
                         case Field.CHAT_UPLOAD:
-                            Upload upload = message.getUpload();
-                            String uploadType = upload.getType();
-                            if (Utils.isImage(uploadType)) {
-                                //图片
-                                return MESSAGE_TYPE_SEND_IMAGE;
-                            } else if (Utils.isAMR(uploadType)) {
-                                //语音
-                                return MESSAGE_TYPE_SEND_VOICE;
-                            } else if (Utils.isMP4(uploadType)) {
-                                //视频
-                                return MESSAGE_TYPE_VIDEO_SEND;
-                            } else {
-                                //附件
-                                return MESSAGE_TYPE_SEND_FILE;
-                            }
+                            return getUploadViewType(message, false);
                         case Field.AI_SEND:
                             return MESSAGE_TYPE_AI_MESSAGE_SEND;
                         case Field.CHAT_CUSTOM:
@@ -95,33 +81,42 @@ public class MessageAdapter extends CommonAdapter<IMMessage> {
                         case Field.CHAT_MSG:
                             return MESSAGE_TYPE_RECEIVE_TXT;
                         case Field.CHAT_UPLOAD:
-                            Upload upload = message.getUpload();
-                            String uploadType = upload.getType();
-                            if (Utils.isImage(uploadType)) {
-                                //图片
-                                return MESSAGE_TYPE_RECEIVE_IMAGE;
-                            } else if (Utils.isAMR(uploadType)) {
-                                //语音
-                                return MESSAGE_TYPE_RECEIVE_VOICE;
-                            } else if (Utils.isMP4(uploadType)) {
-                                //视频
-                                return MESSAGE_TYPE_VIDEO_RECEIVE;
-                            } else {
-                                //附件
-                                return MESSAGE_TYPE_RECEIVE_FILE;
-                            }
+                            return getUploadViewType(message, true);
                         case Field.AI_RECEIVE:
                             return MESSAGE_TYPE_AI_MESSAGE_RECEIVE;
                         case Field.CHAT_CUSTOM:
                             return MESSAGE_TYPE_RECEIVE_CUSTOM;
                     }
                 } else if (TextUtils.equals(Field.ROBOT, role)) {
-                    return MESSAGE_TYPE_AI_MESSAGE_RECEIVE;
+                    switch (type) {
+                        case Field.CHAT_UPLOAD:
+                            return getUploadViewType(message, true);
+                        default:
+                            return MESSAGE_TYPE_AI_MESSAGE_RECEIVE;
+                    }
                 }
             }
         }
-
         return -1;
+    }
+
+
+    private int getUploadViewType(IMMessage message, boolean isReceive) {
+        Upload upload = message.getUpload();
+        String uploadType = upload.getType();
+        if (Utils.isImage(uploadType)) {
+            //图片
+            return isReceive ? MESSAGE_TYPE_RECEIVE_IMAGE : MESSAGE_TYPE_SEND_IMAGE;
+        } else if (Utils.isAMR(uploadType)) {
+            //语音
+            return isReceive ? MESSAGE_TYPE_RECEIVE_VOICE : MESSAGE_TYPE_SEND_VOICE;
+        } else if (Utils.isMP4(uploadType)) {
+            //视频
+            return isReceive ? MESSAGE_TYPE_VIDEO_RECEIVE : MESSAGE_TYPE_VIDEO_SEND;
+        } else {
+            //附件
+            return isReceive ? MESSAGE_TYPE_RECEIVE_FILE : MESSAGE_TYPE_SEND_FILE;
+        }
     }
 
     @Override

@@ -103,6 +103,10 @@ public class Field {
 
     public static final String PNG = "png";
 
+    public static final String BMP = "bmp";
+
+    public static final String MP4 = "mp4";
+
     public static final String TOKEN = "token";
 
     public static final String URL = "url";
@@ -264,4 +268,23 @@ public class Field {
     public static final String KEY = "key";
 
     public static final String ASSIGN_QUESTION = "assign_question";
+
+    public static final String COMPANY_ID = "company_id";
+
+    public static final String RECALLED = "recalled";
+
+    public static final String ROLE = "role";
+
+    public static final String IS_READ = "is_read";
+
+    public static final String MSG = "msg";
+
+    public static final String REPLY_TIMEOUT = "reply_timeout";
+
+    public static final String RESULT = "result";
+
+    public static final String SETTING = "setting";
+
+    public static final String ENABLE_ROBOT = "enable_robot";
+
 }

@@ -71,14 +71,6 @@
         <item name="android:windowExitAnimation">@anim/kf5_file_list_slide_out</item>
     </style>
 
-    <style name="kf5popwindow_anim_style">
-        <item name="android:windowEnterAnimation">@anim/kf5_popshow_anim</item>
-        <!-- 指定显示的动画xml -->
-        <item name="android:windowExitAnimation">@anim/kf5_pophidden_anim</item>
-        <!-- 指定消失的动画xml -->
-
-    </style>
-
     <style name="KF5KeyBoardPopupAnimation" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/kf5_pop_up_in</item>
         <item name="android:windowExitAnimation">@anim/kf5_pop_down_out</item>

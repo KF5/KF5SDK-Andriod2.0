@@ -41,12 +41,44 @@ import java.util.List;
  */
 public final class FileUtil {
 
-    private static int sBufferSize = 8192;
+    public static final String[][] MIME_MapTable = {
+            //{后缀名， MIME类型}
+            {".3gp", "video/3gpp"}, {".apk", "application/vnd.android.package-archive"}, {".asf", "video/x-ms-asf"},
+            {".avi", "video/x-msvideo"}, {".bin", "application/octet-stream"}, {".bmp", "image/bmp"},
+            {".c", "text/plain"}, {".class", "application/octet-stream"}, {".conf", "text/plain"},
+            {".cpp", "text/plain"}, {".doc", "application/msword"},
+            {".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
+            {".xls", "application/vnd.ms-excel"},
+            {".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+            {".exe", "application/octet-stream"}, {".gif", "image/gif"}, {".gtar", "application/x-gtar"},
+            {".gz", "application/x-gzip"}, {".h", "text/plain"}, {".htm", "text/html"}, {".html", "text/html"},
+            {".jar", "application/java-archive"}, {".java", "text/plain"}, {".jpeg", "image/jpeg"},
+            {".jpg", "image/jpeg"}, {".js", "application/x-javascript"}, {".log", "text/plain"},
+            {".m3u", "audio/x-mpegurl"}, {".m4a", "audio/mp4a-latm"}, {".m4b", "audio/mp4a-latm"},
+            {".m4p", "audio/mp4a-latm"}, {".m4u", "video/vnd.mpegurl"}, {".m4v", "video/x-m4v"},
+            {".mov", "video/quicktime"}, {".mp2", "audio/x-mpeg"}, {".mp3", "audio/x-mpeg"}, {".mp4", "video/mp4"},
+            {".mpc", "application/vnd.mpohun.certificate"}, {".mpe", "video/mpeg"}, {".mpeg", "video/mpeg"},
+            {".mpg", "video/mpeg"}, {".mpg4", "video/mp4"}, {".mpga", "audio/mpeg"},
+            {".msg", "application/vnd.ms-outlook"}, {".ogg", "audio/ogg"}, {".pdf", "application/pdf"},
+            {".png", "image/png"}, {".pps", "application/vnd.ms-powerpoint"},
+            {".ppt", "application/vnd.ms-powerpoint"},
+            {".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation"},
+            {".prop", "text/plain"}, {".rc", "text/plain"}, {".rmvb", "audio/x-pn-realaudio"},
+            {".rtf", "application/rtf"}, {".sh", "text/plain"}, {".tar", "application/x-tar"},
+            {".tgz", "application/x-compressed"}, {".txt", "text/plain"}, {".wav", "audio/x-wav"},
+            {".wma", "audio/x-ms-wma"}, {".wmv", "audio/x-ms-wmv"}, {".wps", "application/vnd.ms-works"},
+            {".xml", "text/plain"}, {".z", "application/x-compress"}, {".zip", "application/x-zip-compressed"},
+            {"", "*/*"}
+    };
     private static final String LINE_SEP = System.getProperty("line.separator");
+    private static final char HEX_DIGITS[] =
+            {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    private static int sBufferSize = 8192;
 
     public FileUtil() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
+
     /**
      * Write file from input stream.
      *
@@ -66,9 +98,7 @@ public final class FileUtil {
      * @param append   True to append, false otherwise.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean writeFileFromIS(final String filePath,
-                                          final InputStream is,
-                                          final boolean append) {
+    public static boolean writeFileFromIS(final String filePath, final InputStream is, final boolean append) {
         return writeFileFromIS(getFileByPath(filePath), is, append);
     }
 
@@ -91,9 +121,7 @@ public final class FileUtil {
      * @param append True to append, false otherwise.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean writeFileFromIS(final File file,
-                                          final InputStream is,
-                                          final boolean append) {
+    public static boolean writeFileFromIS(final File file, final InputStream is, final boolean append) {
         if (!createOrExistsFile(file) || is == null) return false;
         OutputStream os = null;
         try {
@@ -142,9 +170,7 @@ public final class FileUtil {
      * @param append   True to append, false otherwise.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean writeFileFromBytesByStream(final String filePath,
-                                                     final byte[] bytes,
-                                                     final boolean append) {
+    public static boolean writeFileFromBytesByStream(final String filePath, final byte[] bytes, final boolean append) {
         return writeFileFromBytesByStream(getFileByPath(filePath), bytes, append);
     }
 
@@ -167,9 +193,7 @@ public final class FileUtil {
      * @param append True to append, false otherwise.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean writeFileFromBytesByStream(final File file,
-                                                     final byte[] bytes,
-                                                     final boolean append) {
+    public static boolean writeFileFromBytesByStream(final File file, final byte[] bytes, final boolean append) {
         if (bytes == null || !createOrExistsFile(file)) return false;
         BufferedOutputStream bos = null;
         try {
@@ -198,8 +222,7 @@ public final class FileUtil {
      * @param isForce  是否写入文件
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean writeFileFromBytesByChannel(final String filePath,
-                                                      final byte[] bytes,
+    public static boolean writeFileFromBytesByChannel(final String filePath, final byte[] bytes,
                                                       final boolean isForce) {
         return writeFileFromBytesByChannel(getFileByPath(filePath), bytes, false, isForce);
     }
@@ -213,9 +236,7 @@ public final class FileUtil {
      * @param isForce  True to force write file, false otherwise.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean writeFileFromBytesByChannel(final String filePath,
-                                                      final byte[] bytes,
-                                                      final boolean append,
+    public static boolean writeFileFromBytesByChannel(final String filePath, final byte[] bytes, final boolean append,
                                                       final boolean isForce) {
         return writeFileFromBytesByChannel(getFileByPath(filePath), bytes, append, isForce);
     }
@@ -228,9 +249,7 @@ public final class FileUtil {
      * @param isForce True to force write file, false otherwise.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean writeFileFromBytesByChannel(final File file,
-                                                      final byte[] bytes,
-                                                      final boolean isForce) {
+    public static boolean writeFileFromBytesByChannel(final File file, final byte[] bytes, final boolean isForce) {
         return writeFileFromBytesByChannel(file, bytes, false, isForce);
     }
 
@@ -243,9 +262,7 @@ public final class FileUtil {
      * @param isForce True to force write file, false otherwise.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean writeFileFromBytesByChannel(final File file,
-                                                      final byte[] bytes,
-                                                      final boolean append,
+    public static boolean writeFileFromBytesByChannel(final File file, final byte[] bytes, final boolean append,
                                                       final boolean isForce) {
         if (bytes == null) return false;
         FileChannel fc = null;
@@ -277,9 +294,7 @@ public final class FileUtil {
      * @param isForce  True to force write file, false otherwise.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean writeFileFromBytesByMap(final String filePath,
-                                                  final byte[] bytes,
-                                                  final boolean isForce) {
+    public static boolean writeFileFromBytesByMap(final String filePath, final byte[] bytes, final boolean isForce) {
         return writeFileFromBytesByMap(filePath, bytes, false, isForce);
     }
 
@@ -292,9 +307,7 @@ public final class FileUtil {
      * @param isForce  True to force write file, false otherwise.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean writeFileFromBytesByMap(final String filePath,
-                                                  final byte[] bytes,
-                                                  final boolean append,
+    public static boolean writeFileFromBytesByMap(final String filePath, final byte[] bytes, final boolean append,
                                                   final boolean isForce) {
         return writeFileFromBytesByMap(getFileByPath(filePath), bytes, append, isForce);
     }
@@ -307,9 +320,7 @@ public final class FileUtil {
      * @param isForce True to force write file, false otherwise.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean writeFileFromBytesByMap(final File file,
-                                                  final byte[] bytes,
-                                                  final boolean isForce) {
+    public static boolean writeFileFromBytesByMap(final File file, final byte[] bytes, final boolean isForce) {
         return writeFileFromBytesByMap(file, bytes, false, isForce);
     }
 
@@ -322,9 +333,7 @@ public final class FileUtil {
      * @param isForce True to force write file, false otherwise.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean writeFileFromBytesByMap(final File file,
-                                                  final byte[] bytes,
-                                                  final boolean append,
+    public static boolean writeFileFromBytesByMap(final File file, final byte[] bytes, final boolean append,
                                                   final boolean isForce) {
         if (bytes == null || !createOrExistsFile(file)) return false;
         FileChannel fc = null;
@@ -367,11 +376,13 @@ public final class FileUtil {
      * @param append   True to append, false otherwise.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean writeFileFromString(final String filePath,
-                                              final String content,
-                                              final boolean append) {
+    public static boolean writeFileFromString(final String filePath, final String content, final boolean append) {
         return writeFileFromString(getFileByPath(filePath), content, append);
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // the divide line of write and read
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Write file from string.
@@ -392,9 +403,7 @@ public final class FileUtil {
      * @param append  True to append, false otherwise.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean writeFileFromString(final File file,
-                                              final String content,
-                                              final boolean append) {
+    public static boolean writeFileFromString(final File file, final String content, final boolean append) {
         if (file == null || content == null) return false;
         if (!createOrExistsFile(file)) return false;
         BufferedWriter bw = null;
@@ -415,10 +424,6 @@ public final class FileUtil {
             }
         }
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // the divide line of write and read
-    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Return the lines in file.
@@ -483,9 +488,7 @@ public final class FileUtil {
      * @param charsetName The name of charset.
      * @return the lines in file
      */
-    public static List<String> readFile2List(final String filePath,
-                                             final int st,
-                                             final int end,
+    public static List<String> readFile2List(final String filePath, final int st, final int end,
                                              final String charsetName) {
         return readFile2List(getFileByPath(filePath), st, end, charsetName);
     }
@@ -511,10 +514,7 @@ public final class FileUtil {
      * @param charsetName The name of charset.
      * @return the lines in file
      */
-    public static List<String> readFile2List(final File file,
-                                             final int st,
-                                             final int end,
-                                             final String charsetName) {
+    public static List<String> readFile2List(final File file, final int st, final int end, final String charsetName) {
         if (!isFileExists(file)) return null;
         if (st > end) return null;
         BufferedReader reader = null;
@@ -525,9 +525,7 @@ public final class FileUtil {
             if (isSpace(charsetName)) {
                 reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
             } else {
-                reader = new BufferedReader(
-                        new InputStreamReader(new FileInputStream(file), charsetName)
-                );
+                reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charsetName));
             }
             while ((line = reader.readLine()) != null) {
                 if (curLine > end) break;
@@ -807,8 +805,7 @@ public final class FileUtil {
         if (newName.equals(file.getName())) return true;
         File newFile = new File(file.getParent() + File.separator + newName);
         // the new name of file exists then return false
-        return !newFile.exists()
-                && file.renameTo(newFile);
+        return !newFile.exists() && file.renameTo(newFile);
     }
 
     /**
@@ -935,8 +932,7 @@ public final class FileUtil {
      * @param destDirPath The path of destination directory.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean copyDir(final String srcDirPath,
-                                  final String destDirPath) {
+    public static boolean copyDir(final String srcDirPath, final String destDirPath) {
         return copyDir(getFileByPath(srcDirPath), getFileByPath(destDirPath));
     }
 
@@ -948,9 +944,7 @@ public final class FileUtil {
      * @param listener    The replace listener.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean copyDir(final String srcDirPath,
-                                  final String destDirPath,
-                                  final OnReplaceListener listener) {
+    public static boolean copyDir(final String srcDirPath, final String destDirPath, final OnReplaceListener listener) {
         return copyDir(getFileByPath(srcDirPath), getFileByPath(destDirPath), listener);
     }
 
@@ -961,8 +955,7 @@ public final class FileUtil {
      * @param destDir The destination directory.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean copyDir(final File srcDir,
-                                  final File destDir) {
+    public static boolean copyDir(final File srcDir, final File destDir) {
         return copyOrMoveDir(srcDir, destDir, false);
     }
 
@@ -974,9 +967,7 @@ public final class FileUtil {
      * @param listener The replace listener.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean copyDir(final File srcDir,
-                                  final File destDir,
-                                  final OnReplaceListener listener) {
+    public static boolean copyDir(final File srcDir, final File destDir, final OnReplaceListener listener) {
         return copyOrMoveDir(srcDir, destDir, listener, false);
     }
 
@@ -987,8 +978,7 @@ public final class FileUtil {
      * @param destFilePath The path of destination file.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean copyFile(final String srcFilePath,
-                                   final String destFilePath) {
+    public static boolean copyFile(final String srcFilePath, final String destFilePath) {
         return copyFile(getFileByPath(srcFilePath), getFileByPath(destFilePath));
     }
 
@@ -1000,8 +990,7 @@ public final class FileUtil {
      * @param listener     The replace listener.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean copyFile(final String srcFilePath,
-                                   final String destFilePath,
+    public static boolean copyFile(final String srcFilePath, final String destFilePath,
                                    final OnReplaceListener listener) {
         return copyFile(getFileByPath(srcFilePath), getFileByPath(destFilePath), listener);
     }
@@ -1013,8 +1002,7 @@ public final class FileUtil {
      * @param destFile The destination file.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean copyFile(final File srcFile,
-                                   final File destFile) {
+    public static boolean copyFile(final File srcFile, final File destFile) {
         return copyOrMoveFile(srcFile, destFile, false);
     }
 
@@ -1026,9 +1014,7 @@ public final class FileUtil {
      * @param listener The replace listener.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean copyFile(final File srcFile,
-                                   final File destFile,
-                                   final OnReplaceListener listener) {
+    public static boolean copyFile(final File srcFile, final File destFile, final OnReplaceListener listener) {
         return copyOrMoveFile(srcFile, destFile, listener, false);
     }
 
@@ -1039,8 +1025,7 @@ public final class FileUtil {
      * @param destDirPath The path of destination directory.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean moveDir(final String srcDirPath,
-                                  final String destDirPath) {
+    public static boolean moveDir(final String srcDirPath, final String destDirPath) {
         return moveDir(getFileByPath(srcDirPath), getFileByPath(destDirPath));
     }
 
@@ -1052,9 +1037,7 @@ public final class FileUtil {
      * @param listener    The replace listener.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean moveDir(final String srcDirPath,
-                                  final String destDirPath,
-                                  final OnReplaceListener listener) {
+    public static boolean moveDir(final String srcDirPath, final String destDirPath, final OnReplaceListener listener) {
         return moveDir(getFileByPath(srcDirPath), getFileByPath(destDirPath), listener);
     }
 
@@ -1065,8 +1048,7 @@ public final class FileUtil {
      * @param destDir The destination directory.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean moveDir(final File srcDir,
-                                  final File destDir) {
+    public static boolean moveDir(final File srcDir, final File destDir) {
         return copyOrMoveDir(srcDir, destDir, true);
     }
 
@@ -1078,9 +1060,7 @@ public final class FileUtil {
      * @param listener The replace listener.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean moveDir(final File srcDir,
-                                  final File destDir,
-                                  final OnReplaceListener listener) {
+    public static boolean moveDir(final File srcDir, final File destDir, final OnReplaceListener listener) {
         return copyOrMoveDir(srcDir, destDir, listener, true);
     }
 
@@ -1091,8 +1071,7 @@ public final class FileUtil {
      * @param destFilePath The path of destination file.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean moveFile(final String srcFilePath,
-                                   final String destFilePath) {
+    public static boolean moveFile(final String srcFilePath, final String destFilePath) {
         return moveFile(getFileByPath(srcFilePath), getFileByPath(destFilePath));
     }
 
@@ -1104,8 +1083,7 @@ public final class FileUtil {
      * @param listener     The replace listener.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean moveFile(final String srcFilePath,
-                                   final String destFilePath,
+    public static boolean moveFile(final String srcFilePath, final String destFilePath,
                                    final OnReplaceListener listener) {
         return moveFile(getFileByPath(srcFilePath), getFileByPath(destFilePath), listener);
     }
@@ -1117,8 +1095,7 @@ public final class FileUtil {
      * @param destFile The destination file.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean moveFile(final File srcFile,
-                                   final File destFile) {
+    public static boolean moveFile(final File srcFile, final File destFile) {
         return copyOrMoveFile(srcFile, destFile, true);
     }
 
@@ -1130,15 +1107,11 @@ public final class FileUtil {
      * @param listener The replace listener.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean moveFile(final File srcFile,
-                                   final File destFile,
-                                   final OnReplaceListener listener) {
+    public static boolean moveFile(final File srcFile, final File destFile, final OnReplaceListener listener) {
         return copyOrMoveFile(srcFile, destFile, listener, true);
     }
 
-    private static boolean copyOrMoveDir(final File srcDir,
-                                         final File destDir,
-                                         final boolean isMove) {
+    private static boolean copyOrMoveDir(final File srcDir, final File destDir, final boolean isMove) {
         return copyOrMoveDir(srcDir, destDir, new OnReplaceListener() {
             @Override
             public boolean onReplace() {
@@ -1147,9 +1120,7 @@ public final class FileUtil {
         }, isMove);
     }
 
-    private static boolean copyOrMoveDir(final File srcDir,
-                                         final File destDir,
-                                         final OnReplaceListener listener,
+    private static boolean copyOrMoveDir(final File srcDir, final File destDir, final OnReplaceListener listener,
                                          final boolean isMove) {
         if (srcDir == null || destDir == null) return false;
         // destDir's path locate in srcDir's path then return false
@@ -1179,9 +1150,7 @@ public final class FileUtil {
         return !isMove || deleteDir(srcDir);
     }
 
-    private static boolean copyOrMoveFile(final File srcFile,
-                                          final File destFile,
-                                          final boolean isMove) {
+    private static boolean copyOrMoveFile(final File srcFile, final File destFile, final boolean isMove) {
         return copyOrMoveFile(srcFile, destFile, new OnReplaceListener() {
             @Override
             public boolean onReplace() {
@@ -1190,9 +1159,7 @@ public final class FileUtil {
         }, isMove);
     }
 
-    private static boolean copyOrMoveFile(final File srcFile,
-                                          final File destFile,
-                                          final OnReplaceListener listener,
+    private static boolean copyOrMoveFile(final File srcFile, final File destFile, final OnReplaceListener listener,
                                           final boolean isMove) {
         if (srcFile == null || destFile == null) return false;
         // srcFile equals destFile then return false
@@ -1210,8 +1177,7 @@ public final class FileUtil {
         }
         if (!createOrExistsDir(destFile.getParentFile())) return false;
         try {
-            return writeFileFromIS(destFile, new FileInputStream(srcFile), false)
-                    && !(isMove && !deleteFile(srcFile));
+            return writeFileFromIS(destFile, new FileInputStream(srcFile), false) && !(isMove && !deleteFile(srcFile));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return false;
@@ -1330,8 +1296,7 @@ public final class FileUtil {
      * @param filter  The filter.
      * @return {@code true}: success<br>{@code false}: fail
      */
-    public static boolean deleteFilesInDirWithFilter(final String dirPath,
-                                                     final FileFilter filter) {
+    public static boolean deleteFilesInDirWithFilter(final String dirPath, final FileFilter filter) {
         return deleteFilesInDirWithFilter(getFileByPath(dirPath), filter);
     }
 
@@ -1420,8 +1385,7 @@ public final class FileUtil {
      * @param filter  The filter.
      * @return the files that satisfy the filter in directory
      */
-    public static List<File> listFilesInDirWithFilter(final String dirPath,
-                                                      final FileFilter filter) {
+    public static List<File> listFilesInDirWithFilter(final String dirPath, final FileFilter filter) {
         return listFilesInDirWithFilter(getFileByPath(dirPath), filter, false);
     }
 
@@ -1433,8 +1397,7 @@ public final class FileUtil {
      * @param filter The filter.
      * @return the files that satisfy the filter in directory
      */
-    public static List<File> listFilesInDirWithFilter(final File dir,
-                                                      final FileFilter filter) {
+    public static List<File> listFilesInDirWithFilter(final File dir, final FileFilter filter) {
         return listFilesInDirWithFilter(dir, filter, false);
     }
 
@@ -1446,8 +1409,7 @@ public final class FileUtil {
      * @param isRecursive True to traverse subdirectories, false otherwise.
      * @return the files that satisfy the filter in directory
      */
-    public static List<File> listFilesInDirWithFilter(final String dirPath,
-                                                      final FileFilter filter,
+    public static List<File> listFilesInDirWithFilter(final String dirPath, final FileFilter filter,
                                                       final boolean isRecursive) {
         return listFilesInDirWithFilter(getFileByPath(dirPath), filter, isRecursive);
     }
@@ -1460,8 +1422,7 @@ public final class FileUtil {
      * @param isRecursive True to traverse subdirectories, false otherwise.
      * @return the files that satisfy the filter in directory
      */
-    public static List<File> listFilesInDirWithFilter(final File dir,
-                                                      final FileFilter filter,
+    public static List<File> listFilesInDirWithFilter(final File dir, final FileFilter filter,
                                                       final boolean isRecursive) {
         if (!isDir(dir)) return null;
         List<File> list = new ArrayList<>();
@@ -1847,6 +1808,10 @@ public final class FileUtil {
         return filePath.substring(lastSep + 1, lastPoi);
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // copy from ConvertUtils
+    ///////////////////////////////////////////////////////////////////////////
+
     /**
      * Return the extension of file.
      *
@@ -1871,13 +1836,6 @@ public final class FileUtil {
         if (lastPoi == -1 || lastSep >= lastPoi) return "";
         return filePath.substring(lastPoi + 1);
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // copy from ConvertUtils
-    ///////////////////////////////////////////////////////////////////////////
-
-    private static final char HEX_DIGITS[] =
-            {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
     private static String bytes2HexString(final byte[] bytes) {
         if (bytes == null) return "";
@@ -1914,10 +1872,6 @@ public final class FileUtil {
             }
         }
         return true;
-    }
-
-    public interface OnReplaceListener {
-        boolean onReplace();
     }
 
     /**
@@ -1964,41 +1918,11 @@ public final class FileUtil {
         return type;
     }
 
-    public static final String[][] MIME_MapTable = {
-            //{后缀名， MIME类型}
-            { ".3gp", "video/3gpp" }, { ".apk", "application/vnd.android.package-archive" }, { ".asf", "video/x-ms-asf" },
-            { ".avi", "video/x-msvideo" }, { ".bin", "application/octet-stream" }, { ".bmp", "image/bmp" },
-            { ".c", "text/plain" }, { ".class", "application/octet-stream" }, { ".conf", "text/plain" },
-            { ".cpp", "text/plain" }, { ".doc", "application/msword" },
-            { ".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document" },
-            { ".xls", "application/vnd.ms-excel" },
-            { ".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" },
-            { ".exe", "application/octet-stream" }, { ".gif", "image/gif" }, { ".gtar", "application/x-gtar" },
-            { ".gz", "application/x-gzip" }, { ".h", "text/plain" }, { ".htm", "text/html" }, { ".html", "text/html" },
-            { ".jar", "application/java-archive" }, { ".java", "text/plain" }, { ".jpeg", "image/jpeg" },
-            { ".jpg", "image/jpeg" }, { ".js", "application/x-javascript" }, { ".log", "text/plain" },
-            { ".m3u", "audio/x-mpegurl" }, { ".m4a", "audio/mp4a-latm" }, { ".m4b", "audio/mp4a-latm" },
-            { ".m4p", "audio/mp4a-latm" }, { ".m4u", "video/vnd.mpegurl" }, { ".m4v", "video/x-m4v" },
-            { ".mov", "video/quicktime" }, { ".mp2", "audio/x-mpeg" }, { ".mp3", "audio/x-mpeg" }, { ".mp4", "video/mp4" },
-            { ".mpc", "application/vnd.mpohun.certificate" }, { ".mpe", "video/mpeg" }, { ".mpeg", "video/mpeg" },
-            { ".mpg", "video/mpeg" }, { ".mpg4", "video/mp4" }, { ".mpga", "audio/mpeg" },
-            { ".msg", "application/vnd.ms-outlook" }, { ".ogg", "audio/ogg" }, { ".pdf", "application/pdf" },
-            { ".png", "image/png" }, { ".pps", "application/vnd.ms-powerpoint" },
-            { ".ppt", "application/vnd.ms-powerpoint" },
-            { ".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation" },
-            { ".prop", "text/plain" }, { ".rc", "text/plain" }, { ".rmvb", "audio/x-pn-realaudio" },
-            { ".rtf", "application/rtf" }, { ".sh", "text/plain" }, { ".tar", "application/x-tar" },
-            { ".tgz", "application/x-compressed" }, { ".txt", "text/plain" }, { ".wav", "audio/x-wav" },
-            { ".wma", "audio/x-ms-wma" }, { ".wmv", "audio/x-ms-wmv" }, { ".wps", "application/vnd.ms-works" },
-            { ".xml", "text/plain" }, { ".z", "application/x-compress" }, { ".zip", "application/x-zip-compressed" },
-            { "", "*/*" }
-    };
-
     /**
      * 根据文件路径拷贝文件
      *
      * @param resourceFile 源文件
-     * @param targetPath 目标路径（包含文件名和文件格式）
+     * @param targetPath   目标路径（包含文件名和文件格式）
      * @return boolean 成功true、失败false
      */
     public static boolean copyFile(File resourceFile, String targetPath, String fileName) {
@@ -2047,6 +1971,10 @@ public final class FileUtil {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public interface OnReplaceListener {
+        boolean onReplace();
     }
 
 }

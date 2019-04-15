@@ -6,7 +6,11 @@ import android.support.annotation.Nullable;
 import com.kf5.sdk.im.utils.ImageUtils;
 import com.kf5.sdk.im.utils.MediaPlayerUtils;
 import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.utils.SafeJson;
 import com.kf5.sdk.system.utils.Utils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -130,6 +134,15 @@ public class IMMessageBuilder {
      * @return
      */
     public static IMMessage buildSendAIMessage(String content) {
+//        String result;
+//        JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put(Field.CONTENT, content);
+//            result = jsonObject.toString();
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            result = content;
+//        }
         return buildCommonIMMessage(content, Field.AI_SEND, Field.VISITOR, Status.SENDING);
     }
 
@@ -137,20 +150,33 @@ public class IMMessageBuilder {
     /**
      * 接收的机器人消息实体
      *
-     * @param content
-     * @param timeStamp
+     * @param jsonObject
      * @return
      */
-    public static IMMessage buildReceiveAIMessage(String content, String timeStamp, int id) {
+    public static IMMessage buildReceiveAIMessage(JSONObject jsonObject) {
         IMMessage aiMessage = new IMMessage();
-        aiMessage.setRole(Field.ROBOT);
-        aiMessage.setType(Field.AI_RECEIVE);
+        aiMessage.setMessageId(SafeJson.safeInt(jsonObject, Field.ID));
+        aiMessage.setTimeStamp(SafeJson.safeGet(jsonObject, Field.TIMESTAMP));
+        aiMessage.setChatId(SafeJson.safeInt(jsonObject, Field.CHAT_ID));
+        aiMessage.setCompanyId(SafeJson.safeInt(jsonObject, Field.COMPANY_ID));
+        aiMessage.setRecalledStatus(SafeJson.safeInt(jsonObject, Field.RECALLED));
+        aiMessage.setCreated(SafeJson.safeInt(jsonObject, Field.CREATED));
+        aiMessage.setName(SafeJson.safeGet(jsonObject, Field.NAME));
+        aiMessage.setRole(SafeJson.safeGet(jsonObject, Field.ROLE));
+        aiMessage.setUserId(SafeJson.safeInt(jsonObject, Field.USER_ID));
+        aiMessage.setIsRead(SafeJson.safeInt(jsonObject, Field.IS_READ));
+        aiMessage.setType(SafeJson.safeGet(jsonObject, Field.TYPE));
+        aiMessage.setMessage(SafeJson.safeGet(jsonObject, Field.MSG));
+        aiMessage.setReply_timeout(SafeJson.safeInt(jsonObject, Field.REPLY_TIMEOUT));
         aiMessage.setStatus(Status.SUCCESS);
-        aiMessage.setCreated(System.currentTimeMillis() / 1000);
-        aiMessage.setMessage(content);
-        aiMessage.setTimeStamp(timeStamp);
-        aiMessage.setType(Field.CHAT_MSG);
-        aiMessage.setMessageId(id);
+//        aiMessage.setRole(Field.ROBOT);
+//        aiMessage.setType(Field.AI_RECEIVE);
+//        aiMessage.setStatus(Status.SUCCESS);
+//        aiMessage.setCreated(System.currentTimeMillis() / 1000);
+//        aiMessage.setMessage(jsonString);
+//        aiMessage.setTimeStamp(timeStamp);
+//        aiMessage.setType(Field.CHAT_MSG);
+//        aiMessage.setMessageId(id);
         return aiMessage;
     }
 

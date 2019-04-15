@@ -34,8 +34,6 @@ public class IMMessage {
 
     private static final String UPLOAD_ID = "upload_id";
 
-    private static final String UPLOAD = "Upload";
-
     private static final String TIMESTAMP = "timestamp";
 
     private static final String RECALLED = "recalled";
@@ -60,7 +58,7 @@ public class IMMessage {
     private int userId; // 用户id
     @SerializedName(UPLOAD_ID)
     private int uploadId; //附件id
-    @SerializedName(UPLOAD)
+    @SerializedName(value = "upload")
     private Upload upload; //附件模型
     @SerializedName(TIMESTAMP)
     private String timeStamp;

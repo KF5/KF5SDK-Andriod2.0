@@ -12,6 +12,7 @@ import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 
 import com.chosen.imageviewer.view.scaleview.SubsamplingScaleImageView;

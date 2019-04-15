@@ -6,32 +6,25 @@ import android.net.Uri;
 import android.provider.Browser;
 import android.support.annotation.Nullable;
 import android.text.Html;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.chosen.cameraview.listener.ClickListener;
 import com.kf5.sdk.R;
 import com.kf5.sdk.im.entity.IMMessage;
 import com.kf5.sdk.im.entity.MessageType;
 import com.kf5.sdk.im.entity.Upload;
 import com.kf5.sdk.im.utils.MessageUtils;
-import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.utils.CustomTextView;
 import com.kf5.sdk.system.utils.FilePath;
 import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.MD5Utils;
-import com.kf5.sdk.system.utils.SafeJson;
 import com.kf5.sdk.system.utils.ToastUtil;
 import com.kf5.sdk.system.utils.Utils;
 import com.kf5.sdk.system.widget.DialogBox;
 import com.kf5.sdk.system.widget.PopList;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -89,13 +82,11 @@ class TextHolder extends BaseArrowHolder {
                 tvText.setOnLongClickListener(new PopList<>(tvText, new ItemLongClickCallback()));
                 break;
             case CUSTOM:
-                CustomTextView.applyRichText(tvText, MessageUtils.makeCustomMessageContent(context, message.getMessage()), null);
-                tvText.setOnLongClickListener(new PopList<>(tvText, new ItemLongClickCallback()));
-                break;
             case AI_MESSAGE:
             case TEXT:
             default:
-                CustomTextView.applyRichText(tvText, textMessageType == TextMessageType.AI_MESSAGE ? MessageUtils.decodeAIMessage(message.getMessage()) : message.getMessage(), null);
+                CustomTextView.applyRichText(tvText, textMessageType == TextMessageType.AI_MESSAGE ? MessageUtils.decodeAIMessage(message.getMessage()) :
+                        textMessageType == TextMessageType.CUSTOM ? MessageUtils.makeCustomMessageContent(context, message.getMessage()) : message.getMessage(), null);
                 tvText.setOnLongClickListener(new PopList<>(tvText, new ItemLongClickCallback()));
                 break;
         }
@@ -185,6 +176,7 @@ class TextHolder extends BaseArrowHolder {
         @Override
         public List<ItemLongCollection> getListData() {
             List<ItemLongCollection> list = new ArrayList<>();
+            LogUtil.printf("文字消息类型" + textMessageType);
             switch (textMessageType) {
                 case FILE:
                     list.add(new ItemLongCollection(context.getString(R.string.kf5_download)));
@@ -210,7 +202,6 @@ class TextHolder extends BaseArrowHolder {
                     if (file.exists()) {
                         Toast.makeText(context, context.getString(R.string.kf5_file_downloaded), Toast.LENGTH_SHORT).show();
                     } else {
-
                         new DialogBox(context).setMessage(context.getString(R.string.kf5_download_file_hint))
                                 .setLeftButton(context.getString(R.string.kf5_cancel), null)
                                 .setRightButton(context.getString(R.string.kf5_download), new DialogBox.onClickListener() {

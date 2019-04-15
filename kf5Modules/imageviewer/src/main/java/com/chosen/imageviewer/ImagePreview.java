@@ -4,12 +4,20 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.chosen.imageviewer.bean.ImageInfo;
 import com.chosen.imageviewer.view.ImagePreviewActivity;
+import com.chosen.imageviewer.view.listener.OnBigImageClickListener;
+import com.chosen.imageviewer.view.listener.OnBigImageLongClickListener;
+import com.chosen.imageviewer.view.listener.OnBigImagePageChangeListener;
+import com.chosen.imageviewer.view.listener.OnOriginProgressListener;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,63 +27,61 @@ import java.util.List;
  */
 public final class ImagePreview {
 
+    // 触发双击的最短时间，小于这个时间的直接返回
+    private static final int MIN_DOUBLE_CLICK_TIME = 1500;
+
     public static final int MODE_SCALE_TO_MEDIUM_TO_MAX_TO_MIN = 1001;// 三级放大
     public static final int MODE_SCALE_TO_MAX_TO_MIN = 1002;// 二级放大，最大与最小
     public static final int MODE_SCALE_TO_MEDIUM_TO_MIN = 1003;// 二级放大，中等与最小
 
-    private Context context;
-    private List<ImageInfo> imageInfoList;//图片数据集合
-    private int index = 0;//默认显示第几个
-    private String folderName = "ImagePreview";//下载到的文件名（根目录）
-    private float minScale = 1.0f;//最小缩放倍数
-    private float mediumScale = 3.0f;//中等缩放倍数
-    private float maxScale = 5.0f;//最大缩放倍数
+    @LayoutRes
+    public static final int PROGRESS_THEME_CIRCLE_TEXT = R.layout.kf5_imageviewer_default_progress_layout;
+
+    private WeakReference<Context> contextWeakReference;
+    private List<ImageInfo> imageInfoList;// 图片数据集合
+    private int index = 0;// 默认显示第几个
+    private String folderName = "Download";// 下载到的文件夹名（根目录中）
+    private float minScale = 1.0f;// 最小缩放倍数
+    private float mediumScale = 3.0f;// 中等缩放倍数
+    private float maxScale = 5.0f;// 最大缩放倍数
 
     private boolean isShowIndicator = true;// 是否显示图片指示器（1/9）
     private boolean isShowCloseButton = false;// 是否显示关闭页面按钮
     private boolean isShowDownButton = true;// 是否显示下载按钮
     private int zoomTransitionDuration = 200;// 动画持续时间 单位毫秒 ms
 
-    private boolean isEnableDragClose = false;//是否启用下拉关闭，
-    private boolean isEnableClickClose = true;//是否启用点击关闭
+    private boolean isEnableDragClose = false;// 是否启用下拉关闭，默认不启用
+    private boolean isEnableClickClose = true;// 是否启用点击关闭，默认启用
 
-    private LoadStrategy loadStrategy = LoadStrategy.Default;//加载策略
+    private LoadStrategy loadStrategy = LoadStrategy.Default;// 加载策略
 
+    @DrawableRes
     private int closeIconResId = R.drawable.kf5_imageviewer_ic_action_close;
+    @DrawableRes
     private int downIconResId = R.drawable.kf5_imageviewer_icon_download_new;
 
-    //加载失败占位图
+    // 加载失败时的占位图
+    @DrawableRes
     private int errorPlaceHolder = R.drawable.kf5_imageviewer_load_failed;
 
-    public enum LoadStrategy {
+    // 点击和长按事件接口
+    private OnBigImageClickListener bigImageClickListener;
+    private OnBigImageLongClickListener bigImageLongClickListener;
+    private OnBigImagePageChangeListener bigImagePageChangeListener;
+    private OnOriginProgressListener onOriginProgressListener;
 
-        /**
-         * 仅加载原图：强制隐藏查看原图按钮
-         */
-        AlwaysOrigin,
-
-        /**
-         * 仅加载普清：强制隐藏查看原图按钮
-         */
-        AlwaysThumb,
-
-        /**
-         * 根据网络自适应加载：WI-FI原图，流量普清，隐藏查看原图按钮
-         */
-        NetworkAuto,
-
-        /**
-         * 手动模式，默认普清，点击按钮加载原图；根据原图，缩略图url是否一样来判断是否显示查看原图按钮
-         */
-        Default
-    }
+    // 自定义百分比布局layout id
+    @LayoutRes
+    private int progressLayoutId = -1;
+    // 防止多次快速点击，记录上次打开的时间戳
+    private long lastClickTime = 0;
 
     public static ImagePreview getInstance() {
         return InnerClass.instance;
     }
 
     public ImagePreview setContext(@NonNull Context context) {
-        this.context = context;
+        this.contextWeakReference = new WeakReference<>(context);
         return this;
     }
 
@@ -85,6 +91,28 @@ public final class ImagePreview {
 
     public ImagePreview setImageInfoList(@NonNull List<ImageInfo> imageInfoList) {
         this.imageInfoList = imageInfoList;
+        return this;
+    }
+
+    public ImagePreview setImageList(@NonNull List<String> imageList) {
+        ImageInfo imageInfo;
+        this.imageInfoList = new ArrayList<>();
+        for (int i = 0; i < imageList.size(); i++) {
+            imageInfo = new ImageInfo();
+            imageInfo.setThumbnailUrl(imageList.get(i));
+            imageInfo.setOriginUrl(imageList.get(i));
+            this.imageInfoList.add(imageInfo);
+        }
+        return this;
+    }
+
+    public ImagePreview setImage(@NonNull String image) {
+        this.imageInfoList = new ArrayList<>();
+        ImageInfo imageInfo;
+        imageInfo = new ImageInfo();
+        imageInfo.setThumbnailUrl(image);
+        imageInfo.setOriginUrl(image);
+        this.imageInfoList.add(imageInfo);
         return this;
     }
 
@@ -150,7 +178,7 @@ public final class ImagePreview {
 
     public String getFolderName() {
         if (TextUtils.isEmpty(folderName)) {
-            folderName = "BigImageViewDownload";
+            folderName = "Download";
         }
         return folderName;
     }
@@ -209,13 +237,13 @@ public final class ImagePreview {
         return this;
     }
 
+    public LoadStrategy getLoadStrategy() {
+        return loadStrategy;
+    }
+
     public ImagePreview setLoadStrategy(LoadStrategy loadStrategy) {
         this.loadStrategy = loadStrategy;
         return this;
-    }
-
-    public LoadStrategy getLoadStrategy() {
-        return loadStrategy;
     }
 
     public boolean isEnableDragClose() {
@@ -237,9 +265,6 @@ public final class ImagePreview {
     }
 
     public int getCloseIconResId() {
-        if (closeIconResId < 0) {
-            closeIconResId = R.drawable.kf5_imageviewer_ic_action_close;
-        }
         return closeIconResId;
     }
 
@@ -249,9 +274,6 @@ public final class ImagePreview {
     }
 
     public int getDownIconResId() {
-        if (downIconResId < 0) {
-            downIconResId = R.drawable.kf5_imageviewer_icon_download_new;
-        }
         return downIconResId;
     }
 
@@ -278,6 +300,52 @@ public final class ImagePreview {
         return this;
     }
 
+    public OnBigImageClickListener getBigImageClickListener() {
+        return bigImageClickListener;
+    }
+
+    public ImagePreview setBigImageClickListener(OnBigImageClickListener bigImageClickListener) {
+        this.bigImageClickListener = bigImageClickListener;
+        return this;
+    }
+
+    public OnBigImageLongClickListener getBigImageLongClickListener() {
+        return bigImageLongClickListener;
+    }
+
+    public ImagePreview setBigImageLongClickListener(OnBigImageLongClickListener bigImageLongClickListener) {
+        this.bigImageLongClickListener = bigImageLongClickListener;
+        return this;
+    }
+
+    public OnBigImagePageChangeListener getBigImagePageChangeListener() {
+        return bigImagePageChangeListener;
+    }
+
+    public ImagePreview setBigImagePageChangeListener(OnBigImagePageChangeListener bigImagePageChangeListener) {
+        this.bigImagePageChangeListener = bigImagePageChangeListener;
+        return this;
+    }
+
+    public OnOriginProgressListener getOnOriginProgressListener() {
+        return onOriginProgressListener;
+    }
+
+    private ImagePreview setOnOriginProgressListener(OnOriginProgressListener onOriginProgressListener) {
+        this.onOriginProgressListener = onOriginProgressListener;
+        return this;
+    }
+
+    public int getProgressLayoutId() {
+        return progressLayoutId;
+    }
+
+    public ImagePreview setProgressLayoutId(int progressLayoutId, OnOriginProgressListener onOriginProgressListener) {
+        setOnOriginProgressListener(onOriginProgressListener);
+        this.progressLayoutId = progressLayoutId;
+        return this;
+    }
+
     public void reset() {
         imageInfoList = null;
         index = 0;
@@ -296,11 +364,29 @@ public final class ImagePreview {
         errorPlaceHolder = R.drawable.kf5_imageviewer_load_failed;
 
         loadStrategy = LoadStrategy.Default;
-        folderName = "ImagePreview";
-        context = null;
+        folderName = "Download";
+        if (contextWeakReference != null) {
+            contextWeakReference.clear();
+            contextWeakReference = null;
+        }
+
+        bigImageClickListener = null;
+        bigImageLongClickListener = null;
+        bigImagePageChangeListener = null;
+
+        progressLayoutId = -1;
+        lastClickTime = 0;
     }
 
     public void start() {
+        if (System.currentTimeMillis() - lastClickTime <= MIN_DOUBLE_CLICK_TIME) {
+            Log.e("ImagePreview", "---忽略多次快速点击---");
+            return;
+        }
+        if (contextWeakReference == null) {
+            throw new IllegalArgumentException("You must call 'setContext(Context context)' first!");
+        }
+        Context context = contextWeakReference.get();
         if (context == null) {
             throw new IllegalArgumentException("You must call 'setContext(Context context)' first!");
         }
@@ -325,7 +411,30 @@ public final class ImagePreview {
         if (this.index >= imageInfoList.size()) {
             throw new IllegalArgumentException("index out of range!");
         }
+        lastClickTime = System.currentTimeMillis();
         ImagePreviewActivity.activityStart(context);
+    }
+
+    public enum LoadStrategy {
+        /**
+         * 仅加载原图；会强制隐藏查看原图按钮
+         */
+        AlwaysOrigin,
+
+        /**
+         * 仅加载普清；会强制隐藏查看原图按钮
+         */
+        AlwaysThumb,
+
+        /**
+         * 根据网络自适应加载，WiFi原图，流量普清；会强制隐藏查看原图按钮
+         */
+        NetworkAuto,
+
+        /**
+         * 手动模式：默认普清，点击按钮再加载原图；会根据原图、缩略图url是否一样来判断是否显示查看原图按钮
+         */
+        Default
     }
 
     private static class InnerClass {

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/kf5_refreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/kf5_listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/kf5_white"
+            android:overScrollMode="never" />
+
+        <include
+            android:id="@+id/kf5_empty_layout"
+            layout="@layout/kf5_listview_empty_layout" />
+    </FrameLayout>
+</com.scwang.smartrefresh.layout.SmartRefreshLayout>

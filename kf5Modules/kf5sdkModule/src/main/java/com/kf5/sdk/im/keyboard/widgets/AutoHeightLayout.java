@@ -19,7 +19,7 @@ import com.kf5.sdk.im.keyboard.utils.EmoticonsKeyboardUtils;
 
 public abstract class AutoHeightLayout extends SoftKeyboardSizeWatchLayout implements SoftKeyboardSizeWatchLayout.OnResizeListener {
 
-    private static final int ID_CHILD = R.id.id_auto_layout;
+    private static final int ID_CHILD = R.id.kf5_id_auto_layout;
 
     protected Context mContext;
     protected int mMaxParentHeight;

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,9 @@ public class PreviewItemFragment extends Fragment {
 
     private static final String ARGS_ITEM = "args_item";
     private OnFragmentInteractionListener mListener;
+
+    SubsamplingScaleImageViewDragClose imageView;
+    PhotoView photoView;
 
     public static PreviewItemFragment newInstance(Item item) {
         PreviewItemFragment fragment = new PreviewItemFragment();
@@ -83,8 +87,8 @@ public class PreviewItemFragment extends Fragment {
             videoPlayButton.setVisibility(View.GONE);
         }
 
-        SubsamplingScaleImageViewDragClose imageView = view.findViewById(R.id.photo_view);
-        PhotoView photoView = view.findViewById(R.id.gif_or_image_view);
+        imageView = view.findViewById(R.id.photo_view);
+        photoView = view.findViewById(R.id.gif_or_image_view);
         final ProgressBar progressBar = view.findViewById(R.id.progress_view);
         Point size = PhotoMetadataUtils.getBitmapSize(item.getContentUri(), getActivity());
         if (item.isGif() || item.isVideo()) {
@@ -109,7 +113,7 @@ public class PreviewItemFragment extends Fragment {
             imageView.setMinScale(ImagePreview.getInstance().getMinScale());
             imageView.setMaxScale(ImagePreview.getInstance().getMaxScale());
             imageView.setDoubleTapZoomScale(ImagePreview.getInstance().getMediumScale());
-            boolean isLongImage = ImageUtil.isLongImage(PathUtils.getPath(getActivity(), item.getContentUri()));
+            boolean isLongImage = ImageUtil.isLongImage(getActivity(), PathUtils.getPath(getActivity(), item.getContentUri()));
             if (isLongImage) {
                 imageView.setMinimumScaleType(SubsamplingScaleImageViewDragClose.SCALE_TYPE_START);
             }
@@ -165,6 +169,18 @@ public class PreviewItemFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        if (imageView != null) {
+            imageView.destroyDrawingCache();
+            imageView.recycle();
+            imageView = null;
+        }
+        photoView = null;
+        super.onDestroyView();
+    }
+
 
     @Override
     public void onDetach() {

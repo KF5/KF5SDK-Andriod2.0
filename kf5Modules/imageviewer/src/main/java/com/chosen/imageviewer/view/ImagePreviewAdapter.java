@@ -1,12 +1,16 @@
 package com.chosen.imageviewer.view;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.PagerAdapter;
 import android.util.DisplayMetrics;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,13 +32,13 @@ import com.chosen.imageviewer.bean.ImageInfo;
 import com.chosen.imageviewer.glide.FileTarget;
 import com.chosen.imageviewer.glide.ImageLoader;
 import com.chosen.imageviewer.tool.common.NetworkUtil;
-import com.chosen.imageviewer.tool.common.Print;
 import com.chosen.imageviewer.tool.image.ImageUtil;
 import com.chosen.imageviewer.tool.ui.MyToast;
+import com.chosen.imageviewer.tool.ui.PhoneUtil;
 import com.chosen.imageviewer.view.scaleview.FingerDragHelper;
 import com.chosen.imageviewer.view.scaleview.ImageSource;
-import com.chosen.imageviewer.view.scaleview.SubsamplingScaleImageViewDragClose;
 import com.chosen.imageviewer.view.scaleview.SubsamplingScaleImageView;
+import com.chosen.imageviewer.view.scaleview.SubsamplingScaleImageViewDragClose;
 import com.chosen.imageviewer.view.photoview.PhotoView;
 
 import java.io.File;
@@ -51,14 +55,14 @@ public class ImagePreviewAdapter extends PagerAdapter {
 
     private static final String TAG = "ImagePreview";
     private Activity activity;
-    private List<ImageInfo> imageInfo;
-    private HashMap<String, SubsamplingScaleImageViewDragClose> imageHashMap = new HashMap<>();
-    private HashMap<String, PhotoView> imageGifHashMap = new HashMap<>();
+    private List<ImageInfo> imageInfoList;
+    private SparseArray<SubsamplingScaleImageViewDragClose> imageHashMap = new SparseArray<>();
+    private SparseArray<PhotoView> imageGifHashMap = new SparseArray<>();
     private String finalLoadUrl = "";//最终加载的图片url
     private int phoneHeight = 0;
 
     public ImagePreviewAdapter(Activity activity, @NonNull List<ImageInfo> imageInfo) {
-        this.imageInfo = imageInfo;
+        this.imageInfoList = imageInfo;
         this.activity = activity;
         WindowManager windowManager = ((WindowManager) activity.getApplicationContext().getSystemService(Context.WINDOW_SERVICE));
         DisplayMetrics metrics = new DisplayMetrics();
@@ -69,10 +73,11 @@ public class ImagePreviewAdapter extends PagerAdapter {
     public void closePage() {
         try {
             if (imageHashMap != null && imageHashMap.size() > 0) {
-                for (Map.Entry<String, SubsamplingScaleImageViewDragClose> entry : imageHashMap.entrySet()) {
-                    if (entry != null && entry.getValue() != null) {
-                        ((SubsamplingScaleImageViewDragClose) entry.getValue()).destroyDrawingCache();
-                        ((SubsamplingScaleImageViewDragClose) entry.getValue()).recycle();
+                for (int i = 0; i < imageHashMap.size(); i++) {
+                    SubsamplingScaleImageViewDragClose entry = imageHashMap.get(i);
+                    if (entry != null) {
+                        entry.destroyDrawingCache();
+                        entry.recycle();
                     }
                 }
                 imageHashMap.clear();
@@ -80,11 +85,10 @@ public class ImagePreviewAdapter extends PagerAdapter {
             }
 
             if (imageGifHashMap != null && imageGifHashMap.size() > 0) {
-                for (Map.Entry<String, PhotoView> entry : imageGifHashMap.entrySet()) {
-                    if (entry != null && entry.getValue() != null) {
-                        entry.getValue().destroyDrawingCache();
-                        entry.getValue().setImageBitmap(null);
-                    }
+                for (int i = 0; i < imageGifHashMap.size(); i++) {
+                    PhotoView entry = imageGifHashMap.get(i);
+                    entry.destroyDrawingCache();
+                    entry.setImageBitmap(null);
                 }
                 imageGifHashMap.clear();
                 imageGifHashMap = null;
@@ -92,33 +96,35 @@ public class ImagePreviewAdapter extends PagerAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try {
+            ImageLoader.clearMemory(activity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public int getCount() {
-        return imageInfo.size();
+        return imageInfoList.size();
     }
 
 
     /**
      * 加载原图
-     *
-     * @param imageInfo
      */
-    public void loadOrigin(ImageInfo imageInfo) {
-        String originalUrl = imageInfo.getOriginUrl();
-        Print.d(TAG, "loadOrigin originUrl = " + originalUrl);
+    public void loadOrigin(int position) {
+
         if (imageHashMap == null || imageGifHashMap == null) {
-            Print.d(TAG, "hash map == null");
             notifyDataSetChanged();
             return;
         }
+        ImageInfo info = imageInfoList.get(position);
+        String originalUrl = info.getOriginUrl();
+        if (imageHashMap.get(position) != null && imageGifHashMap.get(position) != null) {
+            final SubsamplingScaleImageViewDragClose imageView = imageHashMap.get(position);
+            final PhotoView imageGif = imageGifHashMap.get(position);
 
-        if (imageHashMap.get(originalUrl) != null && imageGifHashMap.get(originalUrl) != null) {
-            SubsamplingScaleImageViewDragClose imageView = imageHashMap.get(imageInfo.getOriginUrl());
-            PhotoView imageGif = imageGifHashMap.get(imageInfo.getOriginUrl());
-
-            File cacheFile = ImageLoader.getGlideCacheFile(activity, imageInfo.getOriginUrl());
+            File cacheFile = ImageLoader.getGlideCacheFile(activity, originalUrl);
             if (cacheFile != null && cacheFile.exists()) {
                 boolean isCacheIsGif = ImageUtil.isGifImageWithMime(cacheFile.getAbsolutePath());
                 if (isCacheIsGif) {
@@ -128,19 +134,21 @@ public class ImagePreviewAdapter extends PagerAdapter {
                     Glide.with(activity)
                             .asGif()
                             .load(cacheFile)
-                            .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE).error(ImagePreview.getInstance().getErrorPlaceHolder()))
+                            .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                                    .error(ImagePreview.getInstance().getErrorPlaceHolder()))
                             .into(imageGif);
                 } else {
                     imageGif.setVisibility(View.GONE);
                     imageView.setVisibility(View.VISIBLE);
 
-                    String thumbnailUrl = imageInfo.getThumbnailUrl();
+                    String thumbnailUrl = info.getThumbnailUrl();
                     File smallCacheFile = ImageLoader.getGlideCacheFile(activity, thumbnailUrl);
 
                     ImageSource small = null;
                     if (smallCacheFile != null && smallCacheFile.exists()) {
                         String smallImagePath = smallCacheFile.getAbsolutePath();
-                        small = ImageSource.bitmap(ImageUtil.getImageBitmap(smallImagePath, ImageUtil.getBitmapDegree(smallImagePath)));
+                        small = ImageSource.bitmap(
+                                ImageUtil.getImageBitmap(smallImagePath, ImageUtil.getBitmapDegree(smallImagePath)));
                         int widSmall = ImageUtil.getWidthHeight(smallImagePath)[0];
                         int heiSmall = ImageUtil.getWidthHeight(smallImagePath)[1];
                         small.dimensions(widSmall, heiSmall);
@@ -151,28 +159,24 @@ public class ImagePreviewAdapter extends PagerAdapter {
                     int widOrigin = ImageUtil.getWidthHeight(imagePath)[0];
                     int heiOrigin = ImageUtil.getWidthHeight(imagePath)[1];
                     origin.dimensions(widOrigin, heiOrigin);
-                    boolean isLongImage = ImageUtil.isLongImage(imagePath);
-                    if (isLongImage) {
-                        imageView.setMinimumScaleType(SubsamplingScaleImageViewDragClose.SCALE_TYPE_START);
-                    } else {
-                        imageView.setMinimumScaleType(SubsamplingScaleImageViewDragClose.SCALE_TYPE_CENTER_INSIDE);
-                    }
-                    imageView.setRotation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
-                    imageView.setImage(origin, small);
+
+                    setImageSpec(imagePath, imageView);
+
+                    imageView.setOrientation(SubsamplingScaleImageViewDragClose.ORIENTATION_USE_EXIF);
+                    imageView.setImage(origin.tilingDisabled(), small != null ? small.tilingDisabled() : null);
                 }
             } else {
-                Print.d(TAG, "load original cache == null");
                 notifyDataSetChanged();
             }
         } else {
-            Print.d(TAG, "hash map get == null");
             notifyDataSetChanged();
         }
     }
 
+    @SuppressLint("CheckResult")
     @NonNull
     @Override
-    public Object instantiateItem(@NonNull ViewGroup container, int position) {
+    public Object instantiateItem(@NonNull ViewGroup container, final int position) {
         if (activity == null) {
             return container;
         }
@@ -182,7 +186,7 @@ public class ImagePreviewAdapter extends PagerAdapter {
         final SubsamplingScaleImageViewDragClose imageView = convertView.findViewById(R.id.photo_view);
         final PhotoView imageGif = convertView.findViewById(R.id.gif_view);
 
-        final ImageInfo info = this.imageInfo.get(position);
+        final ImageInfo info = this.imageInfoList.get(position);
         final String originPathUrl = info.getOriginUrl();
         final String thumbPathUrl = info.getThumbnailUrl();
 
@@ -198,27 +202,54 @@ public class ImagePreviewAdapter extends PagerAdapter {
         imageGif.setMaximumScale(ImagePreview.getInstance().getMaxScale());
         imageGif.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
-        if (ImagePreview.getInstance().isEnableClickClose()) {
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ImagePreview.getInstance().isEnableClickClose()) {
                     activity.finish();
                 }
-            });
-            imageGif.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                if (ImagePreview.getInstance().getBigImageClickListener() != null) {
+                    ImagePreview.getInstance().getBigImageClickListener().onClick(v, position);
+                }
+            }
+        });
+        imageGif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ImagePreview.getInstance().isEnableClickClose()) {
                     activity.finish();
                 }
-            });
-        }
+                if (ImagePreview.getInstance().getBigImageClickListener() != null) {
+                    ImagePreview.getInstance().getBigImageClickListener().onClick(v, position);
+                }
+            }
+        });
+
+        imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (ImagePreview.getInstance().getBigImageLongClickListener() != null) {
+                    return ImagePreview.getInstance().getBigImageLongClickListener().onLongClick(v, position);
+                }
+                return false;
+            }
+        });
+        imageGif.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (ImagePreview.getInstance().getBigImageLongClickListener() != null) {
+                    return ImagePreview.getInstance().getBigImageLongClickListener().onLongClick(v, position);
+                }
+                return false;
+            }
+        });
 
         if (ImagePreview.getInstance().isEnableDragClose()) {
             fingerDragHelper.setOnAlphaChangedListener(new FingerDragHelper.onAlphaChangedListener() {
                 @Override
                 public void onTranslationYChanged(MotionEvent event, float translationY) {
                     float yAbs = Math.abs(translationY);
-                    float percent = yAbs / phoneHeight;
+                    float percent = yAbs / PhoneUtil.getPhoneHei(activity.getApplicationContext());
                     float number = 1.0F - percent;
 
                     if (activity instanceof ImagePreviewActivity) {
@@ -237,11 +268,11 @@ public class ImagePreviewAdapter extends PagerAdapter {
             });
         }
 
-        imageGifHashMap.remove(originPathUrl);
-        imageGifHashMap.put(originPathUrl, imageGif);
+        imageGifHashMap.remove(position);
+        imageGifHashMap.put(position, imageGif);
 
-        imageHashMap.remove(originPathUrl);
-        imageHashMap.put(originPathUrl, imageView);
+        imageHashMap.remove(position);
+        imageHashMap.put(position, imageView);
 
         ImagePreview.LoadStrategy loadStrategy = ImagePreview.getInstance().getLoadStrategy();
         // 根据当前加载策略判断，需要加载的url是哪一个
@@ -269,44 +300,11 @@ public class ImagePreviewAdapter extends PagerAdapter {
         if (cacheFile != null && cacheFile.exists()) {
             boolean isCacheIsGif = ImageUtil.isGifImageWithMime(cacheFile.getAbsolutePath());
             if (isCacheIsGif) {
-                imageGif.setVisibility(View.VISIBLE);
-                imageView.setVisibility(View.GONE);
-                Glide.with(activity)
-                        .asGif()
-                        .load(cacheFile)
-                        .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE).error(ImagePreview.getInstance().getErrorPlaceHolder()))
-                        .listener(new RequestListener<GifDrawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target,
-                                                        boolean isFirstResource) {
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target,
-                                                           DataSource dataSource, boolean isFirstResource) {
-                                progressBar.setVisibility(View.GONE);
-                                return false;
-                            }
-                        })
-                        .into(imageGif);
-            } else {
-                imageGif.setVisibility(View.GONE);
-                imageView.setVisibility(View.VISIBLE);
-
                 String imagePath = cacheFile.getAbsolutePath();
-                boolean isLongImage = ImageUtil.isLongImage(imagePath);
-                if (isLongImage) {
-                    imageView.setMinimumScaleType(SubsamplingScaleImageViewDragClose.SCALE_TYPE_START);
-                }
-                imageView.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
-                imageView.setImage(ImageSource.uri(Uri.fromFile(new File(cacheFile.getAbsolutePath()))));
-                imageView.setOnImageEventListener(new SubsamplingScaleImageViewDragClose.DefaultOnImageEventListener() {
-                    @Override
-                    public void onReady() {
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
+                loadGifImageSpec(imagePath, imageView, imageGif, progressBar);
+            } else {
+                String imagePath = cacheFile.getAbsolutePath();
+                loadImageSpec(imagePath, imageView, imageGif, progressBar);
             }
         } else {
             Glide.with(activity).downloadOnly().load(url).addListener(new RequestListener<File>() {
@@ -321,192 +319,63 @@ public class ImagePreviewAdapter extends PagerAdapter {
 
                             Glide.with(activity).downloadOnly().load(url).addListener(new RequestListener<File>() {
                                 @Override
-                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<File> target,
-                                                            boolean isFirstResource) {
-                                    progressBar.setVisibility(View.GONE);
-
-                                    imageGif.setVisibility(View.GONE);
-                                    imageView.setVisibility(View.VISIBLE);
-                                    imageView.setImage(ImageSource.resource(ImagePreview.getInstance().getErrorPlaceHolder()));
-
-                                    String errorMsg = activity.getResources().getString(R.string.kf5_imageviewer_failed_to_load_img);
-                                    if (e != null) {
-                                        errorMsg = errorMsg.concat(":\n").concat(e.getMessage());
-                                    }
-                                    if (errorMsg.length() > 200) {
-                                        errorMsg = errorMsg.substring(0, 199);
-                                    }
-                                    MyToast.getInstance()._short(activity.getApplicationContext(), errorMsg);
+                                public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                            Target<File> target, boolean isFirstResource) {
+                                    loadFailed(imageView, imageGif, progressBar, e);
                                     return true;
                                 }
 
                                 @Override
-                                public boolean onResourceReady(File resource, Object model, Target<File> target, DataSource dataSource,
-                                                               boolean isFirstResource) {
-                                    String imagePath = resource.getAbsolutePath();
-                                    boolean isCacheIsGif = ImageUtil.isGifImageWithMime(imagePath);
-                                    if (isCacheIsGif) {
-                                        imageGif.setVisibility(View.VISIBLE);
-                                        imageView.setVisibility(View.GONE);
-                                        Glide.with(activity)
-                                                .asGif()
-                                                .load(imagePath)
-                                                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE).error(ImagePreview.getInstance().getErrorPlaceHolder()))
-                                                .listener(new RequestListener<GifDrawable>() {
-                                                    @Override
-                                                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
-                                                                                Target<GifDrawable> target, boolean isFirstResource) {
-                                                        imageGif.setVisibility(View.GONE);
-                                                        imageView.setVisibility(View.VISIBLE);
-                                                        imageView.setImage(ImageSource.resource(ImagePreview.getInstance().getErrorPlaceHolder()));
-                                                        return true;
-                                                    }
-
-                                                    @Override
-                                                    public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target,
-                                                                                   DataSource dataSource, boolean isFirstResource) {
-                                                        progressBar.setVisibility(View.GONE);
-                                                        return false;
-                                                    }
-                                                })
-                                                .into(imageGif);
-                                    } else {
-                                        imageGif.setVisibility(View.GONE);
-                                        imageView.setVisibility(View.VISIBLE);
-
-                                        boolean isLongImage = ImageUtil.isLongImage(imagePath);
-                                        if (isLongImage) {
-                                            imageView.setMinimumScaleType(SubsamplingScaleImageViewDragClose.SCALE_TYPE_START);
-                                        }
-                                        imageView.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
-                                        imageView.setImage(ImageSource.uri(Uri.fromFile(new File(resource.getAbsolutePath()))));
-                                        imageView.setOnImageEventListener(new SubsamplingScaleImageViewDragClose.DefaultOnImageEventListener() {
-                                            @Override
-                                            public void onReady() {
-                                                progressBar.setVisibility(View.GONE);
-                                            }
-
-                                        });
-                                    }
+                                public boolean onResourceReady(File resource, Object model, Target<File> target,
+                                                               DataSource dataSource, boolean isFirstResource) {
+                                    loadSuccess(resource, imageView, imageGif, progressBar);
                                     return true;
                                 }
-                            }).into(new FileTarget());
+                            }).into(new FileTarget() {
+                                @Override
+                                public void onLoadStarted(@Nullable Drawable placeholder) {
+                                    super.onLoadStarted(placeholder);
+                                }
+                            });
                             return true;
                         }
 
                         @Override
-                        public boolean onResourceReady(File resource, Object model, Target<File> target, DataSource dataSource,
-                                                       boolean isFirstResource) {
-                            String imagePath = resource.getAbsolutePath();
-                            boolean isCacheIsGif = ImageUtil.isGifImageWithMime(imagePath);
-                            if (isCacheIsGif) {
-                                imageGif.setVisibility(View.VISIBLE);
-                                imageView.setVisibility(View.GONE);
-                                Glide.with(activity)
-                                        .asGif()
-                                        .load(imagePath)
-                                        .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE).error(ImagePreview.getInstance().getErrorPlaceHolder()))
-                                        .listener(new RequestListener<GifDrawable>() {
-                                            @Override
-                                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target,
-                                                                        boolean isFirstResource) {
-                                                imageGif.setVisibility(View.GONE);
-                                                imageView.setVisibility(View.VISIBLE);
-                                                imageView.setImage(ImageSource.resource(ImagePreview.getInstance().getErrorPlaceHolder()));
-                                                return true;
-                                            }
-
-                                            @Override
-                                            public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target,
-                                                                           DataSource dataSource, boolean isFirstResource) {
-                                                progressBar.setVisibility(View.GONE);
-                                                return false;
-                                            }
-                                        })
-                                        .into(imageGif);
-                            } else {
-                                imageGif.setVisibility(View.GONE);
-                                imageView.setVisibility(View.VISIBLE);
-
-                                boolean isLongImage = ImageUtil.isLongImage(imagePath);
-                                if (isLongImage) {
-                                    imageView.setMinimumScaleType(SubsamplingScaleImageViewDragClose.SCALE_TYPE_START);
-                                }
-                                imageView.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
-                                imageView.setImage(ImageSource.uri(Uri.fromFile(new File(resource.getAbsolutePath()))));
-                                imageView.setOnImageEventListener(new SubsamplingScaleImageViewDragClose.DefaultOnImageEventListener() {
-                                    @Override
-                                    public void onReady() {
-                                        progressBar.setVisibility(View.GONE);
-                                    }
-                                });
-                            }
+                        public boolean onResourceReady(File resource, Object model, Target<File> target,
+                                                       DataSource dataSource, boolean isFirstResource) {
+                            loadSuccess(resource, imageView, imageGif, progressBar);
                             return true;
                         }
-                    }).into(new FileTarget());
+                    }).into(new FileTarget() {
+                        @Override
+                        public void onLoadStarted(@Nullable Drawable placeholder) {
+                            super.onLoadStarted(placeholder);
+                        }
+                    });
                     return true;
                 }
 
                 @Override
                 public boolean onResourceReady(File resource, Object model, Target<File> target, DataSource dataSource,
                                                boolean isFirstResource) {
-                    String imagePath = resource.getAbsolutePath();
-                    boolean isCacheIsGif = ImageUtil.isGifImageWithMime(imagePath);
-                    if (isCacheIsGif) {
-                        imageGif.setVisibility(View.VISIBLE);
-                        imageView.setVisibility(View.GONE);
-                        Glide.with(activity)
-                                .asGif()
-                                .load(imagePath)
-                                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE).error(ImagePreview.getInstance().getErrorPlaceHolder()))
-                                .listener(new RequestListener<GifDrawable>() {
-                                    @Override
-                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target,
-                                                                boolean isFirstResource) {
-                                        imageGif.setVisibility(View.GONE);
-                                        imageView.setVisibility(View.VISIBLE);
-                                        imageView.setImage(ImageSource.resource(ImagePreview.getInstance().getErrorPlaceHolder()));
-                                        return true;
-                                    }
-
-                                    @Override
-                                    public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target,
-                                                                   DataSource dataSource, boolean isFirstResource) {
-                                        progressBar.setVisibility(View.GONE);
-                                        return false;
-                                    }
-                                })
-                                .into(imageGif);
-                    } else {
-                        imageGif.setVisibility(View.GONE);
-                        imageView.setVisibility(View.VISIBLE);
-
-                        boolean isLongImage = ImageUtil.isLongImage(imagePath);
-                        if (isLongImage) {
-                            imageView.setMinimumScaleType(SubsamplingScaleImageViewDragClose.SCALE_TYPE_START);
-                        }
-                        imageView.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
-                        imageView.setImage(ImageSource.uri(Uri.fromFile(new File(resource.getAbsolutePath()))));
-                        imageView.setOnImageEventListener(new SubsamplingScaleImageViewDragClose.DefaultOnImageEventListener() {
-                            @Override
-                            public void onReady() {
-                                progressBar.setVisibility(View.GONE);
-                            }
-
-                        });
-                    }
+                    loadSuccess(resource, imageView, imageGif, progressBar);
                     return true;
                 }
-            }).into(new FileTarget());
+            }).into(new FileTarget() {
+                @Override
+                public void onLoadStarted(@Nullable Drawable placeholder) {
+                    super.onLoadStarted(placeholder);
+                }
+            });
         }
         container.addView(convertView);
         return convertView;
     }
 
     @Override
-    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+    public void destroyItem(ViewGroup container, int position, Object object) {
         try {
-            container.removeView(((View) object));
+            container.removeView((View) object);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -518,18 +387,18 @@ public class ImagePreviewAdapter extends PagerAdapter {
         }
 
         try {
-            if (imageHashMap != null && imageHashMap.get(imageInfo.get(position).getOriginUrl()) != null) {
-                imageHashMap.get(imageInfo.get(position).getOriginUrl()).destroyDrawingCache();
-                imageHashMap.get(imageInfo.get(position).getOriginUrl()).recycle();
+            if (imageHashMap != null && imageHashMap.get(position) != null) {
+                imageHashMap.get(position).destroyDrawingCache();
+                imageHashMap.get(position).recycle();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            if (imageGifHashMap != null && imageGifHashMap.get(imageInfo.get(position).getOriginUrl()) != null) {
-                imageGifHashMap.get(imageInfo.get(position).getOriginUrl()).destroyDrawingCache();
-                imageGifHashMap.get(imageInfo.get(position).getOriginUrl()).setImageBitmap(null);
+            if (imageGifHashMap != null && imageGifHashMap.get(position) != null) {
+                imageGifHashMap.get(position).destroyDrawingCache();
+                imageGifHashMap.get(position).setImageBitmap(null);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -537,17 +406,151 @@ public class ImagePreviewAdapter extends PagerAdapter {
     }
 
     @Override
-    public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+    public void setPrimaryItem(ViewGroup container, int position, final Object object) {
         super.setPrimaryItem(container, position, object);
     }
 
     @Override
-    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+    public boolean isViewFromObject(View view, Object object) {
         return view == object;
     }
 
     @Override
-    public int getItemPosition(@NonNull Object object) {
+    public int getItemPosition(Object object) {
         return POSITION_NONE;
+    }
+
+    private void loadFailed(SubsamplingScaleImageViewDragClose imageView, ImageView imageGif, ProgressBar progressBar,
+                            GlideException e) {
+        progressBar.setVisibility(View.GONE);
+        imageGif.setVisibility(View.GONE);
+        imageView.setVisibility(View.VISIBLE);
+
+        imageView.setZoomEnabled(false);
+        imageView.setImage(ImageSource.resource(ImagePreview.getInstance().getErrorPlaceHolder()).tilingDisabled());
+
+        String errorMsg = activity.getResources().getString(R.string.kf5_imageviewer_failed_to_load_img);
+        if (e != null) {
+            errorMsg = errorMsg.concat(":\n").concat(e.getMessage());
+        }
+        if (errorMsg.length() > 200) {
+            errorMsg = errorMsg.substring(0, 199);
+        }
+        MyToast.getInstance()._short(activity.getApplicationContext(), errorMsg);
+    }
+
+    private void loadSuccess(File resource, SubsamplingScaleImageViewDragClose imageView, ImageView imageGif,
+                             ProgressBar progressBar) {
+        String imagePath = resource.getAbsolutePath();
+        boolean isCacheIsGif = ImageUtil.isGifImageWithMime(imagePath);
+        if (isCacheIsGif) {
+            loadGifImageSpec(imagePath, imageView, imageGif, progressBar);
+        } else {
+            loadImageSpec(imagePath, imageView, imageGif, progressBar);
+        }
+    }
+
+    private void setImageSpec(final String imagePath, final SubsamplingScaleImageViewDragClose imageView) {
+        boolean isLongImage = ImageUtil.isLongImage(activity, imagePath);
+        if (isLongImage) {
+            imageView.setMinimumScaleType(SubsamplingScaleImageViewDragClose.SCALE_TYPE_START);
+            imageView.setMinScale(ImageUtil.getLongImageMinScale(activity, imagePath));
+            imageView.setMaxScale(ImageUtil.getLongImageMaxScale(activity, imagePath));
+            imageView.setDoubleTapZoomScale(ImageUtil.getLongImageMaxScale(activity, imagePath));
+        } else {
+            boolean isWideImage = ImageUtil.isWideImage(activity, imagePath);
+            boolean isSmallImage = ImageUtil.isSmallImage(activity, imagePath);
+            if (isWideImage) {
+                imageView.setMinimumScaleType(SubsamplingScaleImageViewDragClose.SCALE_TYPE_CENTER_INSIDE);
+                imageView.setMinScale(ImagePreview.getInstance().getMinScale());
+                imageView.setMaxScale(ImagePreview.getInstance().getMaxScale());
+                imageView.setDoubleTapZoomScale(ImageUtil.getWideImageDoubleScale(activity, imagePath));
+            } else if (isSmallImage) {
+                imageView.setMinimumScaleType(SubsamplingScaleImageViewDragClose.SCALE_TYPE_CUSTOM);
+                imageView.setMinScale(ImageUtil.getSmallImageMinScale(activity, imagePath));
+                imageView.setMaxScale(ImageUtil.getSmallImageMaxScale(activity, imagePath));
+                imageView.setDoubleTapZoomScale(ImageUtil.getSmallImageMaxScale(activity, imagePath));
+            } else {
+                imageView.setMinimumScaleType(SubsamplingScaleImageViewDragClose.SCALE_TYPE_CENTER_INSIDE);
+                imageView.setMinScale(ImagePreview.getInstance().getMinScale());
+                imageView.setMaxScale(ImagePreview.getInstance().getMaxScale());
+                imageView.setDoubleTapZoomScale(ImagePreview.getInstance().getMediumScale());
+            }
+        }
+    }
+
+    private void loadImageSpec(final String imagePath, final SubsamplingScaleImageViewDragClose imageView,
+                               final ImageView imageGif, final ProgressBar progressBar) {
+
+        imageGif.setVisibility(View.GONE);
+        imageView.setVisibility(View.VISIBLE);
+
+        setImageSpec(imagePath, imageView);
+
+        imageView.setOrientation(SubsamplingScaleImageViewDragClose.ORIENTATION_USE_EXIF);
+        imageView.setImage(ImageSource.uri(Uri.fromFile(new File(imagePath))).tilingDisabled());
+
+        imageView.setOnImageEventListener(new SubsamplingScaleImageViewDragClose.OnImageEventListener() {
+            @Override
+            public void onReady() {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onImageLoaded() {
+
+            }
+
+            @Override
+            public void onPreviewLoadError(Exception e) {
+
+            }
+
+            @Override
+            public void onImageLoadError(Exception e) {
+
+            }
+
+            @Override
+            public void onTileLoadError(Exception e) {
+
+            }
+
+            @Override
+            public void onPreviewReleased() {
+
+            }
+        });
+    }
+
+    private void loadGifImageSpec(final String imagePath, final SubsamplingScaleImageViewDragClose imageView,
+                                  final ImageView imageGif, final ProgressBar progressBar) {
+
+        imageGif.setVisibility(View.VISIBLE);
+        imageView.setVisibility(View.GONE);
+
+        Glide.with(activity)
+                .asGif()
+                .load(imagePath)
+                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        .error(ImagePreview.getInstance().getErrorPlaceHolder()))
+                .listener(new RequestListener<GifDrawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target,
+                                                boolean isFirstResource) {
+                        imageGif.setVisibility(View.GONE);
+                        imageView.setVisibility(View.VISIBLE);
+                        imageView.setImage(ImageSource.resource(ImagePreview.getInstance().getErrorPlaceHolder()).tilingDisabled());
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target,
+                                                   DataSource dataSource, boolean isFirstResource) {
+                        progressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(imageGif);
     }
 }

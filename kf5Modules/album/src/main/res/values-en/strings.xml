@@ -17,20 +17,14 @@
     <string name="kf5_album_name_all">All</string>
 
     <string name="kf5_album_button_preview">Preview</string>
-    <string name="kf5_album_button_apply_default">Apply</string>
-    <string name="kf5_album_button_apply">Apply(%1$d)</string>
     <string name="kf5_album_button_back">Back</string>
     <string name="kf5_album_photo_grid_capture">Take a photo</string>
     <string name="kf5_album_empty_text">No pictures or videos</string>
     <string name="kf5_album_button_ok">I know</string>
 
-    <string name="kf5_album_error_over_count_default">The maximum number of choices has been reached</string>
     <string name="kf5_album_error_over_count">You can only select up to %1$d files</string>
-    <string name="kf5_album_error_under_quality">Image quality is too low</string>
-    <string name="kf5_album_error_over_quality">Image quality is too high</string>
     <string name="kf5_album_error_file_type">Unsupported file type</string>
     <string name="kf5_album_error_type_conflict">Cannot select images and videos at the same time</string>
-    <string name="kf5_album_error_no_video_activity">No applications that support video preview</string>
     <string name="kf5_album_error_over_original_size">The photo is larger than %1$d M, unable to upload will uncheck the original image</string>
     <string name="kf5_album_error_over_original_count">%1$d photos larger than %2$dM cannot be uploaded, the original image will be unchecked</string>
     <string name="kf5_album_button_original">Original image</string>

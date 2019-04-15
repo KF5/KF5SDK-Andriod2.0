@@ -1,6 +1,5 @@
 package com.kf5.sdk.system.internet;
 
-
 import android.support.v4.util.ArrayMap;
 
 import com.kf5.sdk.BuildConfig;

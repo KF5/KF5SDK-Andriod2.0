@@ -113,7 +113,7 @@ public class SPUtils {
     }
 
     public static String getTicketTitle() {
-        return mSharedPreferences.getString(SDK_TITLE, "来自Android SDk 的工单反馈");
+        return mSharedPreferences.getString(SDK_TITLE, "来自Android SDK的工单反馈");
     }
 
 }

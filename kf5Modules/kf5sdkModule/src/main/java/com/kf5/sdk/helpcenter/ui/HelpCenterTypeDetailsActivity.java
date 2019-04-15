@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
-import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kf5.sdk.R;
@@ -18,24 +16,31 @@ import com.kf5.sdk.helpcenter.entity.Post;
 import com.kf5.sdk.helpcenter.mvp.presenter.HelpCenterDetailPresenter;
 import com.kf5.sdk.helpcenter.mvp.usecase.HelpUseCaseManager;
 import com.kf5.sdk.helpcenter.mvp.view.IHelpCenterDetailView;
-import com.kf5.sdk.system.base.BaseActivity;
+import com.kf5.sdk.system.base.BaseMVPActivity;
 import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.entity.TitleBarProperty;
 import com.kf5.sdk.system.mvp.presenter.PresenterFactory;
 import com.kf5.sdk.system.mvp.presenter.PresenterLoader;
 import com.kf5.sdk.system.utils.FileSizeUtil;
-import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.SPUtils;
 import com.kf5.sdk.system.utils.Utils;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.TimerTask;
 
-public class HelpCenterTypeDetailsActivity extends BaseActivity<HelpCenterDetailPresenter, IHelpCenterDetailView> implements IHelpCenterDetailView, View.OnClickListener {
 
+/**
+ * 项目中暴露的js接口类：MJavascriptInterface不能混淆，其调用的方法的声明也不能混淆，所以还要添加如下混淆设置代码（代码因包名而变化）：
+ * -keepclassmembers class com.example.administrator.webviewpagescannerapp.other.MJavascriptInterface{
+ * public *;
+ * }
+ * -keepattributes *Annotation*
+ * -keepattributes *JavascriptInterface*
+ * <p>
+ * https://www.jianshu.com/p/987ac06dbf30
+ */
+public class HelpCenterTypeDetailsActivity extends BaseMVPActivity<HelpCenterDetailPresenter, IHelpCenterDetailView> implements IHelpCenterDetailView {
 
-    private ImageView mBackImg;
 
     private WebView mWebView;
 
@@ -44,12 +49,9 @@ public class HelpCenterTypeDetailsActivity extends BaseActivity<HelpCenterDetail
     public final static String WEB_STYLE = "<style>* {font-size:18px;line-height:30px;} p {color:#6C6C6C;} a {color:#333333;} img {max-width:310px;} " +
             "pre {font-size:9pt;line-height:12pt;border:1px solid #ddd;border-left:5px solid #6CE26C;background:#f6f6f6;padding:5px;}</style>";
 
-
     @Override
     protected void initWidgets() {
         super.initWidgets();
-        mBackImg = (ImageView) findViewById(R.id.kf5_return_img);
-        mBackImg.setOnClickListener(this);
         mWebView = (WebView) findViewById(R.id.kf5_post_detail_content);
         mDetailTitle = (TextView) findViewById(R.id.kf5_post_detail_title);
         mDate = (TextView) findViewById(R.id.kf5_post_detail_date);
@@ -74,6 +76,16 @@ public class HelpCenterTypeDetailsActivity extends BaseActivity<HelpCenterDetail
     @Override
     protected int getLayoutID() {
         return R.layout.kf5_activity_help_center_detail;
+    }
+
+    @Override
+    protected TitleBarProperty getTitleBarProperty() {
+        return new TitleBarProperty.Builder()
+                .setTitleContent(getString(R.string.kf5_article_content))
+                .setRightViewVisible(false)
+                .setRightViewClick(false)
+                .setRightViewContent(null)
+                .build();
     }
 
     @Override
@@ -127,18 +139,6 @@ public class HelpCenterTypeDetailsActivity extends BaseActivity<HelpCenterDetail
     }
 
     @Override
-    public void showError(int resultCode, final String msg) {
-        super.showError(resultCode, msg);
-        runOnUiThread(new TimerTask() {
-            @Override
-            public void run() {
-                showToast(msg);
-            }
-        });
-    }
-
-
-    @Override
     protected void onPause() {
         super.onPause();
         try {
@@ -182,10 +182,7 @@ public class HelpCenterTypeDetailsActivity extends BaseActivity<HelpCenterDetail
 
     @Override
     public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.kf5_return_img) {
-            finish();
-        }
+
     }
 
     private class MyWebViewClient extends WebViewClient {

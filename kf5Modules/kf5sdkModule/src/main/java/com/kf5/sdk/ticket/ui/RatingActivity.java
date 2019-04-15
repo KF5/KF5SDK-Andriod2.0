@@ -8,13 +8,12 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.kf5.sdk.R;
-import com.kf5.sdk.system.base.BaseActivity;
+import com.kf5.sdk.system.base.BaseMVPActivity;
 import com.kf5.sdk.system.entity.Field;
+import com.kf5.sdk.system.entity.TitleBarProperty;
 import com.kf5.sdk.system.mvp.presenter.PresenterFactory;
 import com.kf5.sdk.system.mvp.presenter.PresenterLoader;
 import com.kf5.sdk.ticket.adapter.CheckAdapter;
@@ -30,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class RatingActivity extends BaseActivity<RatingPresenter, IRatingView> implements IRatingView, View.OnClickListener {
+public class RatingActivity extends BaseMVPActivity<RatingPresenter, IRatingView> implements IRatingView {
 
     private ListView mListView;
 
@@ -40,15 +39,9 @@ public class RatingActivity extends BaseActivity<RatingPresenter, IRatingView> i
 
     private EditText mETContent;
 
-    private ImageView mBackImg;
-
-    private TextView mTVSubmit;
-
     private int mTicketId;
 
     private int mRatingStatus;
-
-    private int mRatingLevelCount;
 
     @Override
     public Loader<RatingPresenter> onCreateLoader(int id, Bundle args) {
@@ -64,16 +57,12 @@ public class RatingActivity extends BaseActivity<RatingPresenter, IRatingView> i
     protected void initWidgets() {
         super.initWidgets();
         mETContent = (EditText) findViewById(R.id.kf5_rating_comment);
-        mBackImg = (ImageView) findViewById(R.id.kf5_return_img);
-        mBackImg.setOnClickListener(this);
-        mTVSubmit = (TextView) findViewById(R.id.kf5_right_text_view);
-        mTVSubmit.setOnClickListener(this);
         mListView = (ListView) findViewById(R.id.kf5_rating_lv);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (!mTVSubmit.isEnabled()) {
-                    mTVSubmit.setEnabled(true);
+                if (!tvRightView.isEnabled()) {
+                    tvRightView.setEnabled(true);
                 }
                 CheckItem checkItem = mDatas.get(position);
                 if (!checkItem.isSelected()) {
@@ -94,6 +83,15 @@ public class RatingActivity extends BaseActivity<RatingPresenter, IRatingView> i
         return R.layout.kf5_activity_rating;
     }
 
+    @Override
+    protected TitleBarProperty getTitleBarProperty() {
+        return new TitleBarProperty.Builder()
+                .setTitleContent(getString(R.string.kf5_rate))
+                .setRightViewVisible(true)
+                .setRightViewClick(true)
+                .setRightViewContent(getString(R.string.kf5_submit))
+                .build();
+    }
 
     @Override
     protected void setData() {
@@ -101,12 +99,12 @@ public class RatingActivity extends BaseActivity<RatingPresenter, IRatingView> i
         Intent intent = getIntent();
         String mRatingContent = intent.getStringExtra(Field.RATING_CONTENT);
         mRatingStatus = intent.getIntExtra(Field.RATING, 0);
-        mRatingLevelCount = intent.getIntExtra(Field.RATE_LEVEL_COUNT, 5);
+        int mRatingLevelCount = intent.getIntExtra(Field.RATE_LEVEL_COUNT, 5);
         if (mRatingLevelCount < 1) {
             mRatingLevelCount = 5;
         }
         if (mRatingStatus < 1 || mRatingStatus > 5) {
-            mTVSubmit.setEnabled(false);
+            tvRightView.setEnabled(false);
         }
         mTicketId = intent.getIntExtra(Field.ID, 0);
         if (!TextUtils.isEmpty(mRatingContent)) {
@@ -140,9 +138,7 @@ public class RatingActivity extends BaseActivity<RatingPresenter, IRatingView> i
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.kf5_return_img) {
-            finish();
-        } else if (id == R.id.kf5_right_text_view) {
+        if (id == R.id.kf5_right_text_view) {
             Map<String, String> dataMap = new ArrayMap<>();
             dataMap.put(Field.CONTENT, mETContent.getText().toString());
             dataMap.put(Field.TICKET_ID, String.valueOf(mTicketId));
@@ -168,11 +164,5 @@ public class RatingActivity extends BaseActivity<RatingPresenter, IRatingView> i
                 showToast(message);
             }
         });
-    }
-
-    @Override
-    public void showError(int resultCode, String msg) {
-        super.showError(resultCode, msg);
-        showToast(msg);
     }
 }

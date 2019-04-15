@@ -89,9 +89,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //        etName.setText("Android 用户");
 
         etEmail.setText(year + "-" + (month + 1) + "-" + day + "@qq.com");
-        etAddress.setText("chosen.kf5.com");
-        etAppid.setText("0015703278adb2883f1e71145ffa131ef6a8073e3ac7ec00");
+        etEmail.setText("123@qq.com");
+        etAddress.setText("im2beta.kf5.com");
+        etAppid.setText("001589d1e48784ee06bf96e16d845ca177b73f48ec6a0b2d");
         etName.setText("Android 用户");
+
+//        etEmail.setText(year + "-" + (month + 1) + "-" + day + "@qq.com");
+//        etEmail.setText("123@qq.com");
+//        etAddress.setText("fuqinjinrong.kf5.com");
+//        etAppid.setText("0015acacf8362a218995f60ce861490cb2b063b3513a6069");
+//        etName.setText("Android 用户");
 
         mRadioGroup = (RadioGroup) findViewById(R.id.radio_group);
         if (IMCacheUtils.temporaryMessageFirst(LoginActivity.this)) {
@@ -288,7 +295,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Log.i("kf5测试", "登录失败" + result);
             }
         });
-}
+    }
+
+    private void deleteToken(Map<String, String> map) {
+        UserInfoAPI.getInstance().deleteDeviceToken(map, new HttpRequestCallBack() {
+            @Override
+            public void onSuccess(String result) {
+                Log.i("kf5测试", "删除设备Token成功" + result);
+            }
+
+            @Override
+            public void onFailure(String result) {
+                Log.i("kf5测试", "删除设备Token失败" + result);
+            }
+
+        });
+    }
 
 
     private void saveToken(Map<String, String> map) {
@@ -305,17 +327,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-        UserInfoAPI.getInstance().getUserInfo(map, new HttpRequestCallBack() {
-            @Override
-            public void onSuccess(String result) {
-
-            }
-
-            @Override
-            public void onFailure(String result) {
-
-            }
-        });
     }
 
 

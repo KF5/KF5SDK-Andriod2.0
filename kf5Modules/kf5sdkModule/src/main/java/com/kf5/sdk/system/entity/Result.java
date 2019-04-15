@@ -1,5 +1,6 @@
 package com.kf5.sdk.system.entity;
 
+
 import com.google.gson.Gson;
 
 import java.lang.reflect.ParameterizedType;
@@ -20,9 +21,11 @@ public final class Result<T> {
     public int getCode() {
         return error;
     }
+
     public void setCode(int error) {
         this.error = error;
     }
+
     public String getMessage() {
         return message;
     }

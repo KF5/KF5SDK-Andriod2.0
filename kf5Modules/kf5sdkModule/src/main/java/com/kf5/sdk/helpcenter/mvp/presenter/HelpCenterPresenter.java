@@ -2,8 +2,8 @@ package com.kf5.sdk.helpcenter.mvp.presenter;
 
 import android.support.v4.util.ArrayMap;
 
+import com.kf5.sdk.helpcenter.entity.HelpCenterCollection;
 import com.kf5.sdk.helpcenter.entity.HelpCenterItem;
-import com.kf5.sdk.helpcenter.entity.HelpCenterItemCategory;
 import com.kf5.sdk.helpcenter.entity.HelpCenterRequestType;
 import com.kf5.sdk.helpcenter.mvp.usecase.HelpCenterCase;
 import com.kf5.sdk.helpcenter.mvp.view.IHelpCenterBaseView;
@@ -32,19 +32,28 @@ public class HelpCenterPresenter extends BasePresenter<IHelpCenterView> implemen
     }
 
     @Override
-    public void getCategoriesList(HelpCenterRequestType helpCenterRequestType) {
-        Map<String, String> map = new ArrayMap<>();
-        map.putAll(getMvpView().getCustomMap());
-        dealData(helpCenterRequestType, map);
-    }
-
-    @Override
     public void searchDocument(HelpCenterRequestType helpCenterRequestType) {
         Map<String, String> map = new ArrayMap<>();
         map.put(Field.QUERY, getMvpView().getSearchKey());
         map.putAll(getMvpView().getCustomMap());
         dealData(helpCenterRequestType, map);
     }
+
+    @Override
+    public void getCommonDataList(HelpCenterRequestType helpCenterRequestType) {
+        Map<String, String> map = new ArrayMap<>();
+        map.putAll(getMvpView().getCustomMap());
+        switch (helpCenterRequestType) {
+            case FORUM:
+                map.put(Field.CATEGORY_ID, String.valueOf(getMvpView().getItemId()));
+                break;
+            case POST:
+                map.put(Field.FORUM_ID, String.valueOf(getMvpView().getItemId()));
+                break;
+        }
+        dealData(helpCenterRequestType, map);
+    }
+
 
     private void dealData(final HelpCenterRequestType helpCenterRequestType, Map<String, String> map) {
         checkViewAttached();
@@ -57,14 +66,7 @@ public class HelpCenterPresenter extends BasePresenter<IHelpCenterView> implemen
                 if (isViewAttached()) {
                     getMvpView().hideLoading();
                     try {
-                        switch (helpCenterRequestType) {
-                            case DEFAULT:
-                                dealCategoriesList(response.result);
-                                break;
-                            case SEARCH:
-                                IHelpCenterBaseView.HelpCenterDataBuilder.dealPostList(response.result, getMvpView());
-                                break;
-                        }
+                        dealResult(response.result);
                     } catch (Exception e) {
                         e.printStackTrace();
                         getMvpView().showError(RESULT_ERROR, e.getMessage());
@@ -83,23 +85,17 @@ public class HelpCenterPresenter extends BasePresenter<IHelpCenterView> implemen
         mHelpCenterCase.run();
     }
 
-
-    /**
-     * 处理获取文档分区返回值
-     *
-     * @param data
-     */
-    private void dealCategoriesList(String data) {
-        Result<HelpCenterItemCategory> result = Result.fromJson(data, HelpCenterItemCategory.class);
+    private void dealResult(String data) {
+        Result<HelpCenterCollection> result = Result.fromJson(data, HelpCenterCollection.class);
         if (result != null) {
             int resultCode = result.getCode();
             List<HelpCenterItem> list = new ArrayList<>();
             int nextPage = 1;
             if (resultCode == RESULT_OK) {
-                HelpCenterItemCategory helpCenterItemObj = result.getData();
+                HelpCenterCollection helpCenterItemObj = result.getData();
                 if (helpCenterItemObj != null) {
-                    if (helpCenterItemObj.getCategories() != null) {
-                        list.addAll(helpCenterItemObj.getCategories());
+                    if (helpCenterItemObj.getList() != null) {
+                        list.addAll(helpCenterItemObj.getList());
                     }
                     if (helpCenterItemObj.getNext_page() > 0) {
                         nextPage = helpCenterItemObj.getNext_page();
@@ -109,5 +105,4 @@ public class HelpCenterPresenter extends BasePresenter<IHelpCenterView> implemen
             IHelpCenterBaseView.HelpCenterDataBuilder.dealHelpCenterData(resultCode, result.getMessage(), nextPage, list, getMvpView());
         }
     }
-
 }

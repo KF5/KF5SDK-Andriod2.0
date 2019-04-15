@@ -1,11 +1,8 @@
 package com.kf5.sdk.helpcenter.mvp.view;
 
 import com.kf5.sdk.helpcenter.entity.HelpCenterItem;
-import com.kf5.sdk.helpcenter.entity.HelpCenterItemPost;
-import com.kf5.sdk.system.entity.Result;
 import com.kf5.sdk.system.mvp.view.MvpView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,27 +24,6 @@ public interface IHelpCenterBaseView extends MvpView {
      * 文档列表数据解析接口
      */
     class HelpCenterDataBuilder {
-
-        public static void dealPostList(String data, IHelpCenterBaseView baseView) {
-            Result<HelpCenterItemPost> result = Result.fromJson(data, HelpCenterItemPost.class);
-            if (result != null) {
-                int resultCode = result.getCode();
-                List<HelpCenterItem> list = new ArrayList<>();
-                int nextPage = 1;
-                if (resultCode == RESULT_OK) {
-                    HelpCenterItemPost helpCenterItemObj = result.getData();
-                    if (helpCenterItemObj != null) {
-                        if (helpCenterItemObj.getPosts() != null) {
-                            list.addAll(helpCenterItemObj.getPosts());
-                        }
-                        if (helpCenterItemObj.getNext_page() > 0) {
-                            nextPage = helpCenterItemObj.getNext_page();
-                        }
-                    }
-                }
-                dealHelpCenterData(resultCode, result.getMessage(), nextPage, list, baseView);
-            }
-        }
 
         /**
          * 回调返回值

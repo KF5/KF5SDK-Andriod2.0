@@ -22,7 +22,7 @@ import com.chosen.album.internal.utils.PathUtils;
 import com.chosen.cameraview.ui.CameraActivity;
 import com.kf5.sdk.R;
 import com.kf5.sdk.im.expression.utils.ImageBase;
-import com.kf5.sdk.system.base.BaseActivity;
+import com.kf5.sdk.system.base.BaseMVPActivity;
 import com.kf5.sdk.system.utils.CameraDisplayUtils;
 import com.kf5.sdk.system.utils.ImageLoaderManager;
 import com.kf5.sdk.system.utils.ToastUtil;
@@ -140,18 +140,18 @@ public class FeedBackDetailBottomView extends FrameLayout implements FeedBackDet
     public void onFeedBackDetailsActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (requestCode) {
-            case BaseActivity.CAMERA_STATE:
+            case BaseMVPActivity.CAMERA_STATE:
                 if (feedBackDetailsActivity.hasPermission(CAMERA_PERMISSIONS))
-                    CameraDisplayUtils.cameraDisplayOnlyPictureFeature(feedBackDetailsActivity, BaseActivity.CAMERA);
+                    CameraDisplayUtils.cameraDisplayOnlyPictureFeature(feedBackDetailsActivity, BaseMVPActivity.CAMERA);
                 break;
-            case BaseActivity.WRITE_EXTERNAL_STORAGE:
+            case BaseMVPActivity.WRITE_EXTERNAL_STORAGE:
                 if (feedBackDetailsActivity.hasPermission(WRITE_EXTERNAL_STORAGE_PERMISSION))
                     feedBackDetailsActivity.getPictureFromGallery();
                 break;
             default:
                 if (resultCode == Activity.RESULT_OK) {
                     switch (requestCode) {
-                        case BaseActivity.CAMERA:
+                        case BaseMVPActivity.CAMERA:
                             try {
                                 String path = data.getStringExtra(CameraActivity.PATH);
                                 File file = new File(path);
@@ -165,7 +165,7 @@ public class FeedBackDetailBottomView extends FrameLayout implements FeedBackDet
                                 e.printStackTrace();
                             }
                             break;
-                        case BaseActivity.GALLERY:
+                        case BaseMVPActivity.GALLERY:
                             try {
                                 if (data != null) {
                                     List<Uri> selectedResult = Matisse.obtainResult(data);
@@ -258,9 +258,9 @@ public class FeedBackDetailBottomView extends FrameLayout implements FeedBackDet
                                 @Override
                                 public void onClick(int which) {
                                     if (feedBackDetailsActivity.hasPermission(CAMERA_PERMISSIONS))
-                                        CameraDisplayUtils.cameraDisplayOnlyPictureFeature(feedBackDetailsActivity, BaseActivity.CAMERA);
+                                        CameraDisplayUtils.cameraDisplayOnlyPictureFeature(feedBackDetailsActivity, BaseMVPActivity.CAMERA);
                                     else
-                                        feedBackDetailsActivity.applyPermissions(BaseActivity.CAMERA_STATE, BaseActivity.METHOD_REQUEST_PERMISSION, CAMERA_PERMISSIONS);
+                                        feedBackDetailsActivity.applyPermissions(BaseMVPActivity.CAMERA_STATE, BaseMVPActivity.METHOD_REQUEST_PERMISSION, CAMERA_PERMISSIONS);
                                 }
                             })
                     .addSheetItem(getContext().getString(R.string.kf5_from_gallery), ActionSheetDialog.SheetItemColor.Blue,
@@ -270,7 +270,7 @@ public class FeedBackDetailBottomView extends FrameLayout implements FeedBackDet
                                     if (feedBackDetailsActivity.hasPermission(WRITE_EXTERNAL_STORAGE_PERMISSION))
                                         feedBackDetailsActivity.getPictureFromGallery();
                                     else
-                                        feedBackDetailsActivity.applyPermissions(BaseActivity.WRITE_EXTERNAL_STORAGE, BaseActivity.METHOD_REQUEST_PERMISSION, WRITE_EXTERNAL_STORAGE_PERMISSION);
+                                        feedBackDetailsActivity.applyPermissions(BaseMVPActivity.WRITE_EXTERNAL_STORAGE, BaseMVPActivity.METHOD_REQUEST_PERMISSION, WRITE_EXTERNAL_STORAGE_PERMISSION);
                                 }
                             }).show();
         } else {

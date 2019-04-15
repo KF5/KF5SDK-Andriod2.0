@@ -1,11 +1,7 @@
 <resources>
 
     <string name="kf5_loading">加载中...</string>
-    <string name="kf5_no_data">没有更多数据了</string>
-    <string name="kf5_pull_to_update">向下拖动进行刷新</string>
-    <string name="kf5_release_to_update">松开进行刷新</string>
-    <string name="kf5_updating">正在刷新&#8230;</string>
-    <string name="kf5_up_update_date">上次刷新 ：%1$s</string>
+    <string name="kf5_no_data">没有更多数据</string>
     <string name="kf5_article_content">文档内容</string>
     <string name="kf5_viewpager_indicator">%1$d/%2$d</string>
 
@@ -32,12 +28,12 @@
     <!-- help_center -->
     <string name="kf5_contact_us">联系我们</string>
     <string name="kf5_category_list">分区列表</string>
-    <string name="kf5_section_list">分类列表</string>
     <string name="kf5_search">搜索</string>
     <string name="kf5_search_hint">请输入搜索内容</string>
     <string name="kf5_article_category">文档分区</string>
     <string name="kf5_article_section">文档分类</string>
     <string name="kf5_article_list">文档列表</string>
+    <string name="kf5_article_search">文档搜索</string>
     <string name="kf5_content_not_null">内容不能为空</string>
 
 
@@ -90,10 +86,6 @@
         <item>@string/kf5_rating_basic_satisfied</item>
     </string-array>
     <!--权限相关-->
-    <string name="kf5_media_access_hint">访问您设备上的照片、媒体内容和文件</string>
-    <string name="kf5_access_recording">录制音频</string>
-    <string name="kf5_access_call">拨打电话和管理通话</string>
-    <string name="kf5_access_camera">拍摄照片和录制视频</string>
 
     <!-- IM 相关-->
     <string name="kf5_ai_to_agent">转人工</string>
@@ -101,11 +93,8 @@
     <string name="kf5_queue_waiting">排队中…</string>
     <string name="kf5_update_queue_num">您处于排队中的第%1$d位;</string>
     <string name="kf5_no_agent_online">没有客服在线</string>
-    <string name="kf5_chat_ended">对话已结束</string>
-    <string name="kf5_cancel_queue_successfully">已取消排队</string>
     <string name="kf5_cancel_queue_failed">取消排队失败</string>
     <string name="kf5_no_agent_online_leaving_message">当前没有客服在线,请提交留言。</string>
-    <string name="kf5_agent_handle_later_hint">客服将很快处理您反馈的问题</string>
 
     <string-array name="kf5_ticket_status">
         <item>尚未受理</item>
@@ -128,7 +117,6 @@
     <string name="kf5_start_to_download">开始下载…</string>
     <string name="kf5_resend_message_hint">是否重发该消息?</string>
     <string name="kf5_resend">重发</string>
-    <string name="kf5_copy_text_hint">是否复制文本?</string>
     <string name="kf5_copy">复制</string>
     <string name="kf5_copied">已复制</string>
     <string name="kf5_not_connected">未连接</string>
@@ -138,8 +126,6 @@
     <string name="kf5_get_auth_hint">是否进入设置界面授予%1$s必要权限？否则无法正常使用。</string>
     <string name="kf5_display_error_hint">显示错误</string>
     <string name="kf5_image_error">图片错误</string>
-    <string name="kf5_send_email_hint">是否发送邮件?</string>
-    <string name="kf5_make_call_hint">是否拨打电话?</string>
     <string name="kf5_no_internet">网络未连接，请检查网络</string>
     <string name="kf5_from_camera">相机</string>
     <string name="kf5_from_gallery">相册</string>
@@ -147,12 +133,9 @@
     <string name="kf5_delete_file_hint">是否删除当前文件?</string>
     <string name="kf5_delete">删除</string>
     <string name="kf5_input_some_text">请输入一段文字描述您的问题</string>
-    <string name="kf5_satisfied">满意</string>
-    <string name="kf5_unsatisfied">不满意</string>
     <string name="kf5_reminder">温馨提示</string>
     <string name="kf5_unknown_error">未知错误</string>
     <string name="kf5_invite_video_chat">客服邀请您进行视频聊天</string>
-    <string name="kf5_robot_found_answers">为您找到以下内容:</string>
     <string name="kf5_update_queue">您已进入排队;</string>
     <string name="kf5_chat">聊天</string>
     <string name="kf5_not_in_service_time">不在服务时间，请提交留言。</string>
@@ -168,4 +151,6 @@
     <string name="kf5_call">呼叫</string>
     <string name="kf5_send_email_title_hint">向%1$s发送邮件</string>
     <string name="kf5_send_email">发送邮件</string>
+    <string name="kf5_recommended_categories">推荐分类</string>
+    <string name="kf5_hot_categories">热门分类</string>
 </resources>

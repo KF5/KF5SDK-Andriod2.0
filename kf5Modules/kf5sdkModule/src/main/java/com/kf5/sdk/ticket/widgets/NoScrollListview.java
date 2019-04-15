@@ -5,12 +5,11 @@ import android.util.AttributeSet;
 import android.widget.ListView;
 
 /**
- * author:chosen
- * date:2017/1/4 17:53
- * email:812219713@qq.com
+ * @author Chosen
+ * @create 2019/4/8 17:04
+ * @email 812219713@qq.com
  */
-
- class NoScrollListView extends ListView {
+public class NoScrollListView extends ListView {
 
     public NoScrollListView(Context context) {
         super(context);
@@ -32,6 +31,5 @@ import android.widget.ListView;
         int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2,
                 MeasureSpec.AT_MOST);
         super.onMeasure(widthMeasureSpec, expandSpec);
-
     }
 }

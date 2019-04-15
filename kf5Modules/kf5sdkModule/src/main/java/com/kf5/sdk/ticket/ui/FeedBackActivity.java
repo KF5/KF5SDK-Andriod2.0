@@ -9,7 +9,6 @@ import android.support.v4.content.Loader;
 import android.support.v4.util.ArrayMap;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,11 +22,14 @@ import com.chosen.album.internal.utils.PathUtils;
 import com.chosen.cameraview.ui.CameraActivity;
 import com.kf5.sdk.R;
 import com.kf5.sdk.system.album.ImageSelectorManager;
-import com.kf5.sdk.system.base.BaseActivity;
+import com.kf5.sdk.system.base.BaseMVPActivity;
 import com.kf5.sdk.system.entity.ParamsKey;
+import com.kf5.sdk.system.entity.TitleBarProperty;
 import com.kf5.sdk.system.mvp.presenter.PresenterFactory;
 import com.kf5.sdk.system.mvp.presenter.PresenterLoader;
 import com.kf5.sdk.system.utils.CameraDisplayUtils;
+import com.kf5.sdk.system.utils.ClickUtils;
+import com.kf5.sdk.system.utils.DefaultTextWatcher;
 import com.kf5.sdk.system.utils.SPUtils;
 import com.kf5.sdk.system.utils.Utils;
 import com.kf5.sdk.system.widget.ActionSheetDialog;
@@ -42,11 +44,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
 
-public class FeedBackActivity extends BaseActivity<TicketFeedBackPresenter, ITicketFeedBackView> implements ITicketFeedBackView, View.OnTouchListener, View.OnClickListener {
+public class FeedBackActivity extends BaseMVPActivity<TicketFeedBackPresenter, ITicketFeedBackView> implements ITicketFeedBackView, View.OnTouchListener {
 
     private EditText mETContent;
-
-    private ImageView mImgChoiceImg;
 
     private List<File> mFiles = new ArrayList<>();
 
@@ -60,16 +60,20 @@ public class FeedBackActivity extends BaseActivity<TicketFeedBackPresenter, ITic
 
     private String[] WRITE_EXTERNAL_STORAGE_PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-    private ImageView mBackImg;
-
-    private TextView mTVSubmit;
-
-
     @Override
     protected int getLayoutID() {
         return R.layout.kf5_activity_feed_back;
     }
 
+    @Override
+    protected TitleBarProperty getTitleBarProperty() {
+        return new TitleBarProperty.Builder()
+                .setTitleContent(getString(R.string.kf5_feedback))
+                .setRightViewVisible(true)
+                .setRightViewClick(true)
+                .setRightViewContent(getString(R.string.kf5_submit))
+                .build();
+    }
 
     @Override
     public Loader<TicketFeedBackPresenter> onCreateLoader(int id, Bundle args) {
@@ -84,20 +88,16 @@ public class FeedBackActivity extends BaseActivity<TicketFeedBackPresenter, ITic
     @Override
     protected void initWidgets() {
         super.initWidgets();
+        tvRightView.setEnabled(false);
         mImgContainerLayout = (LinearLayout) findViewById(R.id.kf5_feed_back_image_layout);
         mETContent = (EditText) findViewById(R.id.kf5_feed_back_content_et);
         mETContent.setOnTouchListener(this);
         mETContent.addTextChangedListener(new ETTextWatcher());
-        mImgChoiceImg = (ImageView) findViewById(R.id.kf5_feed_back_choice_img);
+        ImageView mImgChoiceImg = (ImageView) findViewById(R.id.kf5_feed_back_choice_img);
         mImgChoiceImg.setOnClickListener(this);
         mParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         mParams.bottomMargin = 1;
-        mBackImg = (ImageView) findViewById(R.id.kf5_return_img);
-        mBackImg.setOnClickListener(this);
-        mTVSubmit = (TextView) findViewById(R.id.kf5_right_text_view);
-        mTVSubmit.setOnClickListener(this);
-        mTVSubmit.setEnabled(false);
     }
 
     @Override
@@ -135,17 +135,6 @@ public class FeedBackActivity extends BaseActivity<TicketFeedBackPresenter, ITic
     }
 
     @Override
-    public void showError(int resultCode, final String msg) {
-        super.showError(resultCode, msg);
-        runOnUiThread(new TimerTask() {
-            @Override
-            public void run() {
-                showToast(msg);
-            }
-        });
-    }
-
-    @Override
     public List<File> getUploadFileList() {
         return mFiles;
     }
@@ -173,6 +162,9 @@ public class FeedBackActivity extends BaseActivity<TicketFeedBackPresenter, ITic
 
     @Override
     public void onClick(View view) {
+        if (ClickUtils.isInvalidClick(view)) {
+            return;
+        }
         int id = view.getId();
         if (id == R.id.kf5_right_text_view) {
             if (!Utils.isNetworkUable(mActivity)) {
@@ -186,8 +178,6 @@ public class FeedBackActivity extends BaseActivity<TicketFeedBackPresenter, ITic
                 showDialog = true;
                 presenter.createTicket(null);
             }
-        } else if (id == R.id.kf5_return_img) {
-            finish();
         } else if (id == R.id.kf5_feed_back_choice_img) {
             Utils.hideSoftInput(mActivity, mETContent);
             dealSelectImage();
@@ -269,8 +259,6 @@ public class FeedBackActivity extends BaseActivity<TicketFeedBackPresenter, ITic
                 }
                 break;
         }
-
-
     }
 
 
@@ -278,8 +266,6 @@ public class FeedBackActivity extends BaseActivity<TicketFeedBackPresenter, ITic
      * 选择图片或者拍照图片
      */
     private void dealSelectImage() {
-
-
         if (mFiles.size() < 6) {
             new ActionSheetDialog(mActivity)
                     .builder()
@@ -345,31 +331,19 @@ public class FeedBackActivity extends BaseActivity<TicketFeedBackPresenter, ITic
     }
 
 
-    private class ETTextWatcher implements TextWatcher {
-
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        }
-
+    private class ETTextWatcher extends DefaultTextWatcher {
         @Override
         public void afterTextChanged(Editable string) {
             if (string.toString().trim().length() > 0) {
                 if (!isChangedStatus) {
                     isChangedStatus = true;
-                    mTVSubmit.setEnabled(true);
+                    tvRightView.setEnabled(true);
                 }
             } else {
                 isChangedStatus = false;
-                mTVSubmit.setEnabled(false);
+                tvRightView.setEnabled(false);
             }
         }
     }
-
 
 }

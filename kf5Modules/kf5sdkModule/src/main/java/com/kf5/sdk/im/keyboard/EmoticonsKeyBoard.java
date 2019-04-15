@@ -111,18 +111,20 @@ public class EmoticonsKeyBoard extends AutoHeightLayout implements EmoticonsFunc
      * 显示机器人View
      */
     public void showAIView() {
-        reset();
-//        ViewUtils.toggleTargetViewVisible(mAILayout, mIMLayout, mTemporaryMessageLayout);
-        ViewUtils.toggleTargetViewVisible(mAILayout, mIMLayout, mTemporaryMessageLayout);
+        if (mAILayout != null && mAILayout.getVisibility() != VISIBLE) {
+            reset();
+            ViewUtils.toggleTargetViewVisible(mAILayout, mIMLayout, mTemporaryMessageLayout);
+        }
     }
 
     /**
      * 显示发送临时消息的view
      */
     public void showTemporaryMessageView() {
-        reset();
-        ViewUtils.toggleTargetViewVisible(mTemporaryMessageLayout, mIMLayout, mAILayout);
-
+        if (mTemporaryMessageLayout != null && mTemporaryMessageLayout.getVisibility() != VISIBLE) {
+            reset();
+            ViewUtils.toggleTargetViewVisible(mTemporaryMessageLayout, mIMLayout, mAILayout);
+        }
     }
 
     /**

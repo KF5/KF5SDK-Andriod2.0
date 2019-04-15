@@ -30,30 +30,6 @@
         android:text="@string/kf5_rating_content"
         android:textColor="#ff000000"
         android:textSize="18.0sp"/>
-
-    <!--<TextView-->
-    <!--android:id="@+id/kf5_rating_satisfied"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="@drawable/kf5_messagebox_single_btn"-->
-    <!--android:gravity="center"-->
-    <!--android:padding="@dimen/kf5_dimen_12dp"-->
-    <!--android:text="@string/kf5_satisfied"-->
-    <!--android:textColor="#ff0079ff"-->
-    <!--android:textSize="16.0sp"/>-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/kf5_rating_unsatisfied"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="@drawable/kf5_messagebox_single_btn"-->
-    <!--android:gravity="center"-->
-    <!--android:padding="@dimen/kf5_dimen_12dp"-->
-    <!--android:singleLine="true"-->
-    <!--android:text="@string/kf5_unsatisfied"-->
-    <!--android:textColor="#ff0079ff"-->
-    <!--android:textSize="16.0sp"/>-->
-
     <ListView
         android:id="@+id/kf5_rating_list_view"
         android:layout_width="match_parent"

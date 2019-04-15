@@ -80,6 +80,12 @@
             android:launchMode="singleInstance"
             android:theme="@style/KF5AppTheme" />
 
+        <activity
+            android:name=".helpcenter.ui.SearchActivity"
+            android:exported="false"
+            android:theme="@style/KF5AppTheme"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+
         <provider
             android:name=".system.provider.PhotoFileProvider"
             android:authorities="${applicationId}.chosen.FileProvider"

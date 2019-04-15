@@ -8,42 +8,32 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.kf5.sdk.R;
-import com.kf5.sdk.system.album.ImageSelectorManager;
-import com.kf5.sdk.system.image.ImageSelectorActivity;
-import com.kf5.sdk.system.mvp.presenter.Presenter;
-import com.kf5.sdk.system.mvp.view.MvpView;
+import com.kf5.sdk.system.entity.TitleBarProperty;
 import com.kf5.sdk.system.permission.EasyPermissions;
 import com.kf5.sdk.system.swipeback.BaseSwipeBackActivity;
+import com.kf5.sdk.system.utils.ClickUtils;
 import com.kf5.sdk.system.utils.DialogHandler;
-import com.kf5.sdk.system.utils.FilePath;
-import com.kf5.sdk.system.utils.FileProviderUtil;
 import com.kf5.sdk.system.utils.ToastUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
- * author:chosen
- * date:2016/10/13 15:12
- * email:812219713@qq.com
+ * @author Chosen
+ * @create 2019/4/4 16:33
+ * @email 812219713@qq.com
  */
-
-public abstract class BaseActivity<P extends Presenter<V>, V extends MvpView> extends BaseSwipeBackActivity implements MvpView, LoaderManager.LoaderCallbacks<P> {
-
-    public static final int BASE_ACTIVITY_LOADER_ID = 100;
-
-    protected P presenter;
+public abstract class BaseActivity extends BaseSwipeBackActivity implements View.OnClickListener {
 
     protected Activity mActivity;
 
@@ -57,67 +47,22 @@ public abstract class BaseActivity<P extends Presenter<V>, V extends MvpView> ex
 
     public final static int CAMERA = 0x01, GALLERY = 0x02;
 
-//    private File picFile;
+    private TitleBarProperty titleBarProperty;
+
+    protected abstract int getLayoutID();
+
+    protected abstract TitleBarProperty getTitleBarProperty();
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         overridePendingTransition(R.anim.kf5_activity_anim_in, R.anim.kf5_anim_stay);
         super.onCreate(savedInstanceState);
         mActivity = this;
-        getSupportLoaderManager().initLoader(BASE_ACTIVITY_LOADER_ID, null, this);
+        titleBarProperty = getTitleBarProperty();
         setContentView(getLayoutID());
         initWidgets();
         setData();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (presenter != null)
-            presenter.detachView();
-    }
-
-    @Override
-    public Loader<P> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<P> loader, P data) {
-        presenter = data;
-        //noinspection unchecked
-        presenter.attachView((V) this);
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(R.anim.kf5_anim_stay, R.anim.kf5_activity_anim_out);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<P> loader) {
-        presenter = null;
-    }
-
-    @Override
-    public void showLoading(String msg) {
-        showProgressDialog(showDialog, null, null);
-    }
-
-    @Override
-    public void hideLoading() {
-        dismissProgressDialog();
-    }
-
-    @Override
-    public void showError(int resultCode, String msg) {
-
     }
 
     @Override
@@ -132,10 +77,14 @@ public abstract class BaseActivity<P extends Presenter<V>, V extends MvpView> ex
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-//        if (resultCode != RESULT_OK && requestCode == CAMERA && picFile != null)
-//            picFile.delete();
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.kf5_anim_stay, R.anim.kf5_activity_anim_out);
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 
     /**
@@ -170,15 +119,52 @@ public abstract class BaseActivity<P extends Presenter<V>, V extends MvpView> ex
         });
     }
 
-    protected void initWidgets() {
+    private TextView tvTitle;
+    protected TextView tvRightView;
 
+    protected void initWidgets() {
+        ImageView backImg = ((ImageView) findViewById(R.id.kf5_return_img));
+        if (backImg != null) {
+            backImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (ClickUtils.isInvalidClick(v)) {
+                        return;
+                    }
+                    finish();
+                }
+            });
+        }
+        tvRightView = ((TextView) findViewById(R.id.kf5_right_text_view));
+        tvTitle = ((TextView) findViewById(R.id.kf5_title));
+        if (titleBarProperty != null) {
+            if (tvTitle != null && !TextUtils.isEmpty(titleBarProperty.getTitleContent())) {
+                tvTitle.setText(titleBarProperty.getTitleContent());
+            }
+            if (tvRightView != null && titleBarProperty.isRightViewVisible()) {
+                if (tvRightView.getVisibility() != View.VISIBLE) {
+                    tvRightView.setVisibility(View.VISIBLE);
+                }
+                if (titleBarProperty.isRightViewClick()) {
+                    tvRightView.setOnClickListener(this);
+                }
+                if (!TextUtils.isEmpty(titleBarProperty.getRightViewContent())) {
+                    tvRightView.setText(titleBarProperty.getRightViewContent());
+                }
+            }
+        }
+    }
+
+    protected void setTitleContent(String text) {
+        if (tvTitle != null && !TextUtils.isEmpty(text)) {
+            tvTitle.setText(text);
+        }
     }
 
     protected void setData() {
 
     }
 
-    protected abstract int getLayoutID();
 
     /**
      * 申请权限
@@ -249,28 +235,4 @@ public abstract class BaseActivity<P extends Presenter<V>, V extends MvpView> ex
     public boolean hasPermission(String... permissions) {
         return EasyPermissions.hasPermissions(mActivity, permissions);
     }
-
-    /**
-     * 相机
-     */
-//    private void takePictureFromCamera() {
-//        try {
-//            picFile = new File(FilePath.IMAGES_PATH + UUID.randomUUID() + ".jpg");
-//            if (!picFile.exists())
-//                //noinspection ResultOfMethodCallIgnored
-//                picFile.getParentFile().mkdirs();
-//            //noinspection ResultOfMethodCallIgnored
-//            picFile.createNewFile();
-//            Intent intent = new Intent();
-//            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-//            //兼容7.0拍照权限
-//            intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProviderUtil.getUriFromFile(this, picFile));
-////            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(picFile));
-//            intent.putExtra(MediaStore.Images.Media.ORIENTATION, 0);
-//            startActivityForResult(intent, CAMERA);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
 }

@@ -123,11 +123,11 @@ public final class IntentUtils {
         }
     }
 
-    public static void sendQuestionContent(Context context, String showContent, String url) {
+    public static void sendQuestionContent(Context context, String showContent, String url, boolean isCategory) {
         try {
             if (context instanceof BaseChatActivity) {
                 BaseChatActivity chatActivity = (BaseChatActivity) context;
-                chatActivity.onSendAITextMessage(showContent, Integer.parseInt(url));
+                chatActivity.onSendAITextMessage(showContent, Integer.parseInt(url), isCategory);
             }
         } catch (Exception e) {
             e.printStackTrace();

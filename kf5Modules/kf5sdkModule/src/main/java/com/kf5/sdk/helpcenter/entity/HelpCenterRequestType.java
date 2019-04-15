@@ -7,5 +7,5 @@ package com.kf5.sdk.helpcenter.entity;
  */
 
 public enum HelpCenterRequestType {
-    DEFAULT, SEARCH
+    CATEGORY, FORUM, POST, SEARCH
 }

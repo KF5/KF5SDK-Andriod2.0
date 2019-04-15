@@ -48,6 +48,4 @@ public class HelpCenterAdapter extends CommonAdapter<HelpCenterItem> {
         }
 
     }
-
-
 }

@@ -25,38 +25,30 @@ public class HelpCenterCase extends BaseUseCase<HelpCenterCase.RequestCase, Help
     public void executeUseCase(RequestCase requestValues) {
         HelpCenterRequestType type = requestValues.mType;
         switch (type) {
-
             case SEARCH:
-
-                mHelpCenterModel.searchDocument(requestValues.map, new HttpRequestCallBack() {
-
-                    @Override
-                    public void onSuccess(String result) {
-                        getUseCaseCallback().onSuccess(new ResponseValue(result));
-                    }
-
-                    @Override
-                    public void onFailure(String result) {
-                        getUseCaseCallback().onError(result);
-                    }
-                });
+                mHelpCenterModel.searchDocument(requestValues.map, new DefaultHttpRequestCallBack());
                 break;
-
-            case DEFAULT:
-
-                mHelpCenterModel.getCategoriesList(requestValues.map, new HttpRequestCallBack() {
-
-                    @Override
-                    public void onSuccess(String result) {
-                        getUseCaseCallback().onSuccess(new ResponseValue(result));
-                    }
-
-                    @Override
-                    public void onFailure(String result) {
-                        getUseCaseCallback().onError(result);
-                    }
-                });
+            case CATEGORY:
+                mHelpCenterModel.getCategoriesList(requestValues.map, new DefaultHttpRequestCallBack());
                 break;
+            case FORUM:
+                mHelpCenterModel.getForumByID(requestValues.map, new DefaultHttpRequestCallBack());
+                break;
+            case POST:
+                mHelpCenterModel.getPostByID(requestValues.map, new DefaultHttpRequestCallBack());
+        }
+    }
+
+    private class DefaultHttpRequestCallBack implements HttpRequestCallBack {
+
+        @Override
+        public void onSuccess(String result) {
+            getUseCaseCallback().onSuccess(new ResponseValue(result));
+        }
+
+        @Override
+        public void onFailure(String result) {
+            getUseCaseCallback().onError(result);
         }
     }
 

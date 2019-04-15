@@ -44,7 +44,7 @@ public class FeedBackAdapter extends CommonAdapter<Requester> {
             viewHolder = new ViewHolder();
             viewHolder.mDate = findViewById(view, R.id.kf5_look_feed_back_listitem_date);
             viewHolder.mTitle = findViewById(view, R.id.kf5_look_feed_back_listitem_title);
-            viewHolder.mStatus = findViewById(view, R.id.kf5_look_feed_back_listitem_statu);
+            viewHolder.mStatus = findViewById(view, R.id.kf5_look_feed_back_listitem_status);
             viewHolder.mImgStatus = findViewById(view, R.id.kf5_look_feed_back_listitem_update);
             view.setTag(viewHolder);
         } else

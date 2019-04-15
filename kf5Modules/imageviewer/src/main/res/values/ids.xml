@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="kf5_sh_progress_view" type="id" />
+    <item name="kf5_sh_progress_text" type="id" />
+</resources>

@@ -13,13 +13,6 @@ public class HelpUseCaseManager {
         return new HelpCenterCase(HelpModelManager.provideHelpCenterModel());
     }
 
-    public static HelpCenterTypeCase provideHelpCenterTypeCase() {
-        return new HelpCenterTypeCase(HelpModelManager.provideHelpCenterTypeModel());
-    }
-
-    public static HelpCenterTypeChildCase provideHelpCenterTypeChildCase() {
-        return new HelpCenterTypeChildCase(HelpModelManager.provideHelpCenterTypeChildModel());
-    }
 
     public static HelpCenterDetailCase provideHelpCenterDetailCase() {
         return new HelpCenterDetailCase(HelpModelManager.provideHelpCenterDetailModel());

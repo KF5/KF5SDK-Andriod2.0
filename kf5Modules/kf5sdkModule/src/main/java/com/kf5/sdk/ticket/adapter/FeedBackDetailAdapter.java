@@ -68,7 +68,6 @@ public class FeedBackDetailAdapter extends CommonAdapter<Comment> {
 
         void bindData(Context context, Comment details) {
             CustomTextView.stripUnderlines(context, tvContent, details.getContent(), Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
-//            tvContent.setOnLongClickListener(new CopyTextLongClickListener(context, details.getContent()));
             tvContent.setOnLongClickListener(new PopList<>(tvContent, new ItemLongClickCallback(tvContent)));
             tvDate.setText(Utils.getAllTime(details.getCreatedAt()));
             tvName.setText(details.getAuthorName());
