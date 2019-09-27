@@ -1,0 +1,28 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext {
+        moduleConfig = [
+                compileSdk: 27,
+                buildTools: "27.0.3",
+                minSdk    : 14,
+                targetSdk : 27
+        ]
+        moduleRemote = [
+                supportLib        : "27.1.1",
+                glide             : '4.8.0',
+//                glide     : '3.7.0',
+                gson              : '2.8.5',
+                picasso           : '2.5.2',
+                smartRefreshLayout: '1.1.0-alpha-21'
+        ]
+    }
+
+}
+
+dependencies {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile 'junit:junit:4.12'
+}

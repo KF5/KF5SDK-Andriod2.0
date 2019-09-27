@@ -1,0 +1,53 @@
+apply plugin: 'com.android.library'
+//apply from: '../moduleSetting.gradle'
+apply from: 'moduleSetting.gradle'
+
+android {
+    compileSdkVersion moduleConfig.compileSdk
+    buildToolsVersion moduleConfig.buildTools
+    defaultConfig {
+        minSdkVersion moduleConfig.minSdk
+        targetSdkVersion moduleConfig.targetSdk
+        versionCode 1
+        versionName "2.10.2"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        def dirs = ['p_album', 'p_cameradisplay', 'p_imageviewer', 'p_videoplayer']
+        main {
+            dirs.each { dir ->
+//                if (dir == dirs[3]){
+//                    manifest.srcFile "src/${dir}/main/AndroidManifest.xml"
+//                }
+                java.srcDirs("src/${dir}/main/java")
+                res.srcDirs("src/${dir}/main/res")
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:' + moduleRemote.supportLib
+    implementation 'com.github.bumptech.glide:glide:' + moduleRemote.glide
+    implementation 'com.github.bumptech.glide:okhttp3-integration:' + moduleRemote.glide
+    implementation 'com.android.support:exifinterface:' + moduleRemote.supportLib
+    annotationProcessor 'com.github.bumptech.glide:compiler:' + moduleRemote.glide
+    implementation "com.android.support:recyclerview-v7:${moduleRemote.supportLib}"
+    implementation 'com.google.code.gson:gson:' + moduleRemote.gson
+    implementation files('libs/com.kf5sdk.framework_v2-1.6.jar')
+//    implementation project(':kf5SdkFramework')
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:' + moduleRemote.smartRefreshLayout
+    implementation "com.squareup.picasso:picasso:${moduleRemote.picasso}"
+
+}
+
+

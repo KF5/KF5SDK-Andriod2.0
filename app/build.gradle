@@ -32,10 +32,10 @@ dependencies {
     })
     implementation 'com.android.support:appcompat-v7:27.1.1'
     androidTestImplementation 'junit:junit:4.12'
-    // implementation project(':kf5sdkModule')
-    implementation project(':kf5Modules:kf5sdkModule')
-    implementation("com.squareup.okhttp3:okhttp:3.14.0")
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.0'
+     implementation project(':kf5sdkModule')
+//    implementation project(':kf5Modules:kf5sdkModule')
+//    implementation("com.squareup.okhttp3:okhttp:3.14.0")
+//    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.0'
 //    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
 //    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
 //    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'

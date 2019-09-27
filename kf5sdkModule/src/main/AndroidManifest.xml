@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kf5.sdk">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <!--album权限申请-->
+    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
+    <!--结束-->
+
+    <!--camera display 权限申请-->
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <!-- <uses-permission android:name="android.permission.RECORD_AUDIO" />-->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!--<uses-permission android:name="android.permission.CAMERA" />-->
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <!--结束-->
+
+    <!--image viewer权限申请-->
+    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
+    <!--<uses-permission android:name="android.permission.INTERNET" />-->
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <!--结束-->
+
+    <!--video player 权限申请-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--结束-->
+
+    <application>
+        <activity
+            android:name=".system.image.ImageSelectorActivity"
+            android:exported="false"
+            android:theme="@style/KF5AppTheme" />
+        <activity
+            android:name=".helpcenter.ui.HelpCenterActivity"
+            android:exported="false"
+            android:theme="@style/KF5AppTheme" />
+        <activity
+            android:name=".helpcenter.ui.HelpCenterTypeActivity"
+            android:exported="false"
+            android:theme="@style/KF5AppTheme" />
+        <activity
+            android:name=".helpcenter.ui.HelpCenterTypeDetailsActivity"
+            android:exported="false"
+            android:theme="@style/KF5AppTheme" />
+        <activity
+            android:name=".helpcenter.ui.HelpCenterTypeChildActivity"
+            android:exported="false"
+            android:theme="@style/KF5AppTheme" />
+        <activity
+            android:name=".ticket.ui.LookFeedBackActivity"
+            android:exported="false"
+            android:theme="@style/KF5AppTheme" />
+        <activity
+            android:name=".ticket.ui.FeedBackDetailsActivity"
+            android:exported="false"
+            android:theme="@style/KF5AppTheme" />
+        <activity
+            android:name=".system.ui.ImageActivity"
+            android:exported="false"
+            android:theme="@style/KF5AppTheme" />
+        <activity
+            android:name=".ticket.ui.OrderAttributeActivity"
+            android:exported="false"
+            android:theme="@style/KF5AppTheme" />
+        <activity
+            android:name=".ticket.ui.FeedBackActivity"
+            android:exported="false"
+            android:theme="@style/KF5AppTheme" />
+        <activity
+            android:name=".im.ui.KF5ChatActivity"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/KF5AppTheme" />
+
+        <service
+            android:name=".im.service.MessageService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":lqRemote">
+            <intent-filter>
+                <action android:name="com.kf5.sdk.im.service.MessageService" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".ticket.ui.RatingActivity"
+            android:exported="false"
+            android:theme="@style/KF5AppTheme" />
+
+        <activity
+            android:name=".im.ui.AgentGroupChoseActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:theme="@style/KF5AppTheme" />
+
+        <activity
+            android:name=".helpcenter.ui.SearchActivity"
+            android:exported="false"
+            android:theme="@style/KF5AppTheme"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+
+        <provider
+            android:name=".system.provider.PhotoFileProvider"
+            android:authorities="${applicationId}.chosen.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/kf5_camera_file_path" />
+        </provider>
+
+        <!--********************************album activity config start********************************-->
+        <activity android:name="com.chosen.album.ui.MatisseActivity" />
+        <activity android:name="com.chosen.album.internal.ui.AlbumPreviewActivity" />
+        <activity android:name="com.chosen.album.internal.ui.SelectedPreviewActivity" />
+        <!--********************************album activity config end********************************-->
+
+        <!--********************************camera activity config start********************************-->
+        <activity android:name="com.chosen.cameraview.ui.CameraActivity" />
+        <!--********************************camera activity config end********************************-->
+
+        <!--********************************image viewer activity config start********************************-->
+        <activity
+            android:name="com.chosen.imageviewer.view.ImagePreviewActivity"
+            android:theme="@style/ImageViewerTheme.ImagePreview" />
+        <!--********************************image viewer activity config end********************************-->
+
+        <!--********************************video player activity config start********************************-->
+        <activity
+            android:name="com.chosen.videoplayer.ui.VideoPlayActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <!--********************************video player activity config end********************************-->
+
+    </application>
+
+</manifest>

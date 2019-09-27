@@ -9,12 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/kf5Modules" />
-            <option value="$PROJECT_DIR$/kf5Modules/album" />
-            <option value="$PROJECT_DIR$/kf5Modules/cameradisplay" />
-            <option value="$PROJECT_DIR$/kf5Modules/imageviewer" />
-            <option value="$PROJECT_DIR$/kf5Modules/kf5sdkModule" />
-            <option value="$PROJECT_DIR$/kf5Modules/videoplayer" />
+            <option value="$PROJECT_DIR$/kf5sdkModule" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

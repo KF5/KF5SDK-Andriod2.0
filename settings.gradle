@@ -1,1 +1,3 @@
-include ':app', 'kf5Modules:kf5sdkModule','kf5Modules:videoplayer', 'kf5Modules:cameradisplay', 'kf5Modules:album', 'kf5Modules:imageviewer'
+include ':app',
+//        'kf5Modules:kf5sdkModule', 'kf5Modules:videoplayer', 'kf5Modules:cameradisplay', 'kf5Modules:album', 'kf5Modules:imageviewer',
+        ':kf5sdkModule'
