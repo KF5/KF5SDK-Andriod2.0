@@ -270,17 +270,7 @@ public class Utils {
         return fileType;
     }
 
-    @SuppressLint("HardwareIds")
-    public static String getUUID(Context context) {
-        if (context == null)
-            return "android-";
-        final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        final String tmDevice, androidId;
-        tmDevice = tm.getDeviceId() + "";
-        androidId = android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID) + "";
-        UUID deviceUuid = new UUID(androidId.hashCode(), tmDevice.hashCode());
-        return "android-" + deviceUuid.toString();
-    }
+
 
     public static int dip2px(Context context, float dpValue) {
         float scale = context.getResources().getDisplayMetrics().density;

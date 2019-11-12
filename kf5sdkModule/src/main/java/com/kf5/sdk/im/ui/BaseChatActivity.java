@@ -339,7 +339,6 @@ public abstract class BaseChatActivity extends BaseMVPActivity<IMPresenter, IIMV
         map.put("platform", "Android");
         map.put("token", SPUtils.getUserToken());
         map.put("version", "2.8");
-        map.put("uuid", Utils.getUUID(mActivity));
         bundle.putString("query", com.kf5.sdk.im.utils.Utils.getMapAppend(map));
         bundle.putString("url", SPUtils.getChatUrl());
         presenter.initParams(bundle);

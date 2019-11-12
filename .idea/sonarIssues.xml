@@ -18,6 +18,21 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/kf5sdkModule/src/main/AndroidManifest.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/kf5sdkModule/src/main/java/com/kf5/sdk/im/ui/BaseChatActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/kf5sdkModule/src/main/java/com/kf5/sdk/system/utils/Utils.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/settings.gradle">
           <value>
             <set />
