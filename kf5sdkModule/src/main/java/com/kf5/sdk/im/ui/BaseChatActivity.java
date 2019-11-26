@@ -113,7 +113,7 @@ public abstract class BaseChatActivity extends BaseMVPActivity<IMPresenter, IIMV
 
     private static final String[] CAMERA_PERMISSION = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
 
-    READ_PHONE_STATE_PERMISSION = {Manifest.permission.READ_PHONE_STATE},
+//    READ_PHONE_STATE_PERMISSION = {Manifest.permission.READ_PHONE_STATE},
 
     VOICE_RECORDER_PERMISSION = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
 
@@ -309,11 +309,7 @@ public abstract class BaseChatActivity extends BaseMVPActivity<IMPresenter, IIMV
 
     @Override
     public void connectIPCSuccess() {
-        if (hasPermission(READ_PHONE_STATE_PERMISSION))
-            bindConnect();
-        else {
-            applyPermissions(READ_PHONE_STATE_BY_CHAT_ACTIVITY, METHOD_REQUEST_PERMISSION, READ_PHONE_STATE_PERMISSION);
-        }
+        bindConnect();
     }
 
 
@@ -753,14 +749,6 @@ public abstract class BaseChatActivity extends BaseMVPActivity<IMPresenter, IIMV
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case READ_PHONE_STATE_BY_CHAT_ACTIVITY:
-                //绑定连接
-                if (hasPermission(READ_PHONE_STATE_PERMISSION)) {
-                    bindConnect();
-                } else {
-                    finish();
-                }
-                break;
             case CAMERA_STATE:
                 if (hasPermission(CAMERA_PERMISSION))
                     CameraDisplayUtils.cameraDisplayBothFeatures(this, CAMERA);
