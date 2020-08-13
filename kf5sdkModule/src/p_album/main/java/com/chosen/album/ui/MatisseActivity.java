@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -39,6 +40,7 @@ import com.chosen.album.internal.ui.widget.IncapableDialog;
 import com.chosen.album.internal.utils.MediaStoreCompat;
 import com.chosen.album.internal.utils.PathUtils;
 import com.chosen.album.internal.utils.PhotoMetadataUtils;
+import com.chosen.album.internal.utils.SingleMediaScanner;
 import com.kf5.sdk.R;
 
 import java.util.ArrayList;
@@ -108,7 +110,6 @@ public class MatisseActivity extends AppCompatActivity implements
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.kf5_album_return_up);
         Drawable navigationIcon = toolbar.getNavigationIcon();
         TypedArray ta = getTheme().obtainStyledAttributes(new int[]{R.attr.album_element_color});
         int color = ta.getColor(0, 0);
@@ -189,12 +190,8 @@ public class MatisseActivity extends AppCompatActivity implements
                 Intent result = new Intent();
                 ArrayList<Uri> selectedUris = new ArrayList<>();
                 ArrayList<String> selectedPaths = new ArrayList<>();
-                boolean isVideo = false;
                 if (selected != null) {
                     for (Item item : selected) {
-                        if (item.isVideo()) {
-                            isVideo = true;
-                        }
                         selectedUris.add(item.getContentUri());
                         selectedPaths.add(PathUtils.getPath(this, item.getContentUri()));
                     }
@@ -228,6 +225,13 @@ public class MatisseActivity extends AppCompatActivity implements
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
                 MatisseActivity.this.revokeUriPermission(contentUri,
                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            new SingleMediaScanner(this.getApplicationContext(), path, new SingleMediaScanner.ScanListener() {
+                @Override
+                public void onScanFinish() {
+                    Log.i("SingleMediaScanner", "scan finish!");
+                }
+            });
             finish();
         }
     }

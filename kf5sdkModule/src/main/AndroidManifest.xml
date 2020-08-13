@@ -1,42 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.kf5.sdk">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
-
-    <!--album权限申请-->
-    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
-    <!--结束-->
-
-    <!--camera display 权限申请-->
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <!-- <uses-permission android:name="android.permission.RECORD_AUDIO" />-->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!--<uses-permission android:name="android.permission.CAMERA" />-->
-    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-    <!--结束-->
-
-    <!--image viewer权限申请-->
-    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
-    <!--<uses-permission android:name="android.permission.INTERNET" />-->
-    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
-    <!--结束-->
-
-    <!--video player 权限申请-->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!--结束-->
-
+    <!--android:requestLegacyExternalStorage="true"-->
     <application>
         <activity
             android:name=".system.image.ImageSelectorActivity"
@@ -85,16 +52,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/KF5AppTheme" />
 
-        <service
-            android:name=".im.service.MessageService"
-            android:enabled="true"
-            android:exported="false"
-            android:process=":lqRemote">
-            <intent-filter>
-                <action android:name="com.kf5.sdk.im.service.MessageService" />
-            </intent-filter>
-        </service>
-
         <activity
             android:name=".ticket.ui.RatingActivity"
             android:exported="false"
@@ -112,6 +69,26 @@
             android:theme="@style/KF5AppTheme"
             android:windowSoftInputMode="stateVisible|adjustResize" />
 
+        <activity android:name="com.chosen.album.ui.MatisseActivity" />
+
+        <activity android:name="com.chosen.album.internal.ui.AlbumPreviewActivity" />
+
+        <!--********************************album activity config start********************************-->
+        <activity android:name="com.chosen.album.internal.ui.SelectedPreviewActivity" />
+        <activity android:name="com.chosen.cameraview.ui.CameraActivity" />
+        <activity
+            android:name="com.chosen.imageviewer.view.ImagePreviewActivity"
+            android:theme="@style/ImageViewerTheme.ImagePreview" />
+        <!--********************************album activity config end********************************-->
+
+        <!--********************************camera activity config start********************************-->
+        <activity
+            android:name="com.chosen.videoplayer.ui.VideoPlayActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <!--********************************camera activity config end********************************-->
+
+        <!--********************************image viewer activity config start********************************-->
         <provider
             android:name=".system.provider.PhotoFileProvider"
             android:authorities="${applicationId}.chosen.FileProvider"
@@ -121,30 +98,59 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/kf5_camera_file_path" />
         </provider>
-
-        <!--********************************album activity config start********************************-->
-        <activity android:name="com.chosen.album.ui.MatisseActivity" />
-        <activity android:name="com.chosen.album.internal.ui.AlbumPreviewActivity" />
-        <activity android:name="com.chosen.album.internal.ui.SelectedPreviewActivity" />
-        <!--********************************album activity config end********************************-->
-
-        <!--********************************camera activity config start********************************-->
-        <activity android:name="com.chosen.cameraview.ui.CameraActivity" />
-        <!--********************************camera activity config end********************************-->
-
-        <!--********************************image viewer activity config start********************************-->
-        <activity
-            android:name="com.chosen.imageviewer.view.ImagePreviewActivity"
-            android:theme="@style/ImageViewerTheme.ImagePreview" />
         <!--********************************image viewer activity config end********************************-->
 
         <!--********************************video player activity config start********************************-->
-        <activity
-            android:name="com.chosen.videoplayer.ui.VideoPlayActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait" />
+        <service
+            android:name=".im.service.MessageService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":lqRemote">
+            <intent-filter>
+                <action android:name="com.kf5.sdk.im.service.MessageService" />
+            </intent-filter>
+        </service>
         <!--********************************video player activity config end********************************-->
 
     </application>
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!--album权限申请-->
+    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
+    <!--结束-->
+
+    <!--camera display 权限申请-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- <uses-permission android:name="android.permission.RECORD_AUDIO" />-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--<uses-permission android:name="android.permission.CAMERA" />-->
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!--结束-->
+
+    <!--image viewer权限申请-->
+    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
+    <!--<uses-permission android:name="android.permission.INTERNET" />-->
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <!--结束-->
+
+    <!--video player 权限申请-->
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <!--结束-->
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>

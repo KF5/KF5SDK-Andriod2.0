@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.kf5sdk.exam">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.kf5sdk.exam">
 
-    <uses-sdk tools:overrideLibrary="com.kf5.sdk"/>
+    <uses-sdk tools:overrideLibrary="com.kf5.sdk" />
 
 
     <application
@@ -15,19 +15,17 @@
         android:theme="@style/AppTheme">
         <activity android:name=".SplashActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity">
-        </activity>
-        <activity android:name=".AboutUsActivity">
-        </activity>
-        <activity android:name=".MainActivity">
-        </activity>
-        <activity android:name=".LanguageActivity">
-        </activity>
+        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".AboutUsActivity"></activity>
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".LanguageActivity"></activity>
+
+        <activity android:name=".event.EventActivity" />
     </application>
 
 </manifest>

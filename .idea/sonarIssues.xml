@@ -3,7 +3,212 @@
   <component name="issues">
     <option name="index">
       <map>
+        <entry key="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.support/appcompat-v7/27.1.1/21d073509c5f8d25a1bf274067fa729a1fba8d75/appcompat-v7-27.1.1-sources.jar!/android/support/v7/widget/ShareActionProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.support/support-fragment/27.1.1/94732bda44fba11302c58e459b7c1f47e7521bf9/support-fragment-27.1.1-sources.jar!/android/support/v4/app/Fragment.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidStudioProjects/KF/app/src/main/java/com/kf5/create/ticket/TicketFieldAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidStudioProjects/KF/app/src/main/java/com/kf5/internet/retrofit/HttpAPI.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidStudioProjects/KF/app/src/main/java/com/kf5/utils/LogUtils.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidStudioProjects/KF/app/src/main/java/com/kf5help/ui/OrderPresetReplyActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidStudioProjects/kf5sdk-master-v2/.idea/sonarIssues.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidStudioProjects/kf5sdk-master-v2/app/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidStudioProjects/kf5sdk-master-v2/app/src/main/java/com/kf5sdk/exam/LoginActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidStudioProjects/kf5sdk-master-v2/kf5Modules/kf5sdkModule/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/gson/GsonError1.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/gson/GsonTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/gson/GsonTest2.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/json/Course.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/json/FastJsonTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/json/GsonTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/json/GsonTest2.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/json/JacksonTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/json/JacksonUtil.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/myjson/JsonUtils.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/myjson/exception/JsonParseException.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/myjson/exception/JsonTypeException.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/myjson/model/JsonArray.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/myjson/model/JsonObject.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/myjson/tokenizer/CharReader.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/myjson/tokenizer/Parser.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/myjson/tokenizer/Token.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/myjson/tokenizer/TokenList.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/myjson/tokenizer/TokenType.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/myjson/tokenizer/Tokenizer.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/SerializableLib/src/main/java/com/chosen/serializablelib/serializable/Course.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/app/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AndroidTest/SerializableTest/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/kf5sdk/exam/LoginActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/kf5sdk/exam/MainActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/kf5sdk/exam/app/KF5Application.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/kf5sdk/exam/event/EventActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/kf5sdk/exam/event/EventButton.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/kf5sdk/exam/event/EventLinearLayout.java">
           <value>
             <set />
           </value>
@@ -13,12 +218,32 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/kf5sdk/exam/fragment/SettingsFragment.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/kf5sdkModule/build.gradle">
           <value>
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/kf5sdkModule/build/generated/aidl_source_output_dir/debug/compileDebugAidl/out/com/kf5/im/aidl/MessageManager.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/kf5sdkModule/src/main/AndroidManifest.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/kf5sdkModule/src/main/java/com/kf5/sdk/im/mvp/presenter/IMPresenter.java">
           <value>
             <set />
           </value>
@@ -34,6 +259,21 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/settings.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/Downloads/json/XuliehuaDemo/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/Downloads/json/XuliehuaDemo/gradle/wrapper/gradle-wrapper.properties">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="/fragment.java">
           <value>
             <set />
           </value>

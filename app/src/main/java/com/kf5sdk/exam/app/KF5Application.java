@@ -1,8 +1,10 @@
 package com.kf5sdk.exam.app;
 
 import android.app.Application;
+import android.os.Debug;
 
 import com.kf5.sdk.system.init.KF5SDKInitializer;
+import com.kf5sdk.exam.AboutUsActivity;
 
 /**
  * author:chosen

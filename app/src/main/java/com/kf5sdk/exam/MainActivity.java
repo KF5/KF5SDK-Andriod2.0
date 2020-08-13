@@ -19,6 +19,7 @@ import com.kf5.sdk.system.entity.Field;
 import com.kf5.sdk.system.entity.KF5User;
 import com.kf5.sdk.system.init.UserInfoAPI;
 import com.kf5.sdk.system.internet.HttpRequestCallBack;
+import com.kf5.sdk.system.utils.LogUtil;
 import com.kf5.sdk.system.utils.MD5Utils;
 import com.kf5.sdk.system.utils.SPUtils;
 import com.kf5.sdk.system.utils.SafeJson;
@@ -47,6 +48,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 //        initKF5SDK();
         initWidgets();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        LogUtil.printf("onRestart====");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LogUtil.printf("onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LogUtil.printf("onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LogUtil.printf("onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LogUtil.printf("onStop");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        LogUtil.printf("======开始缓存调用   ");
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        LogUtil.printf("恢复Activity");
     }
 
     @Override

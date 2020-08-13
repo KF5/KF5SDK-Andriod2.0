@@ -89,9 +89,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //        etName.setText("Android 用户");
 
         etEmail.setText(year + "-" + (month + 1) + "-" + day + "@qq.com");
-        etEmail.setText("123@qq.com");
-        etAddress.setText("im2beta.kf5.com");
-        etAppid.setText("001589d1e48784ee06bf96e16d845ca177b73f48ec6a0b2d");
+        etEmail.setText("dlof549ad73b569@dalongyun.com");
+        etAddress.setText("dalongyun2.kf5.com");
+        etAppid.setText("001595dd976b89b6a557babb1ed92af5ab8748fa4efbe364");
         etName.setText("Android 用户");
 
 //        etEmail.setText(year + "-" + (month + 1) + "-" + day + "@qq.com");

@@ -1,6 +1,8 @@
 package com.kf5sdk.exam.fragment;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +10,8 @@ import android.support.v4.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.kf5.sdk.helpcenter.ui.HelpCenterActivity;
@@ -24,9 +28,12 @@ import com.kf5.sdk.system.utils.SPUtils;
 import com.kf5.sdk.ticket.ui.FeedBackActivity;
 import com.kf5.sdk.ticket.ui.LookFeedBackActivity;
 import com.kf5sdk.exam.R;
+import com.kf5sdk.exam.event.EventActivity;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -177,23 +184,39 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.tvSetting:
                 // startActivity(new Intent(getContext(), LanguageActivity.class));
-                Map<String, String> fieldMap = new ArrayMap<>();
-                ((ArrayMap<String, String>) fieldMap).put(ParamsKey.NAME, "能改不");
-                UserInfoAPI.getInstance().updateUser(fieldMap, new HttpRequestCallBack() {
-                    @Override
-                    public void onSuccess(String result) {
-
-                    }
-
-                    @Override
-                    public void onFailure(String result) {
-
-                    }
-                });
+//                Map<String, String> fieldMap = new ArrayMap<>();
+//                ((ArrayMap<String, String>) fieldMap).put(ParamsKey.NAME, "能改不");
+//                UserInfoAPI.getInstance().updateUser(fieldMap, new HttpRequestCallBack() {
+//                    @Override
+//                    public void onSuccess(String result) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onFailure(String result) {
+//
+//                    }
+//                });
+//                dimBackground();
+                startActivity(new Intent(getContext(), EventActivity.class));
                 break;
             default:
 
                 break;
         }
     }
+
+    private void dimBackground() {
+        Window window = getActivity().getWindow();
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(1.0f, 0.1f);
+        valueAnimator.setDuration(500);
+        valueAnimator.addUpdateListener(animation -> {
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.alpha = ((Float) animation.getAnimatedValue());
+            window.setAttributes(params);
+        });
+        valueAnimator.start();
+    }
+
+
 }
